@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Александр Кравви — графический и UI/UX дизайнер, фотограф, ретушёр.">
+<meta name="theme-color" content="#0A0A0A">
+<meta property="og:title" content="Александр Кравви — визитка">
+<meta property="og:description" content="Графический и UI/UX дизайнер, фотограф, ретушёр.">
+<meta property="og:type" content="website">
+<title>Визитка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   1. RESET
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, menu, figure, blockquote { margin: 0; padding: 0; }
+ul, ol, menu { list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; padding: 0; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+svg { display: block; }
+
+/* ============================================================
+   2. TOKENS
+   ============================================================ */
+:root {
+  --font-hero:    "Bodoni Moda", Georgia, "Times New Roman", serif;
+  --font-ui: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --bg: #0A0A0A;
+  --text: #f5f5f6;
+  --text-dim: #dddddd;
+  --text-soft: #9a9aa2;
+  --text-muted: #6a6a72;
+
+  --hover-color:  #A8895C;
+  --hover-shadow: rgba(168, 137, 92, 0.55);
+  --hover-glow:   rgba(168, 137, 92, 0.22);
+
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 26px;
+  --glass-sat: 1.4;
+  --glass-radius: 24px;
+
+  --grid-max-w: min(1360px, 88vw);
+  --grid-max-h: min(780px, 82vh);
+
+  --gap: 16px;
+  --cols: 4;
+
+  --ref-w: 1920;
+  --hero-top: 10.3vh;
+  --hero-gap: 4.1vh;
+  --photo-h: 104vh;
+  --photo-h-max: 175vw;
+  --name-size: 21.3vw;
+  --name-x: 0vw;
+  --name-y: 0vh;
+  --name-opsz: 96;
+  --name-stroke: 0px;
+
+  --author-size-v: 22;
+  --author-x: -31vw;
+  --author-y: 0vh;
+
+  --desc-x: -31vw;
+  --desc-y: 0.5vh;
+
+  --btn-x: -31.2vw;
+  --btn-y: -0.3vh;
+
+  --desc-size-v: 16;
+  --desc-width-v: 478;
+  --btn-size-v: 13;
+  --btn-gap-v: 15;
+
+  --author-size: max(14px, calc(var(--author-size-v) * 100vw / var(--ref-w)));
+  --desc-size: max(13px, calc(var(--desc-size-v) * 100vw / var(--ref-w)));
+  --desc-width: max(240px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
+  --btn-size:  max(12px, calc(var(--btn-size-v)  * 100vw / var(--ref-w)));
+  --btn-gap:   max(8px,  calc(var(--btn-gap-v)   * 100vw / var(--ref-w)));
+
+  --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-soft:    cubic-bezier(0.4, 0, 0.6, 1);
+  --ease: cubic-bezier(.22, .61, .36, 1);
+
+  --view-fade: 500ms;
+  --dur-name:  1100ms;
+  --dur-photo: 1150ms;
+  --dur-desc:  950ms;
+  --dur-btn:   950ms;
+  --dur-tile:  850ms;
+  --step-ms:   80;
+
+  --delay-name:  60ms;
+  --delay-photo: 200ms;
+  --delay-desc:  400ms;
+  --delay-btn:   540ms;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --gap: 14px;
+    --glass-radius: 22px;
+    --glass-blur: 22px;
+
+    --hero-gap: 3vh;
+    --photo-h: 104vh;
+    --photo-h-max: 150vw;
+
+    --name-x: 0vw;
+    --name-y: 0vh;
+    --author-x: 0vw;
+    --author-y: 0vh;
+    --desc-x: 0vw;
+    --desc-y: 0vh;
+    --btn-x: 0vw;
+    --btn-y: 0vh;
+  }
+
+  .hero-stack {
+    position: absolute !important;
+    top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap)) !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 2.5vh;
+    padding-left: max(20px, var(--safe-left));
+    padding-right: max(20px, var(--safe-right));
+    pointer-events: none;
+  }
+  .hero-stack > * { pointer-events: auto; }
+
+  .hero-text { align-items: center; text-align: center; }
+  .hero-actions { justify-content: center; }
+
+  .hero-author {
+    width: var(--desc-width);
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .home-stage::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 55%;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      0deg,
+      #0A0A0A 0%,
+      rgba(10,10,10,0.92) 30%,
+      rgba(10,10,10,0.62) 62%,
+      rgba(10,10,10,0) 100%
+    );
+  }
+
+  .view-grid {
+    padding:
+      calc(var(--gap) + var(--safe-top))
+      calc(var(--gap) + var(--safe-right))
+      calc(var(--gap) + var(--safe-bottom))
+      calc(var(--gap) + var(--safe-left));
+    justify-content: flex-start;
+  }
+
+  .view-header {
+    max-width: none;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .grid {
+    max-width: none;
+    max-height: none;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 701px) {
+  :root {
+    --ref-w: 900;
+    --hero-top: 16vh;
+    --hero-gap: 3vh;
+    --photo-h: 104vh;
+    --name-size: 22vw;
+    --name-opsz: 96;
+    --name-stroke: 0px;
+    --name-x: 0vw;
+    --name-y: 0vh;
+    --author-size-v: 22;
+    --author-x: 0vw;
+    --author-y: 0vh;
+    --desc-size-v: 16;
+    --desc-width-v: 478;
+    --desc-x: 0vw;
+    --desc-y: 1vh;
+    --btn-size-v: 13;
+    --btn-gap-v: 15;
+    --btn-x: 0vw;
+    --btn-y: 0.2vh;
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --gap: 10px;
+    --cols: 2;
+    --glass-radius: 20px;
+    --glass-blur: 20px;
+
+    --ref-w: 402;
+
+    --hero-top: 14vh;
+    --hero-gap: 7.8vh;
+    --photo-h: 104vh;
+    --photo-h-max: 185vw;
+    --name-size: 22.9vw;
+    --name-x: 0vw;
+    --name-y: 8.1vh;
+    --name-opsz: 30;
+    --name-stroke: 0.33px;
+
+    --author-size-v: 19;
+    --author-x: 0vw;
+    --author-y: 9.9vh;
+
+    --desc-size-v: 14;
+    --desc-width-v: 292;
+    --desc-x: 0vw;
+    --desc-y: 10.6vh;
+
+    --btn-size-v: 11.3;
+    --btn-gap-v: 14;
+    --btn-x: 0vw;
+    --btn-y: 8.7vh;
+  }
+
+  .hero-name {
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
+    font-weight: 400;
+  }
+
+  .hero-tagline {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .hero-actions .btn-pill {
+    padding: 0.85em 1.75em;
+  }
+
+  .view-grid {
+    padding: 0 !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+  .view-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding:
+      calc(10px + var(--safe-top))
+      max(10px, var(--safe-right))
+      6px
+      max(10px, var(--safe-left)) !important;
+  }
+  .grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    align-self: stretch !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding:
+      0
+      max(10px, var(--safe-right))
+      max(10px, var(--safe-bottom))
+      max(10px, var(--safe-left)) !important;
+    gap: 10px !important;
+  }
+
+  [data-tile-id="photo-archive"] .tile-content,
+  [data-tile-id="mail"] .tile-content {
+    flex-direction: column-reverse;
+  }
+  [data-tile-id="photo-archive"] .tile-bottom,
+  [data-tile-id="mail"] .tile-bottom {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+/* ============================================================
+   3. BASE
+   ============================================================ */
+html, body {
+  width: 100%;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 1.45;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+body.is-loading { visibility: hidden; }
+
+/* ============================================================
+   4. УГЛОВЫЕ ЭЛЕМЕНТЫ
+   ============================================================ */
+.brand-tag {
+  position: fixed;
+  top: calc(22px + var(--safe-top));
+  left: calc(24px + var(--safe-left));
+  z-index: 100;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 10.5px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+  transition: opacity 350ms var(--ease-out-smooth), transform 350ms var(--ease-out-smooth);
+}
+
+.lang-btn {
+  position: fixed;
+  top: calc(18px + var(--safe-top));
+  right: calc(24px + var(--safe-right));
+  z-index: 101;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-radius: 999px;
+  transition:
+    background 220ms var(--ease),
+    color 220ms var(--ease),
+    opacity 350ms var(--ease-out-smooth),
+    transform 350ms var(--ease-out-smooth);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.lang-btn:hover { color: #fff; background: rgba(255,255,255,0.06); }
+
+.lang-menu {
+  position: fixed;
+  top: calc(48px + var(--safe-top));
+  right: calc(24px + var(--safe-right));
+  z-index: 102;
+  min-width: 84px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition:
+    opacity 220ms var(--ease-out-smooth),
+    visibility 0ms linear 220ms,
+    transform 220ms var(--ease-out-smooth);
+}
+.lang-menu.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    opacity 220ms var(--ease-out-smooth),
+    visibility 0ms linear 0ms,
+    transform 220ms var(--ease-out-smooth);
+}
+.lang-item {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 6px 14px;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-radius: 9px;
+  transition: background 180ms var(--ease), color 180ms var(--ease);
+  cursor: pointer;
+}
+.lang-item:hover { background: rgba(255,255,255,0.10); color: #fff; }
+.lang-item.is-active { color: #fff; background: rgba(255,255,255,0.06); }
+
+.copyright {
+  position: fixed;
+  bottom: calc(20px + var(--safe-bottom));
+  right: calc(24px + var(--safe-right));
+  z-index: 100;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+  transition: opacity 350ms var(--ease-out-smooth), transform 350ms var(--ease-out-smooth);
+}
+
+body.overlay-active .brand-tag,
+body.overlay-active .lang-btn,
+body.overlay-active .lang-menu,
+body.overlay-active .copyright {
+  opacity: 0;
+  pointer-events: none;
+}
+body.overlay-active .brand-tag { transform: translateY(-8px); }
+body.overlay-active .copyright  { transform: translateY(8px); }
+
+@media (max-width: 700px) {
+  .brand-tag { font-size: 9px; letter-spacing: 0.28em; top: calc(18px + var(--safe-top)); left: calc(18px + var(--safe-left)); }
+  .lang-btn  { font-size: 11px; padding: 5px 10px; top: calc(14px + var(--safe-top)); right: calc(18px + var(--safe-right)); }
+  .lang-menu { top: calc(42px + var(--safe-top)); right: calc(18px + var(--safe-right)); min-width: 76px; }
+  .lang-item { padding: 5px 12px; font-size: 11px; }
+  .copyright { font-size: 9px; letter-spacing: 0.2em; bottom: calc(16px + var(--safe-bottom)); right: calc(18px + var(--safe-right)); }
+}
+
+/* ============================================================
+   5. APP
+   ============================================================ */
+#app {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 1;
+}
+
+/* ============================================================
+   6. HOME
+   ============================================================ */
+.view-home {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--view-fade) var(--ease-out-smooth),
+    visibility 0ms linear var(--view-fade);
+}
+.view-home.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity var(--view-fade) var(--ease-out-smooth),
+    visibility 0ms linear 0ms;
+}
+
+.home-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.hero-name {
+  position: absolute;
+  top: var(--hero-top);
+  left: 50%;
+  margin: 0;
+  font-family: var(--font-hero);
+  font-weight: 600;
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" var(--name-opsz, 96), "wght" 600;
+  font-size: var(--name-size);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: #ffffff;
+  white-space: nowrap;
+  font-feature-settings: "locl" 0;
+
+  -webkit-text-stroke: var(--name-stroke) currentColor;
+  text-stroke: var(--name-stroke) currentColor;
+  paint-order: stroke fill;
+
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateX(-50%) translate(var(--name-x), calc(var(--name-y) + 20px));
+  transition:
+    opacity 400ms var(--ease-in-soft),
+    filter 400ms var(--ease-in-soft),
+    transform 400ms var(--ease-in-soft);
+}
+#view-home.is-active .hero-name {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateX(-50%) translate(var(--name-x), var(--name-y));
+  transition:
+    opacity var(--dur-name) var(--ease-out-smooth) var(--delay-name),
+    filter var(--dur-name) var(--ease-out-smooth) var(--delay-name),
+    transform var(--dur-name) var(--ease-out-smooth) var(--delay-name);
+}
+
+.hero-photo-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.hero-photo {
+  position: relative;
+  height: min(var(--photo-h), var(--photo-h-max));
+  width: auto;
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+
+  opacity: 0;
+  filter: blur(12px);
+  transform: translateY(28px);
+  transition:
+    opacity 400ms var(--ease-in-soft),
+    filter 400ms var(--ease-in-soft),
+    transform 400ms var(--ease-in-soft);
+}
+#view-home.is-active .hero-photo {
+  opacity: 1;
+  filter: none;
+  transform: none;
+  transition:
+    opacity var(--dur-photo) var(--ease-out-smooth) var(--delay-photo),
+    filter var(--dur-photo) var(--ease-out-smooth) var(--delay-photo),
+    transform var(--dur-photo) var(--ease-out-smooth) var(--delay-photo);
+}
+
+.hero-stack {
+  position: absolute;
+  top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 28px;
+  width: max-content;
+  max-width: calc(100vw - 40px);
+  pointer-events: none;
+}
+.hero-stack > * { pointer-events: auto; }
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.hero-author {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: var(--author-size);
+  letter-spacing: 0.01em;
+  color: var(--text);
+  line-height: 1.3;
+
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate(var(--author-x), calc(var(--author-y) + 14px));
+  transition:
+    opacity 400ms var(--ease-in-soft),
+    filter 400ms var(--ease-in-soft),
+    transform 400ms var(--ease-in-soft);
+}
+#view-home.is-active .hero-author {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate(var(--author-x), var(--author-y));
+  transition:
+    opacity var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
+    filter var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
+    transform var(--dur-desc) var(--ease-out-smooth) var(--delay-desc);
+}
+
+.hero-tagline {
+  font-family: var(--font-ui);
+  font-weight: 300;
+  font-size: var(--desc-size);
+  line-height: 1.55;
+  letter-spacing: 0.005em;
+  color: var(--text-dim);
+  text-align: left;
+  hyphens: none;
+  width: var(--desc-width);
+  max-width: 90vw;
+
+  opacity: 0;
+  filter: blur(10px);
+  transform: translate(var(--desc-x), calc(var(--desc-y) + 18px));
+  transition:
+    opacity 400ms var(--ease-in-soft),
+    filter 400ms var(--ease-in-soft),
+    transform 400ms var(--ease-in-soft);
+}
+#view-home.is-active .hero-tagline {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate(var(--desc-x), var(--desc-y));
+  transition:
+    opacity var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
+    filter var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
+    transform var(--dur-desc) var(--ease-out-smooth) var(--delay-desc);
+}
+
+body.overlay-active #view-home.is-active .hero-author,
+body.overlay-active #view-home.is-active .hero-tagline {
+  opacity: 0;
+  filter: blur(12px);
+  pointer-events: none;
+  transition:
+    opacity 500ms var(--ease-in-soft),
+    filter 500ms var(--ease-in-soft),
+    transform 500ms var(--ease-in-soft);
+}
+body.overlay-active #view-home.is-active .hero-author {
+  transform: translate(var(--author-x), calc(var(--author-y) + 20px));
+}
+body.overlay-active #view-home.is-active .hero-tagline {
+  transform: translate(var(--desc-x), calc(var(--desc-y) + 20px));
+}
+
+/* ============================================================
+   КНОПКИ ГЛАВНОЙ
+   ============================================================ */
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--btn-gap);
+
+  opacity: 0;
+  transform: translate(var(--btn-x), calc(var(--btn-y) + 18px));
+  transition:
+    opacity 400ms var(--ease-in-soft),
+    transform 400ms var(--ease-in-soft);
+}
+#view-home.is-active .hero-actions {
+  opacity: 1;
+  transform: translate(var(--btn-x), var(--btn-y));
+  transition:
+    opacity var(--dur-btn) var(--ease-out-smooth) var(--delay-btn),
+    transform var(--dur-btn) var(--ease-out-smooth) var(--delay-btn);
+}
+body.overlay-active #view-home.is-active .hero-actions {
+  opacity: 0;
+  transform: translate(var(--btn-x), calc(var(--btn-y) + 24px));
+  pointer-events: none;
+  transition:
+    opacity 500ms var(--ease-in-soft),
+    transform 500ms var(--ease-in-soft);
+}
+
+.hero-actions .btn-pill {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1em 2.2em;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: var(--btn-size);
+  letter-spacing: 0.01em;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  transition:
+    color 400ms ease,
+    transform 400ms ease,
+    text-shadow 400ms ease,
+    border-color 400ms ease;
+}
+
+.hero-actions .btn-pill::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--hover-color);
+  box-shadow:
+    0 0 8px   var(--hover-shadow),
+    0 0 28px  var(--hover-shadow),
+    0 0 80px  rgba(168, 137, 92, 0.32),
+    0 0 140px rgba(168, 137, 92, 0.18),
+    -50px 0 110px -20px var(--hover-glow),
+     50px 0 110px -20px var(--hover-glow),
+    0 -40px 90px -20px var(--hover-glow),
+    0  40px 90px -20px var(--hover-glow);
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-actions .btn-pill:hover::before { opacity: 1; }
+  .hero-actions .btn-pill:hover {
+    color: #ffffff;
+    border-color: transparent;
+    text-shadow:
+      0 0 5px  rgba(255, 255, 255, 0.85),
+      0 0 10px rgba(255, 255, 255, 0.55),
+      0 0 20px rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px) translateZ(0);
+  }
+  .hero-actions .btn-pill:active {
+    transform: translateY(0) scale(0.985) translateZ(0);
+  }
+}
+
+.hero-actions .btn-pill.is-tapped::before {
+  opacity: 1;
+  transition: opacity 150ms ease;
+}
+.hero-actions .btn-pill.is-tapped {
+  color: #ffffff;
+  border-color: transparent;
+  text-shadow:
+    0 0 5px  rgba(255, 255, 255, 0.85),
+    0 0 10px rgba(255, 255, 255, 0.55),
+    0 0 20px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px) translateZ(0);
+  transition:
+    color 150ms ease,
+    text-shadow 150ms ease,
+    transform 150ms ease,
+    border-color 150ms ease;
+}
+
+.hero-actions .btn-pill:focus-visible::before { opacity: 1; }
+.hero-actions .btn-pill:focus-visible {
+  color: #ffffff;
+  border-color: transparent;
+  text-shadow:
+    0 0 5px  rgba(255, 255, 255, 0.85),
+    0 0 10px rgba(255, 255, 255, 0.55),
+    0 0 20px rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px) translateZ(0);
+}
+
+/* ============================================================
+   7. BENTO OVERLAY
+   ============================================================ */
+.view-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+  padding:
+    calc(60px + var(--safe-top))
+    calc(60px + var(--safe-right))
+    calc(60px + var(--safe-bottom))
+    calc(60px + var(--safe-left));
+  overflow: hidden;
+  isolation: isolate;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 800ms var(--ease-out-smooth),
+    visibility 0ms linear 800ms;
+}
+.view-grid.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 800ms var(--ease-out-smooth),
+    visibility 0ms linear 0ms;
+}
+
+.view-grid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(10, 10, 10, 0.62);
+  opacity: 0;
+  transition: opacity 800ms var(--ease-out-smooth);
+  pointer-events: none;
+}
+.view-grid.is-active::before { opacity: 1; }
+
+.view-grid > * {
+  position: relative;
+  z-index: 1;
+}
+
+.view-header {
+  width: 100%;
+  max-width: var(--grid-max-w);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  padding: 2px 2px 4px;
+  opacity: 0;
+  transform: translateY(-10px);
+  filter: blur(6px);
+  transition:
+    opacity 400ms var(--ease-in-soft),
+    transform 400ms var(--ease-in-soft),
+    filter 400ms var(--ease-in-soft);
+}
+.view-grid.is-active .view-header {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+  transition:
+    opacity 800ms var(--ease-out-smooth) 80ms,
+    transform 800ms var(--ease-out-smooth) 80ms,
+    filter 800ms var(--ease-out-smooth) 80ms;
+}
+
+.view-title {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 1.7vw, 1.85rem);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.grid {
+  width: 100%;
+  max-width: var(--grid-max-w);
+  max-height: var(--grid-max-h);
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  grid-auto-rows: minmax(90px, 1fr);
+  gap: var(--gap);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+.grid::-webkit-scrollbar { width: 6px; height: 6px; }
+.grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
+.grid::-webkit-scrollbar-track { background: transparent; }
+
+/* ============================================================
+   8. TILES (BENTO)
+   ============================================================
+   Фикс мигания в Firefox на «Контактах»:
+
+   Причина — на hover менялись `background-color` и `box-shadow`
+   у элемента с `backdrop-filter` (.tile::before). Firefox при
+   каждом таком изменении пересчитывал blur и на некоторых
+   плитках «терял» его. Особенно заметно, когда на экране 7
+   плиток с backdrop-filter (Контакты), и не заметно, когда их 3
+   (Портфолио).
+
+   Решение:
+   • У `.tile::before` ФИКСИРОВАННЫЙ фон + blur + рамка через
+     border. Никаких transition и изменений на hover.
+   • Hover-подсветка — на `.tile::after` (белая плёнка 4%),
+     появляется через opacity — не триггерит пересчёт blur.
+   • `.tile` больше не имеет `isolation` / `backface-visibility`.
+   ------------------------------------------------------------ */
+.tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--glass-radius);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+
+  opacity: 0;
+  transform: translateY(22px) scale(0.96);
+  transition:
+    opacity 400ms var(--ease-in-soft),
+    transform 400ms var(--ease-in-soft);
+}
+
+/* Слой blur + фиксированный фон + рамка.
+   Ничего не меняется на hover — Firefox не пересчитывает blur. */
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  pointer-events: none;
+}
+
+/* Слой hover-подсветки. Появляется через opacity — тоже
+   не трогает backdrop-filter, Firefox просто «накладывает»
+   поверх ещё одну плёнку. */
+.tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms var(--ease-out-smooth);
+}
+
+.view-grid.is-active .tile {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur-tile) var(--ease-out-smooth),
+    transform var(--dur-tile) var(--ease-out-smooth);
+}
+.view-grid.is-entering .tile {
+  transition-delay:
+    calc(var(--i, 0) * var(--step-ms) * 1ms),
+    calc(var(--i, 0) * var(--step-ms) * 1ms);
+}
+
+.view-grid.is-active .tile:hover::after { opacity: 1; }
+.view-grid.is-active .tile:hover .tile-content {
+  transform: translateY(-2px);
+}
+.view-grid.is-active .tile:active .tile-content {
+  transform: translateY(-1px) scale(0.985);
+  transition-duration: 200ms;
+}
+
+.tile.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.tile.is-disabled::before {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+.tile.is-disabled .tile-content {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+}
+.tile.is-disabled .tile-top,
+.tile.is-disabled .tile-bottom {
+  display: none;
+}
+.tile-disabled-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+}
+.tile-disabled-lock {
+  width: 28px;
+  height: 28px;
+  color: rgba(255, 255, 255, 0.55);
+  flex-shrink: 0;
+}
+.tile-disabled-lock svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+.tile-disabled-text {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: clamp(0.66rem, 0.7vw, 0.76rem);
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+
+.tile-media {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 2;
+}
+.tile-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.22) 55%, rgba(0,0,0,0.62) 100%);
+  pointer-events: none;
+}
+.tile-content {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%; height: 100%;
+  padding: clamp(14px, 1.5vw, 22px);
+  transition: transform 450ms var(--ease-out-smooth);
+}
+.tile-top { display: flex; justify-content: flex-end; align-items: flex-start; }
+
+.tile-arrow {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+  opacity: 0.8;
+  transition:
+    opacity 450ms var(--ease-out-smooth),
+    transform 450ms var(--ease-out-smooth),
+    background-color 450ms var(--ease-out-smooth);
+}
+.tile-arrow svg { width: 12px; height: 12px; }
+.view-grid.is-active .tile:hover .tile-arrow {
+  opacity: 1;
+  background: rgba(255,255,255,0.18);
+  transform: translate(2px, -2px);
+}
+.tile-bottom { display: flex; flex-direction: column; gap: 4px; }
+
+.tile-title {
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.1vw, 1.28rem);
+  letter-spacing: 0.01em;
+  color: #fff;
+  line-height: 1.2;
+  text-shadow: 0 1px 14px rgba(0,0,0,0.5);
+}
+.tile-desc {
+  font-family: var(--font-ui);
+  font-weight: 300;
+  font-size: clamp(0.66rem, 0.72vw, 0.8rem);
+  color: rgba(255,255,255,0.72);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+}
+
+/* ============================================================
+   9. BACK BUTTON
+   ============================================================ */
+.glass-btn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 0.9em 1.7em;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: clamp(0.88rem, 1vw, 1.05rem);
+  letter-spacing: 0.02em;
+  color: var(--text);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border-radius: 999px;
+  transition:
+    background-color 450ms var(--ease-out-smooth),
+    transform 450ms var(--ease-out-smooth),
+    color 450ms var(--ease-out-smooth);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.glass-btn:hover {
+  background: rgba(255,255,255,0.10);
+  transform: translateY(-2px);
+  color: #fff;
+}
+.glass-btn:active { transform: translateY(-1px) scale(0.985); }
+
+.back-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  border: 0;
+  flex-shrink: 0;
+  color: #f5f5f6;
+}
+.back-btn:hover,
+.back-btn:active {
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+  color: #fff;
+}
+.back-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  pointer-events: none;
+}
+
+@media (max-width: 700px) {
+  .glass-btn { padding: 0.8em 1.4em; font-size: 0.9rem; }
+  .tile-arrow { width: 24px; height: 24px; }
+  .tile-arrow svg { width: 11px; height: 11px; }
+
+  .back-btn { width: 28px; height: 28px; }
+  .back-btn svg { width: 14px; height: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+</style>
+</head>
+<body class="is-loading">
+
+<div class="brand-tag" aria-hidden="true">VISUAL &amp; CREATIVE</div>
+
+<button class="lang-btn" id="lang-btn" type="button" aria-label="Сменить язык">
+  <span id="lang-current">Ru</span>
+</button>
+<div class="lang-menu" id="lang-menu" role="menu" aria-label="Выбор языка">
+  <button type="button" class="lang-item" data-lang="ru" role="menuitem">Ru</button>
+  <button type="button" class="lang-item" data-lang="en" role="menuitem">En</button>
+  <button type="button" class="lang-item" data-lang="de" role="menuitem">De</button>
+</div>
+
+<div class="copyright" aria-hidden="true"><span id="copy-year">2026</span> © KRAVVI</div>
+
+<main id="app">
+
+  <section id="view-home" class="view-home" aria-hidden="false">
+    <div class="home-stage">
+      <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
+      <div class="hero-photo-wrap">
+        <img id="hero-photo" class="hero-photo" alt="Александр Кравви" decoding="async" fetchpriority="high">
+      </div>
+      <div class="hero-stack">
+        <div class="hero-text">
+          <p class="hero-author" data-i18n="hero.author">Александр Кравви</p>
+          <p class="hero-tagline" data-i18n="hero.tagline">Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="btn-pill" href="#/contacts"  data-nav="/contacts"  data-i18n="btn.contacts">Контакты</a>
+          <a class="btn-pill" href="#/portfolio" data-nav="/portfolio" data-i18n="btn.portfolio">Портфолио</a>
+          <a class="btn-pill" href="https://archive.gallery.photo/gallery/thoughts" target="_blank" rel="noopener noreferrer" data-i18n="btn.thoughts">Мысли</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="view-portfolio" class="view-grid" aria-hidden="true">
+    <header class="view-header">
+      <a class="glass-btn back-btn" href="#/" data-nav="/" aria-label="Back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M15 6l-6 6 6 6"/>
+        </svg>
+      </a>
+      <h2 class="view-title" data-i18n="nav.portfolio.title">Портфолио</h2>
+    </header>
+    <div class="grid" id="grid-portfolio" data-grid="portfolio"></div>
+  </section>
+
+  <section id="view-contacts" class="view-grid" aria-hidden="true">
+    <header class="view-header">
+      <a class="glass-btn back-btn" href="#/" data-nav="/" aria-label="Back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M15 6l-6 6 6 6"/>
+        </svg>
+      </a>
+      <h2 class="view-title" data-i18n="nav.contacts.title">Контакты</h2>
+    </header>
+    <div class="grid" id="grid-contacts" data-grid="contacts"></div>
+  </section>
+
+</main>
+
+<noscript>
+  <div style="padding:40px;text-align:center;color:#fff;font-family:sans-serif;">
+    Для работы сайта требуется JavaScript.
+  </div>
+</noscript>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Единственное изменение: путь к изображению теперь локальный.
+     Файл должен лежать в папке images/ репозитория. */
+  var HERO_PHOTO_URL = 'images/VV%20SIte.png';
+
+  var STEP_MS       = 80;
+  var TRANSITION_MS = 900;
+  var TAP_ANIM_MS   = 150;
+
+  var ROUTES = {
+    '/':          'home',
+    '/portfolio': 'portfolio',
+    '/contacts':  'contacts'
+  };
+
+  var I18N = {
+    ru: {
+      'meta.title':       'Александр Кравви — визитка',
+      'meta.description': 'Графический и UI/UX дизайнер, фотограф, ретушёр.',
+      'hero.name':        'KRAVVI',
+      'hero.author':      'Александр Кравви',
+      'hero.tagline':     'Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.',
+      'btn.contacts':     'Контакты',
+      'btn.portfolio':    'Портфолио',
+      'btn.thoughts':     'Мысли',
+      'btn.back':         'Назад',
+      'nav.portfolio.title': 'Портфолио',
+      'nav.contacts.title':  'Контакты',
+      'tile.photoArchive.title': 'Фотоархив',
+      'tile.photoArchive.desc':  'Архив — портфолио фоторабот за период с 2015 по 2022 год',
+      'tile.behance.title':      'Behance',
+      'tile.behance.desc':       'Дизайн-проекты',
+      'tile.dribbble.title':     'Dribbble',
+      'tile.dribbble.desc':      'UI-шоты',
+      'tile.telegram.title':     'Telegram',
+      'tile.telegram.desc':      'Связаться напрямую',
+      'tile.instagram.title':    'Instagram',
+      'tile.instagram.desc':     'Личный профиль',
+      'tile.vkPage.title':       'Страница ВК',
+      'tile.vkPage.desc':        'Личная страница',
+      'tile.vkCommunity.title':  'Сообщество ВК',
+      'tile.vkCommunity.desc':   'Старое сообщество по фотографии',
+      'tile.threads.title':      'Threads',
+      'tile.threads.desc':       'Личный профиль',
+      'tile.facebook.title':     'Facebook',
+      'tile.facebook.desc':      'Личная страница',
+      'tile.mail.title':         'Почта',
+      'tile.mail.desc':          'Написать письмо',
+      'tile.disabled':           'Временно недоступно'
+    },
+    en: {
+      'meta.title':       'Alexandr Kravvi — business card',
+      'meta.description': 'Graphic and UI/UX designer, photographer, retoucher.',
+      'hero.name':        'KRAVVI',
+      'hero.author':      'Alexandr Kravvi',
+      'hero.tagline':     'I am a graphic and UI/UX designer, photographer, retoucher. I create and manage the impression of products and personalities.',
+      'btn.contacts':     'Contacts',
+      'btn.portfolio':    'Portfolio',
+      'btn.thoughts':     'Thoughts',
+      'btn.back':         'Back',
+      'nav.portfolio.title': 'Portfolio',
+      'nav.contacts.title':  'Contacts',
+      'tile.photoArchive.title': 'Photoarchive',
+      'tile.photoArchive.desc':  'Archive — portfolio of photographic works from 2015 to 2022',
+      'tile.behance.title':      'Behance',
+      'tile.behance.desc':       'Design projects',
+      'tile.dribbble.title':     'Dribbble',
+      'tile.dribbble.desc':      'UI shots',
+      'tile.telegram.title':     'Telegram',
+      'tile.telegram.desc':      'Reach out directly',
+      'tile.instagram.title':    'Instagram',
+      'tile.instagram.desc':     'Personal profile',
+      'tile.vkPage.title':       'VK Page',
+      'tile.vkPage.desc':        'Personal page',
+      'tile.vkCommunity.title':  'VK Community',
+      'tile.vkCommunity.desc':   'Old photography community',
+      'tile.threads.title':      'Threads',
+      'tile.threads.desc':       'Personal profile',
+      'tile.facebook.title':     'Facebook',
+      'tile.facebook.desc':      'Personal page',
+      'tile.mail.title':         'Email',
+      'tile.mail.desc':          'Send an email',
+      'tile.disabled':           'Temporarily unavailable'
+    },
+    de: {
+      'meta.title':       'Alexandr Kravvi — Visitenkarte',
+      'meta.description': 'Grafik- und UI/UX-Designer, Fotograf, Retuscheur.',
+      'hero.name':        'KRAVVI',
+      'hero.author':      'Alexandr Kravvi',
+      'hero.tagline':     'Ich bin Grafik- und UI/UX-Designer, Fotograf und Retuscheur. Ich gestalte und steuere den Eindruck von Produkten und Persönlichkeiten.',
+      'btn.contacts':     'Kontakte',
+      'btn.portfolio':    'Portfolio',
+      'btn.thoughts':     'Gedanken',
+      'btn.back':         'Zurück',
+      'nav.portfolio.title': 'Portfolio',
+      'nav.contacts.title':  'Kontakte',
+      'tile.photoArchive.title': 'Fotoarchiv',
+      'tile.photoArchive.desc':  'Archiv — Portfolio fotografischer Arbeiten aus den Jahren 2015 bis 2022',
+      'tile.behance.title':      'Behance',
+      'tile.behance.desc':       'Designprojekte',
+      'tile.dribbble.title':     'Dribbble',
+      'tile.dribbble.desc':      'UI-Shots',
+      'tile.telegram.title':     'Telegram',
+      'tile.telegram.desc':      'Direkt kontaktieren',
+      'tile.instagram.title':    'Instagram',
+      'tile.instagram.desc':     'Persönliches Profil',
+      'tile.vkPage.title':       'VK-Seite',
+      'tile.vkPage.desc':        'Persönliche Seite',
+      'tile.vkCommunity.title':  'VK-Community',
+      'tile.vkCommunity.desc':   'Alte Fotografie-Community',
+      'tile.threads.title':      'Threads',
+      'tile.threads.desc':       'Persönliches Profil',
+      'tile.facebook.title':     'Facebook',
+      'tile.facebook.desc':      'Persönliche Seite',
+      'tile.mail.title':         'E-Mail',
+      'tile.mail.desc':          'E-Mail senden',
+      'tile.disabled':           'Vorübergehend nicht verfügbar'
+    }
+  };
+
+  var TILES = {
+    portfolio: [
+      { id: 'behance', url: '', disabled: true,
+        titleKey: 'tile.behance.title', descKey: 'tile.behance.desc' },
+      { id: 'dribbble', url: '', disabled: true,
+        titleKey: 'tile.dribbble.title', descKey: 'tile.dribbble.desc' },
+      { id: 'photo-archive', url: 'https://sites.google.com/view/vvarchive',
+        titleKey: 'tile.photoArchive.title', descKey: 'tile.photoArchive.desc' }
+    ],
+    contacts: [
+      { id: 'telegram', url: 'https://t.me/alexkravvi',
+        titleKey: 'tile.telegram.title', descKey: 'tile.telegram.desc' },
+      { id: 'instagram', url: 'https://www.instagram.com/akravvi',
+        titleKey: 'tile.instagram.title', descKey: 'tile.instagram.desc' },
+      { id: 'vk-page', url: 'https://vk.ru/kravvi',
+        titleKey: 'tile.vkPage.title', descKey: 'tile.vkPage.desc' },
+      { id: 'vk-community', url: 'https://vk.ru/kravviphotographer',
+        titleKey: 'tile.vkCommunity.title', descKey: 'tile.vkCommunity.desc' },
+      { id: 'threads', url: 'https://www.threads.com/@akravvi',
+        titleKey: 'tile.threads.title', descKey: 'tile.threads.desc' },
+      { id: 'facebook', url: 'https://www.facebook.com/alexanderkravvi',
+        titleKey: 'tile.facebook.title', descKey: 'tile.facebook.desc' },
+      { id: 'mail',
+        url: 'https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=akravvi@gmail.com',
+        titleKey: 'tile.mail.title', descKey: 'tile.mail.desc' }
+    ]
+  };
+
+  var PATTERNS = {
+    portfolio: {
+      desktop: {
+        'behance':       '1 / 1 / 2 / 3',
+        'dribbble':      '1 / 3 / 2 / 5',
+        'photo-archive': '2 / 1 / 3 / 5'
+      },
+      mobile: {
+        'behance':       '1 / 1 / 2 / 2',
+        'dribbble':      '1 / 2 / 2 / 3',
+        'photo-archive': '2 / 1 / 3 / 3'
+      }
+    },
+    contacts: {
+      desktop: {
+        'telegram':     '1 / 1 / 3 / 3',
+        'instagram':    '1 / 3 / 2 / 4',
+        'vk-page':      '1 / 4 / 2 / 5',
+        'vk-community': '2 / 3 / 3 / 5',
+        'threads':      '3 / 1 / 4 / 2',
+        'facebook':     '3 / 2 / 4 / 3',
+        'mail':         '3 / 3 / 4 / 5'
+      },
+      mobile: {
+        'telegram':     '1 / 1 / 3 / 3',
+        'instagram':    '3 / 1 / 4 / 2',
+        'vk-page':      '3 / 2 / 4 / 3',
+        'vk-community': '4 / 1 / 5 / 3',
+        'threads':      '5 / 1 / 6 / 2',
+        'facebook':     '5 / 2 / 6 / 3',
+        'mail':         '6 / 1 / 7 / 3'
+      }
+    }
+  };
+
+  function $$(sel, ctx) {
+    return Array.prototype.slice.call((ctx || document).querySelectorAll(sel));
+  }
+  function debounce(fn, ms) {
+    var t;
+    return function () {
+      var args = arguments, ctx = this;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(ctx, args); }, ms);
+    };
+  }
+  function getLang() {
+    try {
+      var s = localStorage.getItem('lang');
+      if (s === 'ru' || s === 'en' || s === 'de') return s;
+    } catch (e) {}
+    var nav = (navigator.language || 'ru').toLowerCase();
+    if (nav.indexOf('ru') === 0) return 'ru';
+    if (nav.indexOf('en') === 0) return 'en';
+    if (nav.indexOf('de') === 0) return 'de';
+    return 'ru';
+  }
+  function setLang(lang) {
+    if (lang !== 'ru' && lang !== 'en' && lang !== 'de') return;
+    try { localStorage.setItem('lang', lang); } catch (e) {}
+    applyI18n();
+  }
+
+  function isTouchDevice() {
+    return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }
+
+  function applyI18n() {
+    var lang = getLang();
+    var dict = I18N[lang] || I18N.ru;
+    document.documentElement.setAttribute('lang', lang);
+
+    var title = dict['meta.title'] || 'KRAVVI';
+    document.title = title;
+
+    var metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', dict['meta.description'] || '');
+    var ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', title);
+    var ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', dict['meta.description'] || '');
+
+    $$('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (dict[k] != null) el.textContent = dict[k];
+    });
+
+    var cur = document.getElementById('lang-current');
+    if (cur) cur.textContent = lang.charAt(0).toUpperCase() + lang.charAt(1);
+
+    $$('.lang-item').forEach(function (el) {
+      el.classList.toggle('is-active', el.getAttribute('data-lang') === lang);
+    });
+
+    $$('.back-btn').forEach(function (el) {
+      el.setAttribute('aria-label', dict['btn.back'] || 'Back');
+    });
+
+    var photo = document.getElementById('hero-photo');
+    if (photo) {
+      var altMap = {
+        ru: 'Александр Кравви',
+        en: 'Alexandr Kravvi',
+        de: 'Alexandr Kravvi'
+      };
+      photo.setAttribute('alt', altMap[lang] || 'Alexandr Kravvi');
+    }
+  }
+
+  var ARROW_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
+
+  var LOCK_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<rect x="4" y="11" width="16" height="10" rx="2"/>' +
+    '<path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+
+  function buildTile(t, i) {
+    var a = document.createElement('a');
+    a.className = 'tile';
+    a.setAttribute('data-tile-id', t.id);
+    a.style.setProperty('--i', String(i));
+
+    if (t.disabled) {
+      a.classList.add('is-disabled');
+      a.href = '#';
+      a.addEventListener('click', function (e) { e.preventDefault(); });
+
+      var inner = document.createElement('div');
+      inner.className = 'tile-disabled-inner';
+
+      var lock = document.createElement('div');
+      lock.className = 'tile-disabled-lock';
+      lock.innerHTML = LOCK_SVG;
+
+      var label = document.createElement('div');
+      label.className = 'tile-disabled-text';
+      label.setAttribute('data-i18n', 'tile.disabled');
+
+      inner.appendChild(lock);
+      inner.appendChild(label);
+
+      var content = document.createElement('div');
+      content.className = 'tile-content';
+      content.appendChild(inner);
+
+      a.appendChild(content);
+      return a;
+    }
+
+    if (t.url) {
+      a.href = t.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    } else {
+      a.href = '#';
+      a.addEventListener('click', function (e) { e.preventDefault(); });
+    }
+
+    var title = document.createElement('div');
+    title.className = 'tile-title';
+    title.setAttribute('data-i18n', t.titleKey);
+
+    var desc = document.createElement('div');
+    desc.className = 'tile-desc';
+    desc.setAttribute('data-i18n', t.descKey);
+
+    var arrow = document.createElement('span');
+    arrow.className = 'tile-arrow';
+    arrow.innerHTML = ARROW_SVG;
+
+    var top = document.createElement('div');
+    top.className = 'tile-top';
+    top.appendChild(arrow);
+
+    var bottom = document.createElement('div');
+    bottom.className = 'tile-bottom';
+    bottom.appendChild(title);
+    bottom.appendChild(desc);
+
+    var content = document.createElement('div');
+    content.className = 'tile-content';
+    content.appendChild(top);
+    content.appendChild(bottom);
+
+    a.appendChild(content);
+    return a;
+  }
+
+  function buildGrids() {
+    ['portfolio', 'contacts'].forEach(function (kind) {
+      var container = document.getElementById('grid-' + kind);
+      if (!container) return;
+      var frag = document.createDocumentFragment();
+      TILES[kind].forEach(function (t, i) { frag.appendChild(buildTile(t, i)); });
+      container.appendChild(frag);
+    });
+  }
+
+  function applyPatterns() {
+    var isMobile = window.matchMedia('(max-width: 700px)').matches;
+    var mode = isMobile ? 'mobile' : 'desktop';
+
+    ['portfolio', 'contacts'].forEach(function (kind) {
+      var table = PATTERNS[kind] && PATTERNS[kind][mode];
+      if (!table) return;
+      $$('[data-grid="' + kind + '"] .tile').forEach(function (tile) {
+        var id = tile.getAttribute('data-tile-id');
+        if (table[id]) tile.style.gridArea = table[id];
+      });
+    });
+  }
+
+  function parseHash() {
+    var h = location.hash || '';
+    if (h.charAt(0) === '#') h = h.slice(1);
+    if (!h) h = '/';
+    if (h.charAt(0) !== '/') h = '/' + h;
+    return h;
+  }
+
+  function clearHomeButtonEffects() {
+    var active = document.activeElement;
+    if (active && active.blur) active.blur();
+    $$('.hero-actions .btn-pill').forEach(function (btn) {
+      if (btn.blur) btn.blur();
+      btn.classList.remove('is-tapped');
+    });
+  }
+
+  function closeLangMenu() {
+    var menu = document.getElementById('lang-menu');
+    if (menu) menu.classList.remove('is-open');
+  }
+
+  function setView(name) {
+    var home      = document.getElementById('view-home');
+    var portfolio = document.getElementById('view-portfolio');
+    var contacts  = document.getElementById('view-contacts');
+
+    home.classList.add('is-active');
+    home.setAttribute('aria-hidden', 'false');
+
+    var isOverlay = (name === 'portfolio' || name === 'contacts');
+
+    portfolio.classList.toggle('is-active', name === 'portfolio');
+    contacts.classList.toggle('is-active', name === 'contacts');
+    portfolio.setAttribute('aria-hidden', name === 'portfolio' ? 'false' : 'true');
+    contacts.setAttribute('aria-hidden', name === 'contacts' ? 'false' : 'true');
+
+    portfolio.classList.remove('is-entering');
+    contacts.classList.remove('is-entering');
+
+    document.body.classList.toggle('overlay-active', isOverlay);
+
+    clearHomeButtonEffects();
+
+    if (name === 'portfolio') {
+      portfolio.classList.add('is-entering');
+      scheduleEnterClear(portfolio);
+    } else if (name === 'contacts') {
+      contacts.classList.add('is-entering');
+      scheduleEnterClear(contacts);
+    }
+  }
+
+  function scheduleEnterClear(view) {
+    var tilesCount = view.querySelectorAll('.tile').length;
+    var total = TRANSITION_MS + tilesCount * STEP_MS + 150;
+    setTimeout(function () { view.classList.remove('is-entering'); }, total);
+  }
+
+  function navigate() {
+    var h = parseHash();
+    var name = ROUTES[h];
+    if (!name) {
+      if (h !== '/') {
+        try { location.replace('#/'); } catch (e) { location.hash = '#/'; }
+        return;
+      }
+      setView('home');
+      return;
+    }
+    setView(name);
+  }
+
+  function preloadHeroPhoto() {
+    return new Promise(function (resolve) {
+      var img = document.getElementById('hero-photo');
+      if (!img) return resolve(false);
+      if (!HERO_PHOTO_URL) return resolve(false);
+
+      var done = false;
+      function finish(ok) { if (!done) { done = true; resolve(ok); } }
+      img.addEventListener('load', function () { finish(true); });
+      img.addEventListener('error', function () { finish(false); });
+      img.src = HERO_PHOTO_URL;
+      setTimeout(function () { finish(false); }, 6000);
+    });
+  }
+
+  function revealBody() { document.body.classList.remove('is-loading'); }
+
+  function goHome() {
+    var h = location.hash;
+    if (h && h !== '#' && h !== '#/') {
+      location.hash = '#/';
+    } else {
+      navigate();
+    }
+  }
+
+  function handleNavClick(e) {
+    var nav = e.target.closest ? e.target.closest('[data-nav]') : null;
+    if (!nav) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+
+    var route = nav.getAttribute('data-nav');
+    var targetHash = '#' + route;
+
+    var isHomeBtn = nav.classList.contains('btn-pill');
+
+    if (isTouchDevice() && isHomeBtn) {
+      $$('.hero-actions .btn-pill').forEach(function (b) {
+        if (b !== nav) b.classList.remove('is-tapped');
+      });
+      nav.classList.add('is-tapped');
+
+      setTimeout(function () {
+        if (location.hash !== targetHash) location.hash = targetHash;
+        else navigate();
+      }, TAP_ANIM_MS);
+
+      return;
+    }
+
+    if (location.hash !== targetHash) location.hash = targetHash;
+    else navigate();
+  }
+
+  function bindEvents() {
+    window.addEventListener('hashchange', navigate);
+
+    window.addEventListener('resize', debounce(function () {
+      applyPatterns();
+    }, 120));
+
+    window.addEventListener('orientationchange', debounce(function () {
+      applyPatterns();
+    }, 150));
+
+    var langBtn = document.getElementById('lang-btn');
+    var langMenu = document.getElementById('lang-menu');
+    if (langBtn && langMenu) {
+      langBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        langMenu.classList.toggle('is-open');
+      });
+      langMenu.addEventListener('click', function (e) {
+        var item = e.target.closest ? e.target.closest('.lang-item') : null;
+        if (!item) return;
+        setLang(item.getAttribute('data-lang'));
+        closeLangMenu();
+      });
+    }
+    document.addEventListener('click', function (e) {
+      if (!langMenu || !langMenu.classList.contains('is-open')) return;
+      if (e.target.closest && e.target.closest('#lang-menu, #lang-btn')) return;
+      closeLangMenu();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' && e.key !== 'Esc') return;
+      if (langMenu && langMenu.classList.contains('is-open')) {
+        closeLangMenu();
+        return;
+      }
+      if (!document.body.classList.contains('overlay-active')) return;
+      e.preventDefault();
+      goHome();
+    });
+
+    document.addEventListener('touchstart', function (e) {
+      if (!isTouchDevice()) return;
+      var btn = e.target.closest && e.target.closest('.hero-actions .btn-pill');
+      if (!btn) return;
+      $$('.hero-actions .btn-pill').forEach(function (b) {
+        if (b !== btn) b.classList.remove('is-tapped');
+      });
+      btn.classList.add('is-tapped');
+    }, { passive: true });
+
+    document.addEventListener('touchcancel', function () {
+      if (!isTouchDevice()) return;
+      $$('.hero-actions .btn-pill').forEach(function (b) {
+        b.classList.remove('is-tapped');
+      });
+    }, { passive: true });
+
+    document.addEventListener('click', handleNavClick);
+
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.hero-actions .btn-pill') : null;
+      if (btn && btn.blur) btn.blur();
+    }, true);
+  }
+
+  function init() {
+    var yearEl = document.getElementById('copy-year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        if (/^hero-tuner-v\d+(:|$)/.test(keys[i])) {
+          localStorage.removeItem(keys[i]);
+        }
+      }
+    } catch (e) { /* ignore */ }
+
+    buildGrids();
+    applyPatterns();
+    applyI18n();
+    bindEvents();
+
+    if (!location.hash) {
+      try { history.replaceState(null, '', '#/'); } catch (e) { location.hash = '#/'; }
+    }
+
+    setTimeout(revealBody, 2500);
+
+    preloadHeroPhoto().then(function () {
+      revealBody();
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { navigate(); });
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
