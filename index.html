@@ -928,56 +928,40 @@ body.overlay-active #view-home.is-active .hero-actions {
    ============================================================
    Фикс мигания в Firefox на «Контактах»:
 
-   Причина — на hover менялись `background-color` и `box-shadow`
-   у элемента с `backdrop-filter` (.tile::before). Firefox при
-   каждом таком изменении пересчитывал blur и на некоторых
-   плитках «терял» его. Особенно заметно, когда на экране 7
-   плиток с backdrop-filter (Контакты), и не заметно, когда их 3
-   (Портфолио).
+   backdrop-filter теперь на самом .tile, а не на псевдоэлементе.
+   Это + `will-change: transform` + `translateZ(0)` заставляют
+   Gecko создать отдельный композитный слой с blur'ом и
+   не пересчитывать его на hover/анимацию соседей.
 
-   Решение:
-   • У `.tile::before` ФИКСИРОВАННЫЙ фон + blur + рамка через
-     border. Никаких transition и изменений на hover.
-   • Hover-подсветка — на `.tile::after` (белая плёнка 4%),
-     появляется через opacity — не триггерит пересчёт blur.
-   • `.tile` больше не имеет `isolation` / `backface-visibility`.
+   Hover-подсветка — на .tile::after (белая плёнка 5%),
+   появляется через opacity.
    ------------------------------------------------------------ */
 .tile {
   position: relative;
   display: block;
   overflow: hidden;
   border-radius: var(--glass-radius);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
   color: var(--text);
   cursor: pointer;
   outline: none;
   -webkit-tap-highlight-color: transparent;
 
+  /* Фикс Firefox: принудительно создаём отдельный слой */
+  will-change: transform;
+  transform: translateY(22px) scale(0.96) translateZ(0);
+
   opacity: 0;
-  transform: translateY(22px) scale(0.96);
   transition:
     opacity 400ms var(--ease-in-soft),
     transform 400ms var(--ease-in-soft);
 }
 
-/* Слой blur + фиксированный фон + рамка.
-   Ничего не меняется на hover — Firefox не пересчитывает blur. */
-.tile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
-  pointer-events: none;
-}
-
-/* Слой hover-подсветки. Появляется через opacity — тоже
-   не трогает backdrop-filter, Firefox просто «накладывает»
-   поверх ещё одну плёнку. */
+/* Слой hover-подсветки. Появляется через opacity — не
+   триггерит пересчёт backdrop-filter. */
 .tile::after {
   content: "";
   position: absolute;
@@ -992,7 +976,7 @@ body.overlay-active #view-home.is-active .hero-actions {
 
 .view-grid.is-active .tile {
   opacity: 1;
-  transform: none;
+  transform: translateZ(0);
   transition:
     opacity var(--dur-tile) var(--ease-out-smooth),
     transform var(--dur-tile) var(--ease-out-smooth);
@@ -1016,8 +1000,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   cursor: not-allowed;
   opacity: 0.7;
   pointer-events: none;
-}
-.tile.is-disabled::before {
   background: rgba(255, 255, 255, 0.03);
   border-color: rgba(255, 255, 255, 0.04);
 }
@@ -1279,8 +1261,6 @@ body.overlay-active #view-home.is-active .hero-actions {
 (function () {
   'use strict';
 
-  /* Единственное изменение: путь к изображению теперь локальный.
-     Файл должен лежать в папке images/ репозитория. */
   var HERO_PHOTO_URL = 'images/VV%20SIte.png';
 
   var STEP_MS       = 80;
