@@ -570,6 +570,10 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   pointer-events: none;
 }
 
+/* <picture> не должен участвовать в layout — img остаётся
+   прямым flex-элементом .hero-photo-wrap. */
+.hero-photo-wrap picture { display: contents; }
+
 .hero-photo {
   position: relative;
   height: min(var(--photo-h), var(--photo-h-max));
@@ -1234,7 +1238,15 @@ body.overlay-active #view-home.is-active .hero-actions {
     <div class="home-stage">
       <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
       <div class="hero-photo-wrap">
-        <img id="hero-photo" class="hero-photo" alt="Александр Кравви" decoding="async" fetchpriority="high">
+        <picture>
+          <source
+            type="image/webp"
+            srcset="images/VV%201600x1067.webp 1600w,
+                    images/VV%201920x1280.webp 1920w,
+                    images/VV%202356x1571.webp 2356w"
+            sizes="(max-width: 700px) 125vw, (max-width: 1024px) 95vw, 40vw">
+          <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async" fetchpriority="high">
+        </picture>
       </div>
       <div class="hero-stack">
         <div class="hero-text">
@@ -1285,10 +1297,6 @@ body.overlay-active #view-home.is-active .hero-actions {
 <script>
 (function () {
   'use strict';
-
-  /* Единственное изменение: путь к изображению теперь локальный.
-     Файл должен лежать в папке images/ репозитория. */
-  var HERO_PHOTO_URL = 'images/VV%20SIte.png';
 
   var STEP_MS       = 80;
   var TRANSITION_MS = 900;
@@ -1726,13 +1734,17 @@ body.overlay-active #view-home.is-active .hero-actions {
     return new Promise(function (resolve) {
       var img = document.getElementById('hero-photo');
       if (!img) return resolve(false);
-      if (!HERO_PHOTO_URL) return resolve(false);
+
+      /* <picture> в разметке уже запустил загрузку нужного источника.
+         Здесь только ждём её завершения. Ручной src не выставляем,
+         иначе перезапишем выбор <picture> на PNG-fallback. */
+
+      if (img.complete && img.naturalWidth > 0) return resolve(true);
 
       var done = false;
       function finish(ok) { if (!done) { done = true; resolve(ok); } }
       img.addEventListener('load', function () { finish(true); });
       img.addEventListener('error', function () { finish(false); });
-      img.src = HERO_PHOTO_URL;
       setTimeout(function () { finish(false); }, 6000);
     });
   }
