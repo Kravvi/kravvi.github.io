@@ -90,16 +90,17 @@ svg { display: block; }
   --btn-gap-v: 15;
   --btn-pad-y: 1em;
   --btn-pad-x: 2.2em;
+  --btn-scale: 1;
 
   --actions-max-w: 2000px;
 
-  /* max() сведён к очень маленьким порогам — чтобы редактор мог
-     свободно уменьшать размеры вплоть до почти нуля. */
-  --author-size: max(6px,  calc(var(--author-size-v) * 100vw / var(--ref-w)));
-  --desc-size:   max(6px,  calc(var(--desc-size-v)   * 100vw / var(--ref-w)));
-  --desc-width:  max(120px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
-  --btn-size:    max(6px,  calc(var(--btn-size-v)   * 100vw / var(--ref-w)));
-  --btn-gap:     max(2px,  calc(var(--btn-gap-v)    * 100vw / var(--ref-w)));
+  /* Размеры с теми же max-порогами, что были изначально. */
+  --author-size: max(14px, calc(var(--author-size-v) * 100vw / var(--ref-w)));
+  --desc-size:   max(13px, calc(var(--desc-size-v)   * 100vw / var(--ref-w)));
+  --desc-width:  max(240px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
+  --btn-size-base: max(12px, calc(var(--btn-size-v)  * 100vw / var(--ref-w)));
+  --btn-size: calc(var(--btn-size-base) * var(--btn-scale));
+  --btn-gap:   max(8px,  calc(var(--btn-gap-v)   * 100vw / var(--ref-w)));
 
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-soft:    cubic-bezier(0.4, 0, 0.6, 1);
@@ -584,8 +585,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   pointer-events: none;
 }
 
-/* <picture> не должен участвовать в layout — img остаётся
-   прямым flex-элементом .hero-photo-wrap. */
 .hero-photo-wrap picture { display: contents; }
 
 .hero-photo {
@@ -1962,7 +1961,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     else navigate();
   }
 
-  /* Динамическая адресная строка мобильных браузеров. */
   function initViewportFix() {
     if (!window.visualViewport) return;
 
@@ -1996,8 +1994,8 @@ body.overlay-active #view-home.is-active .hero-actions {
      РЕДАКТОР ПОЗИЦИИ (временный, будет удалён)
      ============================================================ */
   function initTuner() {
-    var STORAGE_KEY  = 'hero-tuner-v2';
-    var DEFAULTS_KEY = 'hero-tuner-defaults-v2';
+    var STORAGE_KEY  = 'hero-tuner-v3';
+    var DEFAULTS_KEY = 'hero-tuner-defaults-v3';
 
     var PARAMS = [
       // Позиции
@@ -2019,11 +2017,13 @@ body.overlay-active #view-home.is-active .hero-actions {
       { key: '--author-size-v',  label: 'Размер автора',      unit: '',   step: 1,   raw: true, group: 'Размеры' },
       { key: '--desc-size-v',    label: 'Размер описания',    unit: '',   step: 1,   raw: true, group: 'Размеры' },
       { key: '--desc-width-v',   label: 'Ширина описания',    unit: '',   step: 5,   raw: true, group: 'Размеры' },
-      { key: '--btn-size-v',     label: 'Размер текста кнопок', unit: '', step: 0.1, raw: true, group: 'Размеры' },
-      { key: '--btn-gap-v',      label: 'Gap между кнопками', unit: '',   step: 1,   raw: true, group: 'Размеры' },
-      { key: '--btn-pad-y',      label: 'Кнопки — padding Y', unit: 'em', step: 0.05, group: 'Размеры' },
-      { key: '--btn-pad-x',      label: 'Кнопки — padding X', unit: 'em', step: 0.05, group: 'Размеры' },
-      { key: '--actions-max-w',  label: 'Макс. ширина кнопок', unit: 'px', step: 5,  group: 'Размеры' }
+      // Кнопки — все параметры, влияющие на их размер
+      { key: '--btn-scale',      label: 'Масштаб кнопок (×)', unit: '',   step: 0.05, raw: true, group: 'Кнопки' },
+      { key: '--btn-size-v',     label: 'Размер текста кнопок', unit: '', step: 0.1, raw: true, group: 'Кнопки' },
+      { key: '--btn-pad-y',      label: 'Кнопки — padding Y', unit: 'em', step: 0.05, group: 'Кнопки' },
+      { key: '--btn-pad-x',      label: 'Кнопки — padding X', unit: 'em', step: 0.05, group: 'Кнопки' },
+      { key: '--btn-gap-v',      label: 'Gap между кнопками', unit: '',   step: 1,   raw: true, group: 'Кнопки' },
+      { key: '--actions-max-w',  label: 'Макс. ширина кнопок', unit: 'px', step: 5,  group: 'Кнопки' }
     ];
 
     function currentBp() {
@@ -2333,7 +2333,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
-        if (/^hero-tuner-v1(:|$)/.test(keys[i])) {
+        if (/^hero-tuner-v[12](:|$)/.test(keys[i])) {
           localStorage.removeItem(keys[i]);
         }
       }
