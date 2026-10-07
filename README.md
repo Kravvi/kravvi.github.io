@@ -1,45 +1,86 @@
 # kravvi.github.io
 
-Онлайн-визитка Александра Кравви — графического и UI/UX дизайнера, фотографа, ретушёра.
+Online business card of Alexandr Kravvi — graphic and UI/UX designer, photographer, retoucher.
 
-**Живой сайт:** https://kravvi.github.io
+**Website:** https://kravvi.github.io
 
-![Превью](preview/preview%201200x630.jpg)
-
----
-
-## О проекте
-
-Одностраничный сайт-визитка. Три раздела, hash-навигация:
-
-- `#/` — главная (имя, фото, описание, три кнопки)
-- `#/portfolio` — портфолио (bento grid)
-- `#/contacts` — контакты (bento grid)
-
-Полностью статика. Никаких сборщиков, фреймворков и зависимостей.
+![Preview](preview/preview%201200x630.jpg)
 
 ---
 
-## Стек
+## About
 
-- Чистый HTML + CSS + vanilla JS (ES5-совместимый синтаксис).
-- Весь код в одном файле — `index.html` (CSS в `<style>`, JS в `<script>`).
-- Внешний ресурс только один — Google Fonts: **Bodoni Moda** (заголовок-имя) и **Manrope** (интерфейс).
-- Хостинг — GitHub Pages.
+A personal business card website. A single-page application with three sections and hash-based navigation:
 
----
+- `#/` — home (name, photograph, description, three navigation buttons)
+- `#/portfolio` — portfolio (Bento grid)
+- `#/contacts` — contacts (Bento grid)
 
-## Возможности
-
-- **Мультиязычность** — русский, английский, немецкий. Переключение в правом верхнем углу, выбор сохраняется в `localStorage`.
-- **Адаптивность** — три брейкпоинта: мобильные (≤700px), планшет (701–1024px), десктоп (>1024px).
-- **Анимации** — плавное появление главных элементов (blur + сдвиг), каскадное появление плиток bento.
-- **Стекло (glass morphism)** — полупрозрачные плитки с `backdrop-filter: blur()`.
-- **Динамическая адресная строка** — на мобильных учитывается появление/скрытие адресной строки браузера через `visualViewport` API.
-- **Оптимизация изображений** — главное фото отдаётся в WebP (три размера) через `<picture>` + `srcset`, с PNG-фолбэком.
-- **OG-превью** — картинка 1200×630 для корректного отображения ссылки в Telegram, VK, WhatsApp и других мессенджерах.
-- **Особый случай Firefox mobile** — из-за раздутого viewport у Firefox для Android кнопки автоматически чуть крупнее (класс `.is-firefox-mobile`).
+A fully static website. Hosted on GitHub Pages.
 
 ---
 
-## Структура репозитория
+## Tech Stack
+
+- Plain HTML, CSS, JavaScript (ES5-compatible syntax).
+- All code in a single file — `index.html` (styles in `<style>`, scripts in `<script>`).
+- External resource — Google Fonts only: **Bodoni Moda** (heading) and **Manrope** (interface).
+- Hosting — GitHub Pages.
+
+---
+
+## Features
+
+- **Multilingual** — Russian, English, German. Switcher in the top-right corner, selection persisted in `localStorage`.
+- **Responsive** — three breakpoints: mobile (≤700px), tablet (701–1024px), desktop (>1024px).
+- **Animations** — smooth appearance of the home page elements, cascading appearance of Bento tiles.
+- **Glass morphism** — translucent tiles with `backdrop-filter: blur()`.
+- **Dynamic address bar** — correct handling of the appearance and hiding of the mobile browser address bar via the `visualViewport` API.
+- **Image optimization** — the hero image is served in WebP (three sizes) via `<picture>` + `srcset`, with a PNG fallback.
+- **OG preview** — a 1200×630 image for correct link rendering in messengers and social networks.
+- **Firefox mobile handling** — for Firefox on Android the button size is automatically adjusted.
+
+---
+
+## Repository Structure
+
+├── index.html main file (the entire application code)
+├── .nojekyll disables Jekyll processing on GitHub Pages
+├── README.md this file
+├── favicon/ icons
+│ ├── android-chrome-192x192.png
+│ ├── android-chrome-512x512.png
+│ ├── apple-touch-icon.png
+│ ├── favicon-16x16.png
+│ ├── favicon-32x32.png
+│ ├── favicon-48x48.png
+│ └── favicon.ico
+├── images/ home page images
+│ ├── VV SIte.png original (PNG fallback)
+│ ├── VV 1600x1067.webp
+│ ├── VV 1920x1280.webp
+│ └── VV 2356x1571.webp
+└── preview/ image for the OG preview
+└── preview 1200x630.jpg
+
+---
+
+## Deployment
+
+Any commit to the `main` branch is automatically published to GitHub Pages within 1–2 minutes.
+
+Repository settings: **Settings → Pages → Source: Deploy from a branch → main → / (root)**.
+
+---
+
+## Copyright
+
+© Alexandr Kravvi, 2026. All rights reserved.
+
+The contents of this repository — source code, design, texts, images, photographs, icons, and any other materials — constitute the intellectual property of the author.
+
+**Use is not permitted.** Any copying, reproduction, distribution, publication, modification, adaptation, incorporation into other projects, or use for commercial or non-commercial purposes, in whole or in part, is prohibited without the prior written permission of the author.
+
+This repository is public solely for technical reasons — to host the website via GitHub Pages. Public access to the source code does not constitute a grant of any license and does not imply a waiver of any copyright.
+
+**No license, express or implied, is granted. All rights are reserved by the author.**
