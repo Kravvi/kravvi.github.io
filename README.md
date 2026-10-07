@@ -61,8 +61,8 @@ A fully static website. Hosted on GitHub Pages.
 │ ├── VV 1920x1280.webp
 │ └── VV 2356x1571.webp
 └── preview/ image for the OG preview
-└── preview 1200x630.jpg```
-
+└── preview 1200x630.jpg
+```
 ---
 
 ## Deployment
