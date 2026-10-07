@@ -278,7 +278,7 @@ svg { display: block; }
   }
 
   /* Firefox для Android: чуть крупнее кнопки, чтобы компенсировать
-     его раздутый viewport. Остальные параметры совпадают. */
+     его раздутый viewport. */
   html.is-firefox-mobile {
     --btn-scale: 1.1;
   }
@@ -591,6 +591,8 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   pointer-events: none;
 }
 
+/* <picture> не должен участвовать в layout — img остаётся
+   прямым flex-элементом .hero-photo-wrap. */
 .hero-photo-wrap picture { display: contents; }
 
 .hero-photo {
@@ -1214,167 +1216,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     transition-delay: 0ms !important;
   }
 }
-
-/* ============================================================
-   10. TUNER (временный редактор, будет удалён)
-   ============================================================ */
-.tuner-toggle {
-  position: fixed;
-  right: 16px;
-  bottom: calc(16px + var(--bottom-safe));
-  z-index: 99999;
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: rgba(20,20,20,0.85);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: transform 200ms ease, background 200ms ease;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-}
-.tuner-toggle:hover { background: rgba(40,40,40,0.95); transform: scale(1.05); }
-.tuner-toggle svg { width: 20px; height: 20px; }
-
-.tuner-panel {
-  position: fixed;
-  top: 12px;
-  right: 12px;
-  bottom: 12px;
-  width: min(300px, calc(100vw - 24px));
-  z-index: 99999;
-  background: rgba(15,15,15,0.96);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 12px;
-  color: #eaeaea;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  font-size: 13px;
-  padding: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-.tuner-panel[hidden] { display: none; }
-
-.tuner-head {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px;
-}
-.tuner-title { font-weight: 600; font-size: 13px; }
-.tuner-close {
-  background: transparent; border: 0; color: #fff;
-  font-size: 20px; cursor: pointer; line-height: 1;
-  width: 24px; height: 24px; border-radius: 4px;
-  display: flex; align-items: center; justify-content: center;
-}
-.tuner-close:hover { background: rgba(255,255,255,0.10); }
-
-.tuner-bp { font-size: 11px; color: #999; line-height: 1.4; }
-.tuner-bp b { color: #A8895C; font-weight: 500; }
-
-.tuner-fields {
-  flex: 1 1 auto;
-  overflow-y: auto;
-  padding-right: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.tuner-fields::-webkit-scrollbar { width: 4px; }
-.tuner-fields::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
-
-.tuner-section {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #A8895C;
-  margin-top: 8px;
-  margin-bottom: 2px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-}
-.tuner-section:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
-
-.tuner-field {
-  display: grid;
-  grid-template-columns: 1fr 96px;
-  gap: 8px;
-  align-items: center;
-}
-.tuner-field label {
-  font-size: 12px;
-  color: #bbb;
-  line-height: 1.2;
-}
-.tuner-input-group {
-  display: grid;
-  grid-template-columns: 24px 1fr 24px;
-  gap: 3px;
-  align-items: center;
-}
-.tuner-input-group button {
-  background: rgba(255,255,255,0.08);
-  border: 0;
-  color: #fff;
-  height: 26px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0;
-}
-.tuner-input-group button:hover { background: rgba(255,255,255,0.16); }
-.tuner-input-group button:active { background: rgba(255,255,255,0.22); }
-.tuner-input-group input {
-  width: 100%;
-  height: 26px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.10);
-  border-radius: 4px;
-  color: #fff;
-  font: inherit;
-  font-size: 12px;
-  padding: 0 4px;
-  text-align: center;
-  outline: none;
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-.tuner-input-group input::-webkit-outer-spin-button,
-.tuner-input-group input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.tuner-input-group input:focus { border-color: #A8895C; }
-
-.tuner-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-top: auto;
-}
-.tuner-actions button {
-  height: 34px;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.10);
-  background: rgba(255,255,255,0.06);
-  color: #fff;
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-  transition: background 150ms ease;
-}
-.tuner-actions button:hover { background: rgba(255,255,255,0.12); }
-.tuner-actions button.is-copied { background: #2c6b3f; border-color: #3c8b50; }
-
-.tuner-hint { font-size: 11px; color: #777; line-height: 1.4; }
 </style>
 </head>
 <body class="is-loading">
@@ -1453,28 +1294,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     Для работы сайта требуется JavaScript.
   </div>
 </noscript>
-
-<!-- === Редактор позиции (временный) === -->
-<button id="tuner-toggle" class="tuner-toggle" type="button" aria-label="Редактор позиции">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="3"/>
-    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-  </svg>
-</button>
-
-<div id="tuner-panel" class="tuner-panel" hidden>
-  <div class="tuner-head">
-    <div class="tuner-title">Редактор позиции</div>
-    <button id="tuner-close" class="tuner-close" type="button" aria-label="Закрыть">×</button>
-  </div>
-  <div class="tuner-bp">Брейкпоинт: <b id="tuner-bp">—</b></div>
-  <div id="tuner-fields" class="tuner-fields"></div>
-  <div class="tuner-actions">
-    <button id="tuner-reset" type="button">Сброс</button>
-    <button id="tuner-copy" type="button">Копировать</button>
-  </div>
-  <div class="tuner-hint">Изменения применяются сразу и сохраняются в браузере.</div>
-</div>
 
 <script>
 (function () {
@@ -1975,6 +1794,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     else navigate();
   }
 
+  /* Динамическая адресная строка мобильных браузеров. */
   function initViewportFix() {
     if (!window.visualViewport) return;
 
@@ -2002,272 +1822,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     window.visualViewport.addEventListener('resize', schedule);
     window.visualViewport.addEventListener('scroll', schedule);
     update();
-  }
-
-  /* ============================================================
-     РЕДАКТОР ПОЗИЦИИ (временный, будет удалён)
-     ============================================================ */
-  function initTuner() {
-    var STORAGE_KEY  = 'hero-tuner-v4';
-    var DEFAULTS_KEY = 'hero-tuner-defaults-v4';
-
-    var PARAMS = [
-      { key: '--name-x',         label: 'Имя — X',            unit: 'vw', step: 0.1, group: 'Позиция' },
-      { key: '--name-y',         label: 'Имя — Y',            unit: 'vh', step: 0.1, group: 'Позиция' },
-      { key: '--author-x',       label: 'Автор — X',          unit: 'vw', step: 0.1, group: 'Позиция' },
-      { key: '--author-y',       label: 'Автор — Y',          unit: 'vh', step: 0.1, group: 'Позиция' },
-      { key: '--desc-x',         label: 'Описание — X',       unit: 'vw', step: 0.1, group: 'Позиция' },
-      { key: '--desc-y',         label: 'Описание — Y',       unit: 'vh', step: 0.1, group: 'Позиция' },
-      { key: '--btn-x',          label: 'Кнопки — X',         unit: 'vw', step: 0.1, group: 'Позиция' },
-      { key: '--btn-y',          label: 'Кнопки — Y',         unit: 'vh', step: 0.1, group: 'Позиция' },
-      { key: '--hero-top',       label: 'Отступ сверху',      unit: 'vh', step: 0.1, group: 'Позиция' },
-      { key: '--hero-text-gap',  label: 'Автор ↔ Описание',   unit: 'px', step: 1, group: 'Отступы' },
-      { key: '--hero-stack-gap', label: 'Текст ↔ Кнопки',     unit: 'px', step: 1, group: 'Отступы' },
-      { key: '--name-size',      label: 'Размер имени',       unit: 'vw', step: 0.1, group: 'Размеры' },
-      { key: '--photo-h',        label: 'Высота фото',        unit: 'vh', step: 1,   group: 'Размеры' },
-      { key: '--author-size-v',  label: 'Размер автора',      unit: '',   step: 1,   raw: true, group: 'Размеры' },
-      { key: '--desc-size-v',    label: 'Размер описания',    unit: '',   step: 1,   raw: true, group: 'Размеры' },
-      { key: '--desc-width-v',   label: 'Ширина описания',    unit: '',   step: 5,   raw: true, group: 'Размеры' },
-      { key: '--btn-scale',      label: 'Масштаб кнопок (×)', unit: '',   step: 0.05, raw: true, group: 'Кнопки' },
-      { key: '--btn-size-v',     label: 'Размер текста кнопок', unit: '', step: 0.1, raw: true, group: 'Кнопки' },
-      { key: '--btn-pad-y',      label: 'Кнопки — padding Y', unit: 'em', step: 0.05, group: 'Кнопки' },
-      { key: '--btn-pad-x',      label: 'Кнопки — padding X', unit: 'em', step: 0.05, group: 'Кнопки' },
-      { key: '--btn-gap-v',      label: 'Gap между кнопками', unit: '',   step: 1,   raw: true, group: 'Кнопки' },
-      { key: '--actions-max-w',  label: 'Макс. ширина кнопок', unit: 'px', step: 5,  group: 'Кнопки' }
-    ];
-
-    function currentBp() {
-      var w = window.innerWidth;
-      if (w > 1024) return 'desktop';
-      if (w > 700)  return 'tablet';
-      return 'mobile';
-    }
-
-    function bpLabel(bp) {
-      if (bp === 'desktop') return 'Десктоп (>1024px)';
-      if (bp === 'tablet')  return 'Планшет (701–1024px)';
-      return 'Мобильные (≤700px)';
-    }
-
-    function readComputed(key, raw) {
-      var v = getComputedStyle(document.documentElement)
-                .getPropertyValue(key).trim();
-      if (!v) return { value: 0, unit: '' };
-      if (raw) {
-        var num = parseFloat(v);
-        return { value: isNaN(num) ? 0 : num, unit: '' };
-      }
-      var m = v.match(/^(-?\d+(?:\.\d+)?)\s*(vw|vh|px|%|em|rem)?$/);
-      if (!m) return { value: 0, unit: '' };
-      return { value: parseFloat(m[1]), unit: m[2] || '' };
-    }
-
-    function readJSON(key) {
-      try {
-        var raw = localStorage.getItem(key);
-        if (!raw) return {};
-        return JSON.parse(raw) || {};
-      } catch (e) { return {}; }
-    }
-    function writeJSON(key, obj) {
-      try { localStorage.setItem(key, JSON.stringify(obj)); } catch (e) {}
-    }
-
-    function getDefaults(bp) { return readJSON(DEFAULTS_KEY)[bp] || null; }
-    function saveDefaults(bp, values) {
-      var all = readJSON(DEFAULTS_KEY);
-      all[bp] = values;
-      writeJSON(DEFAULTS_KEY, all);
-    }
-    function getSaved(bp) { return readJSON(STORAGE_KEY)[bp] || null; }
-    function clearSaved(bp) {
-      var all = readJSON(STORAGE_KEY);
-      delete all[bp];
-      writeJSON(STORAGE_KEY, all);
-    }
-
-    var root = document.documentElement;
-    var bp = currentBp();
-
-    if (!getDefaults(bp)) {
-      var snapshot = {};
-      PARAMS.forEach(function(p) {
-        var c = readComputed(p.key, p.raw);
-        snapshot[p.key] = p.raw ? String(c.value) : (c.value + (c.unit || p.unit));
-      });
-      saveDefaults(bp, snapshot);
-    }
-
-    var saved = getSaved(bp);
-    if (saved) {
-      Object.keys(saved).forEach(function(k) {
-        root.style.setProperty(k, saved[k]);
-      });
-    }
-
-    var toggle   = document.getElementById('tuner-toggle');
-    var panel    = document.getElementById('tuner-panel');
-    var fields   = document.getElementById('tuner-fields');
-    var bpEl     = document.getElementById('tuner-bp');
-    var resetBtn = document.getElementById('tuner-reset');
-    var copyBtn  = document.getElementById('tuner-copy');
-    var closeBtn = document.getElementById('tuner-close');
-
-    if (!toggle || !panel || !fields) return;
-
-    bpEl.textContent = bpLabel(bp) + (isFirefoxMobile() ? ' · Firefox' : '');
-
-    var lastGroup = null;
-
-    PARAMS.forEach(function(p) {
-      if (p.group && p.group !== lastGroup) {
-        var section = document.createElement('div');
-        section.className = 'tuner-section';
-        section.textContent = p.group;
-        fields.appendChild(section);
-        lastGroup = p.group;
-      }
-
-      var wrap = document.createElement('div');
-      wrap.className = 'tuner-field';
-
-      var label = document.createElement('label');
-      var fieldId = 'tuner-' + p.key.replace(/^--/, '');
-      label.textContent = p.label;
-      label.setAttribute('for', fieldId);
-
-      var group = document.createElement('div');
-      group.className = 'tuner-input-group';
-
-      var btnMinus = document.createElement('button');
-      btnMinus.type = 'button';
-      btnMinus.textContent = '−';
-      btnMinus.setAttribute('aria-label', 'Уменьшить');
-
-      var input = document.createElement('input');
-      input.type = 'number';
-      input.step = String(p.step);
-      input.id = fieldId;
-      input.setAttribute('data-key', p.key);
-      input.value = readComputed(p.key, p.raw).value;
-
-      var btnPlus = document.createElement('button');
-      btnPlus.type = 'button';
-      btnPlus.textContent = '+';
-      btnPlus.setAttribute('aria-label', 'Увеличить');
-
-      function applyValue(value) {
-        if (isNaN(value)) return;
-        var cssValue = p.raw ? String(value) : (value + p.unit);
-        root.style.setProperty(p.key, cssValue);
-        var all = readJSON(STORAGE_KEY);
-        var bpObj = all[bp] || {};
-        bpObj[p.key] = cssValue;
-        all[bp] = bpObj;
-        writeJSON(STORAGE_KEY, all);
-        input.value = value;
-      }
-
-      btnMinus.addEventListener('click', function() {
-        var v = parseFloat(input.value) || 0;
-        applyValue(Math.round((v - p.step) * 1000) / 1000);
-      });
-      btnPlus.addEventListener('click', function() {
-        var v = parseFloat(input.value) || 0;
-        applyValue(Math.round((v + p.step) * 1000) / 1000);
-      });
-      input.addEventListener('input', function() {
-        var v = parseFloat(input.value);
-        if (isNaN(v)) return;
-        var cssValue = p.raw ? String(v) : (v + p.unit);
-        root.style.setProperty(p.key, cssValue);
-        var all = readJSON(STORAGE_KEY);
-        var bpObj = all[bp] || {};
-        bpObj[p.key] = cssValue;
-        all[bp] = bpObj;
-        writeJSON(STORAGE_KEY, all);
-      });
-
-      group.appendChild(btnMinus);
-      group.appendChild(input);
-      group.appendChild(btnPlus);
-
-      wrap.appendChild(label);
-      wrap.appendChild(group);
-      fields.appendChild(wrap);
-    });
-
-    toggle.addEventListener('click', function() {
-      panel.hidden = !panel.hidden;
-    });
-    closeBtn.addEventListener('click', function() {
-      panel.hidden = true;
-    });
-
-    resetBtn.addEventListener('click', function() {
-      if (!confirm('Сбросить все значения для "' + bpLabel(bp) + '"?')) return;
-      clearSaved(bp);
-      PARAMS.forEach(function(p) {
-        root.style.removeProperty(p.key);
-      });
-      requestAnimationFrame(function() {
-        PARAMS.forEach(function(p) {
-          var inp = document.getElementById('tuner-' + p.key.replace(/^--/, ''));
-          if (inp) inp.value = readComputed(p.key, p.raw).value;
-        });
-      });
-    });
-
-    copyBtn.addEventListener('click', function() {
-      var lines = [];
-      lines.push('/* Брейкпоинт: ' + bpLabel(bp) + ' */');
-      lines.push('/* Firefox mobile: ' + (isFirefoxMobile() ? 'да' : 'нет') + ' */');
-      lines.push('/* Ширина окна: ' + window.innerWidth + 'px */');
-      lines.push('');
-
-      var lastG = null;
-      PARAMS.forEach(function(p) {
-        if (p.group && p.group !== lastG) {
-          lines.push('/* ' + p.group + ' */');
-          lastG = p.group;
-        }
-        var c = readComputed(p.key, p.raw);
-        var val = p.raw ? c.value : (c.value + p.unit);
-        lines.push(p.key + ': ' + val + ';');
-      });
-      var text = lines.join('\n');
-
-      function flash() {
-        var old = copyBtn.textContent;
-        copyBtn.classList.add('is-copied');
-        copyBtn.textContent = 'Скопировано';
-        setTimeout(function() {
-          copyBtn.classList.remove('is-copied');
-          copyBtn.textContent = old;
-        }, 1500);
-      }
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(flash, function() {
-          fallbackCopy(text); flash();
-        });
-      } else {
-        fallbackCopy(text); flash();
-      }
-    });
-
-    function fallbackCopy(text) {
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.top = '0';
-      ta.style.left = '0';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      document.body.removeChild(ta);
-    }
   }
 
   function bindEvents() {
@@ -2345,17 +1899,17 @@ body.overlay-active #view-home.is-active .hero-actions {
       document.documentElement.classList.add('is-firefox-mobile');
     }
 
+    /* Чистим ключи старого редактора, если они остались у пользователя. */
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
-        if (/^hero-tuner-v[123](:|$)/.test(keys[i])) {
+        if (/^hero-tuner-/.test(keys[i])) {
           localStorage.removeItem(keys[i]);
         }
       }
     } catch (e) { /* ignore */ }
 
     initViewportFix();
-    initTuner();
     buildGrids();
     applyPatterns();
     applyI18n();
