@@ -94,7 +94,6 @@ svg { display: block; }
 
   --actions-max-w: 2000px;
 
-  /* Размеры с теми же max-порогами, что были изначально. */
   --author-size: max(14px, calc(var(--author-size-v) * 100vw / var(--ref-w)));
   --desc-size:   max(13px, calc(var(--desc-size-v)   * 100vw / var(--ref-w)));
   --desc-width:  max(240px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
@@ -271,10 +270,17 @@ svg { display: block; }
     --btn-gap-v: 14;
     --btn-pad-y: 0.85em;
     --btn-pad-x: 1.75em;
+    --btn-scale: 0.95;
     --btn-x: 0vw;
     --btn-y: 9vh;
 
     --actions-max-w: 250px;
+  }
+
+  /* Firefox для Android: чуть крупнее кнопки, чтобы компенсировать
+     его раздутый viewport. Остальные параметры совпадают. */
+  html.is-firefox-mobile {
+    --btn-scale: 1.1;
   }
 
   .hero-name {
@@ -1684,6 +1690,14 @@ body.overlay-active #view-home.is-active .hero-actions {
     return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   }
 
+  /* Firefox для Android. Нужен, чтобы подставить чуть более крупные
+     кнопки — у него раздутый viewport, и стандартные значения
+     выглядят мельче, чем на других мобильных. */
+  function isFirefoxMobile() {
+    var ua = navigator.userAgent || '';
+    return /Firefox/.test(ua) && /Android|Mobile/.test(ua);
+  }
+
   function applyI18n() {
     var lang = getLang();
     var dict = I18N[lang] || I18N.ru;
@@ -1994,11 +2008,10 @@ body.overlay-active #view-home.is-active .hero-actions {
      РЕДАКТОР ПОЗИЦИИ (временный, будет удалён)
      ============================================================ */
   function initTuner() {
-    var STORAGE_KEY  = 'hero-tuner-v3';
-    var DEFAULTS_KEY = 'hero-tuner-defaults-v3';
+    var STORAGE_KEY  = 'hero-tuner-v4';
+    var DEFAULTS_KEY = 'hero-tuner-defaults-v4';
 
     var PARAMS = [
-      // Позиции
       { key: '--name-x',         label: 'Имя — X',            unit: 'vw', step: 0.1, group: 'Позиция' },
       { key: '--name-y',         label: 'Имя — Y',            unit: 'vh', step: 0.1, group: 'Позиция' },
       { key: '--author-x',       label: 'Автор — X',          unit: 'vw', step: 0.1, group: 'Позиция' },
@@ -2008,16 +2021,13 @@ body.overlay-active #view-home.is-active .hero-actions {
       { key: '--btn-x',          label: 'Кнопки — X',         unit: 'vw', step: 0.1, group: 'Позиция' },
       { key: '--btn-y',          label: 'Кнопки — Y',         unit: 'vh', step: 0.1, group: 'Позиция' },
       { key: '--hero-top',       label: 'Отступ сверху',      unit: 'vh', step: 0.1, group: 'Позиция' },
-      // Отступы
       { key: '--hero-text-gap',  label: 'Автор ↔ Описание',   unit: 'px', step: 1, group: 'Отступы' },
       { key: '--hero-stack-gap', label: 'Текст ↔ Кнопки',     unit: 'px', step: 1, group: 'Отступы' },
-      // Размеры
       { key: '--name-size',      label: 'Размер имени',       unit: 'vw', step: 0.1, group: 'Размеры' },
       { key: '--photo-h',        label: 'Высота фото',        unit: 'vh', step: 1,   group: 'Размеры' },
       { key: '--author-size-v',  label: 'Размер автора',      unit: '',   step: 1,   raw: true, group: 'Размеры' },
       { key: '--desc-size-v',    label: 'Размер описания',    unit: '',   step: 1,   raw: true, group: 'Размеры' },
       { key: '--desc-width-v',   label: 'Ширина описания',    unit: '',   step: 5,   raw: true, group: 'Размеры' },
-      // Кнопки — все параметры, влияющие на их размер
       { key: '--btn-scale',      label: 'Масштаб кнопок (×)', unit: '',   step: 0.05, raw: true, group: 'Кнопки' },
       { key: '--btn-size-v',     label: 'Размер текста кнопок', unit: '', step: 0.1, raw: true, group: 'Кнопки' },
       { key: '--btn-pad-y',      label: 'Кнопки — padding Y', unit: 'em', step: 0.05, group: 'Кнопки' },
@@ -2105,7 +2115,7 @@ body.overlay-active #view-home.is-active .hero-actions {
 
     if (!toggle || !panel || !fields) return;
 
-    bpEl.textContent = bpLabel(bp);
+    bpEl.textContent = bpLabel(bp) + (isFirefoxMobile() ? ' · Firefox' : '');
 
     var lastGroup = null;
 
@@ -2211,6 +2221,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     copyBtn.addEventListener('click', function() {
       var lines = [];
       lines.push('/* Брейкпоинт: ' + bpLabel(bp) + ' */');
+      lines.push('/* Firefox mobile: ' + (isFirefoxMobile() ? 'да' : 'нет') + ' */');
       lines.push('/* Ширина окна: ' + window.innerWidth + 'px */');
       lines.push('');
 
@@ -2330,10 +2341,14 @@ body.overlay-active #view-home.is-active .hero-actions {
     var yearEl = document.getElementById('copy-year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
+    if (isFirefoxMobile()) {
+      document.documentElement.classList.add('is-firefox-mobile');
+    }
+
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
-        if (/^hero-tuner-v[12](:|$)/.test(keys[i])) {
+        if (/^hero-tuner-v[123](:|$)/.test(keys[i])) {
           localStorage.removeItem(keys[i]);
         }
       }
