@@ -44,7 +44,8 @@ A fully static website. Hosted on GitHub Pages.
 
 ## Repository Structure
 
-```├── index.html                              
+```
+├── index.html                              
 ├── .nojekyll                               
 ├── README.md
 ├── favicon/
