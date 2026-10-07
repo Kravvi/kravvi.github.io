@@ -44,24 +44,24 @@ A fully static website. Hosted on GitHub Pages.
 
 ## Repository Structure
 
-```├── index.html main file (the entire application code)
-├── .nojekyll disables Jekyll processing on GitHub Pages
-├── README.md this file
-├── favicon/ icons
-│ ├── android-chrome-192x192.png
-│ ├── android-chrome-512x512.png
-│ ├── apple-touch-icon.png
-│ ├── favicon-16x16.png
-│ ├── favicon-32x32.png
-│ ├── favicon-48x48.png
-│ └── favicon.ico
-├── images/ home page images
-│ ├── VV SIte.png original (PNG fallback)
-│ ├── VV 1600x1067.webp
-│ ├── VV 1920x1280.webp
-│ └── VV 2356x1571.webp
-└── preview/ image for the OG preview
-└── preview 1200x630.jpg
+```├── index.html                              
+├── .nojekyll                               
+├── README.md
+├── favicon/
+│   ├── android-chrome-192x192.png
+│   ├── android-chrome-512x512.png
+│   ├── apple-touch-icon.png
+│   ├── favicon-16x16.png
+│   ├── favicon-32x32.png
+│   ├── favicon-48x48.png
+│   └── favicon.ico
+├── images/
+│   ├── VV SIte.png                         
+│   ├── VV 1600x1067.webp                   
+│   ├── VV 1920x1280.webp
+│   └── VV 2356x1571.webp
+└── preview/
+    └── preview 1200x630.jpg                
 ```
 ---
 
