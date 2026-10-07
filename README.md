@@ -44,7 +44,7 @@ A fully static website. Hosted on GitHub Pages.
 
 ## Repository Structure
 
-├── index.html main file (the entire application code)
+```├── index.html main file (the entire application code)
 ├── .nojekyll disables Jekyll processing on GitHub Pages
 ├── README.md this file
 ├── favicon/ icons
@@ -61,7 +61,7 @@ A fully static website. Hosted on GitHub Pages.
 │ ├── VV 1920x1280.webp
 │ └── VV 2356x1571.webp
 └── preview/ image for the OG preview
-└── preview 1200x630.jpg
+└── preview 1200x630.jpg```
 
 ---
 
