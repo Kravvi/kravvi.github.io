@@ -88,14 +88,18 @@ svg { display: block; }
   --desc-width-v: 478;
   --btn-size-v: 13;
   --btn-gap-v: 15;
+  --btn-pad-y: 1em;
+  --btn-pad-x: 2.2em;
 
   --actions-max-w: 2000px;
 
-  --author-size: max(14px, calc(var(--author-size-v) * 100vw / var(--ref-w)));
-  --desc-size: max(13px, calc(var(--desc-size-v) * 100vw / var(--ref-w)));
-  --desc-width: max(240px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
-  --btn-size:  max(12px, calc(var(--btn-size-v)  * 100vw / var(--ref-w)));
-  --btn-gap:   max(8px,  calc(var(--btn-gap-v)   * 100vw / var(--ref-w)));
+  /* max() сведён к очень маленьким порогам — чтобы редактор мог
+     свободно уменьшать размеры вплоть до почти нуля. */
+  --author-size: max(6px,  calc(var(--author-size-v) * 100vw / var(--ref-w)));
+  --desc-size:   max(6px,  calc(var(--desc-size-v)   * 100vw / var(--ref-w)));
+  --desc-width:  max(120px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
+  --btn-size:    max(6px,  calc(var(--btn-size-v)   * 100vw / var(--ref-w)));
+  --btn-gap:     max(2px,  calc(var(--btn-gap-v)    * 100vw / var(--ref-w)));
 
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-soft:    cubic-bezier(0.4, 0, 0.6, 1);
@@ -264,6 +268,8 @@ svg { display: block; }
 
     --btn-size-v: 11.3;
     --btn-gap-v: 14;
+    --btn-pad-y: 0.85em;
+    --btn-pad-x: 1.75em;
     --btn-x: 0vw;
     --btn-y: 9vh;
 
@@ -285,10 +291,6 @@ svg { display: block; }
     -ms-hyphens: none !important;
     overflow-wrap: normal;
     word-break: normal;
-  }
-
-  .hero-actions .btn-pill {
-    padding: 0.85em 1.75em;
   }
 
   .view-grid {
@@ -746,7 +748,7 @@ body.overlay-active #view-home.is-active .hero-actions {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 1em 2.2em;
+  padding: var(--btn-pad-y) var(--btn-pad-x);
   font-family: var(--font-ui);
   font-weight: 500;
   font-size: var(--btn-size);
@@ -2017,8 +2019,10 @@ body.overlay-active #view-home.is-active .hero-actions {
       { key: '--author-size-v',  label: 'Размер автора',      unit: '',   step: 1,   raw: true, group: 'Размеры' },
       { key: '--desc-size-v',    label: 'Размер описания',    unit: '',   step: 1,   raw: true, group: 'Размеры' },
       { key: '--desc-width-v',   label: 'Ширина описания',    unit: '',   step: 5,   raw: true, group: 'Размеры' },
-      { key: '--btn-size-v',     label: 'Размер кнопок',      unit: '',   step: 0.1, raw: true, group: 'Размеры' },
-      { key: '--btn-gap-v',      label: 'Gap кнопок (число)', unit: '',   step: 1,   raw: true, group: 'Размеры' },
+      { key: '--btn-size-v',     label: 'Размер текста кнопок', unit: '', step: 0.1, raw: true, group: 'Размеры' },
+      { key: '--btn-gap-v',      label: 'Gap между кнопками', unit: '',   step: 1,   raw: true, group: 'Размеры' },
+      { key: '--btn-pad-y',      label: 'Кнопки — padding Y', unit: 'em', step: 0.05, group: 'Размеры' },
+      { key: '--btn-pad-x',      label: 'Кнопки — padding X', unit: 'em', step: 0.05, group: 'Размеры' },
       { key: '--actions-max-w',  label: 'Макс. ширина кнопок', unit: 'px', step: 5,  group: 'Размеры' }
     ];
 
@@ -2043,7 +2047,7 @@ body.overlay-active #view-home.is-active .hero-actions {
         var num = parseFloat(v);
         return { value: isNaN(num) ? 0 : num, unit: '' };
       }
-      var m = v.match(/^(-?\d+(?:\.\d+)?)\s*(vw|vh|px|%)?$/);
+      var m = v.match(/^(-?\d+(?:\.\d+)?)\s*(vw|vh|px|%|em|rem)?$/);
       if (!m) return { value: 0, unit: '' };
       return { value: parseFloat(m[1]), unit: m[2] || '' };
     }
