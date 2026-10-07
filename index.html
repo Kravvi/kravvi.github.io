@@ -89,6 +89,8 @@ svg { display: block; }
   --btn-size-v: 13;
   --btn-gap-v: 15;
 
+  --actions-max-w: 2000px;
+
   --author-size: max(14px, calc(var(--author-size-v) * 100vw / var(--ref-w)));
   --desc-size: max(13px, calc(var(--desc-size-v) * 100vw / var(--ref-w)));
   --desc-width: max(240px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
@@ -117,9 +119,7 @@ svg { display: block; }
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
 
-  /* Динамическая нижняя "мёртвая зона" от адресной строки браузера. */
   --vv-bottom: 0px;
-  /* Итоговый безопасный отступ снизу. */
   --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
 }
 
@@ -141,6 +141,8 @@ svg { display: block; }
     --desc-y: 0vh;
     --btn-x: 0vw;
     --btn-y: 0vh;
+
+    --actions-max-w: 2000px;
   }
 
   .hero-stack {
@@ -263,7 +265,9 @@ svg { display: block; }
     --btn-size-v: 11.3;
     --btn-gap-v: 14;
     --btn-x: 0vw;
-    --btn-y: 8.7vh;
+    --btn-y: 9vh;
+
+    --actions-max-w: 250px;
   }
 
   .hero-name {
@@ -712,6 +716,7 @@ body.overlay-active #view-home.is-active .hero-tagline {
   display: flex;
   flex-wrap: wrap;
   gap: var(--btn-gap);
+  max-width: var(--actions-max-w);
 
   opacity: 0;
   transform: translate(var(--btn-x), calc(var(--btn-y) + 18px));
@@ -1276,6 +1281,18 @@ body.overlay-active #view-home.is-active .hero-actions {
 }
 .tuner-fields::-webkit-scrollbar { width: 4px; }
 .tuner-fields::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.tuner-section {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #A8895C;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.tuner-section:first-child { margin-top: 0; border-top: 0; padding-top: 0; }
 
 .tuner-field {
   display: grid;
@@ -1977,21 +1994,32 @@ body.overlay-active #view-home.is-active .hero-actions {
      РЕДАКТОР ПОЗИЦИИ (временный, будет удалён)
      ============================================================ */
   function initTuner() {
-    var STORAGE_KEY  = 'hero-tuner-v1';
-    var DEFAULTS_KEY = 'hero-tuner-defaults-v1';
+    var STORAGE_KEY  = 'hero-tuner-v2';
+    var DEFAULTS_KEY = 'hero-tuner-defaults-v2';
 
     var PARAMS = [
-      { key: '--name-x',         label: 'Имя — X',            unit: 'vw', step: 0.1 },
-      { key: '--name-y',         label: 'Имя — Y',            unit: 'vh', step: 0.1 },
-      { key: '--author-x',       label: 'Автор — X',          unit: 'vw', step: 0.1 },
-      { key: '--author-y',       label: 'Автор — Y',          unit: 'vh', step: 0.1 },
-      { key: '--desc-x',         label: 'Описание — X',       unit: 'vw', step: 0.1 },
-      { key: '--desc-y',         label: 'Описание — Y',       unit: 'vh', step: 0.1 },
-      { key: '--btn-x',          label: 'Кнопки — X',         unit: 'vw', step: 0.1 },
-      { key: '--btn-y',          label: 'Кнопки — Y',         unit: 'vh', step: 0.1 },
-      { key: '--hero-top',       label: 'Отступ сверху',      unit: 'vh', step: 0.1 },
-      { key: '--hero-text-gap',  label: 'Автор ↔ Описание',   unit: 'px', step: 1 },
-      { key: '--hero-stack-gap', label: 'Текст ↔ Кнопки',     unit: 'px', step: 1 }
+      // Позиции
+      { key: '--name-x',         label: 'Имя — X',            unit: 'vw', step: 0.1, group: 'Позиция' },
+      { key: '--name-y',         label: 'Имя — Y',            unit: 'vh', step: 0.1, group: 'Позиция' },
+      { key: '--author-x',       label: 'Автор — X',          unit: 'vw', step: 0.1, group: 'Позиция' },
+      { key: '--author-y',       label: 'Автор — Y',          unit: 'vh', step: 0.1, group: 'Позиция' },
+      { key: '--desc-x',         label: 'Описание — X',       unit: 'vw', step: 0.1, group: 'Позиция' },
+      { key: '--desc-y',         label: 'Описание — Y',       unit: 'vh', step: 0.1, group: 'Позиция' },
+      { key: '--btn-x',          label: 'Кнопки — X',         unit: 'vw', step: 0.1, group: 'Позиция' },
+      { key: '--btn-y',          label: 'Кнопки — Y',         unit: 'vh', step: 0.1, group: 'Позиция' },
+      { key: '--hero-top',       label: 'Отступ сверху',      unit: 'vh', step: 0.1, group: 'Позиция' },
+      // Отступы
+      { key: '--hero-text-gap',  label: 'Автор ↔ Описание',   unit: 'px', step: 1, group: 'Отступы' },
+      { key: '--hero-stack-gap', label: 'Текст ↔ Кнопки',     unit: 'px', step: 1, group: 'Отступы' },
+      // Размеры
+      { key: '--name-size',      label: 'Размер имени',       unit: 'vw', step: 0.1, group: 'Размеры' },
+      { key: '--photo-h',        label: 'Высота фото',        unit: 'vh', step: 1,   group: 'Размеры' },
+      { key: '--author-size-v',  label: 'Размер автора',      unit: '',   step: 1,   raw: true, group: 'Размеры' },
+      { key: '--desc-size-v',    label: 'Размер описания',    unit: '',   step: 1,   raw: true, group: 'Размеры' },
+      { key: '--desc-width-v',   label: 'Ширина описания',    unit: '',   step: 5,   raw: true, group: 'Размеры' },
+      { key: '--btn-size-v',     label: 'Размер кнопок',      unit: '',   step: 0.1, raw: true, group: 'Размеры' },
+      { key: '--btn-gap-v',      label: 'Gap кнопок (число)', unit: '',   step: 1,   raw: true, group: 'Размеры' },
+      { key: '--actions-max-w',  label: 'Макс. ширина кнопок', unit: 'px', step: 5,  group: 'Размеры' }
     ];
 
     function currentBp() {
@@ -2007,12 +2035,16 @@ body.overlay-active #view-home.is-active .hero-actions {
       return 'Мобильные (≤700px)';
     }
 
-    function readComputed(key) {
+    function readComputed(key, raw) {
       var v = getComputedStyle(document.documentElement)
                 .getPropertyValue(key).trim();
       if (!v) return { value: 0, unit: '' };
+      if (raw) {
+        var num = parseFloat(v);
+        return { value: isNaN(num) ? 0 : num, unit: '' };
+      }
       var m = v.match(/^(-?\d+(?:\.\d+)?)\s*(vw|vh|px|%)?$/);
-      if (!m) return { value: 0, unit: v };
+      if (!m) return { value: 0, unit: '' };
       return { value: parseFloat(m[1]), unit: m[2] || '' };
     }
 
@@ -2034,11 +2066,6 @@ body.overlay-active #view-home.is-active .hero-actions {
       writeJSON(DEFAULTS_KEY, all);
     }
     function getSaved(bp) { return readJSON(STORAGE_KEY)[bp] || null; }
-    function saveSaved(bp, values) {
-      var all = readJSON(STORAGE_KEY);
-      all[bp] = values;
-      writeJSON(STORAGE_KEY, all);
-    }
     function clearSaved(bp) {
       var all = readJSON(STORAGE_KEY);
       delete all[bp];
@@ -2048,17 +2075,15 @@ body.overlay-active #view-home.is-active .hero-actions {
     var root = document.documentElement;
     var bp = currentBp();
 
-    // Снимок дефолтов (до применения сохранённых)
     if (!getDefaults(bp)) {
       var snapshot = {};
       PARAMS.forEach(function(p) {
-        var c = readComputed(p.key);
-        snapshot[p.key] = c.value + (c.unit || p.unit);
+        var c = readComputed(p.key, p.raw);
+        snapshot[p.key] = p.raw ? String(c.value) : (c.value + (c.unit || p.unit));
       });
       saveDefaults(bp, snapshot);
     }
 
-    // Применяем сохранённые значения
     var saved = getSaved(bp);
     if (saved) {
       Object.keys(saved).forEach(function(k) {
@@ -2066,7 +2091,6 @@ body.overlay-active #view-home.is-active .hero-actions {
       });
     }
 
-    // UI
     var toggle   = document.getElementById('tuner-toggle');
     var panel    = document.getElementById('tuner-panel');
     var fields   = document.getElementById('tuner-fields');
@@ -2079,8 +2103,17 @@ body.overlay-active #view-home.is-active .hero-actions {
 
     bpEl.textContent = bpLabel(bp);
 
-    // Строим поля
+    var lastGroup = null;
+
     PARAMS.forEach(function(p) {
+      if (p.group && p.group !== lastGroup) {
+        var section = document.createElement('div');
+        section.className = 'tuner-section';
+        section.textContent = p.group;
+        fields.appendChild(section);
+        lastGroup = p.group;
+      }
+
       var wrap = document.createElement('div');
       wrap.className = 'tuner-field';
 
@@ -2102,19 +2135,20 @@ body.overlay-active #view-home.is-active .hero-actions {
       input.step = String(p.step);
       input.id = fieldId;
       input.setAttribute('data-key', p.key);
-      input.value = readComputed(p.key).value;
+      input.value = readComputed(p.key, p.raw).value;
 
       var btnPlus = document.createElement('button');
       btnPlus.type = 'button';
       btnPlus.textContent = '+';
       btnPlus.setAttribute('aria-label', 'Увеличить');
 
-      function commit(value) {
+      function applyValue(value) {
         if (isNaN(value)) return;
-        root.style.setProperty(p.key, value + p.unit);
+        var cssValue = p.raw ? String(value) : (value + p.unit);
+        root.style.setProperty(p.key, cssValue);
         var all = readJSON(STORAGE_KEY);
         var bpObj = all[bp] || {};
-        bpObj[p.key] = value + p.unit;
+        bpObj[p.key] = cssValue;
         all[bp] = bpObj;
         writeJSON(STORAGE_KEY, all);
         input.value = value;
@@ -2122,19 +2156,20 @@ body.overlay-active #view-home.is-active .hero-actions {
 
       btnMinus.addEventListener('click', function() {
         var v = parseFloat(input.value) || 0;
-        commit(Math.round((v - p.step) * 100) / 100);
+        applyValue(Math.round((v - p.step) * 1000) / 1000);
       });
       btnPlus.addEventListener('click', function() {
         var v = parseFloat(input.value) || 0;
-        commit(Math.round((v + p.step) * 100) / 100);
+        applyValue(Math.round((v + p.step) * 1000) / 1000);
       });
       input.addEventListener('input', function() {
         var v = parseFloat(input.value);
         if (isNaN(v)) return;
-        root.style.setProperty(p.key, v + p.unit);
+        var cssValue = p.raw ? String(v) : (v + p.unit);
+        root.style.setProperty(p.key, cssValue);
         var all = readJSON(STORAGE_KEY);
         var bpObj = all[bp] || {};
-        bpObj[p.key] = v + p.unit;
+        bpObj[p.key] = cssValue;
         all[bp] = bpObj;
         writeJSON(STORAGE_KEY, all);
       });
@@ -2148,7 +2183,6 @@ body.overlay-active #view-home.is-active .hero-actions {
       fields.appendChild(wrap);
     });
 
-    // Открытие / закрытие
     toggle.addEventListener('click', function() {
       panel.hidden = !panel.hidden;
     });
@@ -2156,31 +2190,35 @@ body.overlay-active #view-home.is-active .hero-actions {
       panel.hidden = true;
     });
 
-    // Сброс
     resetBtn.addEventListener('click', function() {
       if (!confirm('Сбросить все значения для "' + bpLabel(bp) + '"?')) return;
       clearSaved(bp);
       PARAMS.forEach(function(p) {
         root.style.removeProperty(p.key);
       });
-      // Обновляем поля после пересчёта
       requestAnimationFrame(function() {
         PARAMS.forEach(function(p) {
           var inp = document.getElementById('tuner-' + p.key.replace(/^--/, ''));
-          if (inp) inp.value = readComputed(p.key).value;
+          if (inp) inp.value = readComputed(p.key, p.raw).value;
         });
       });
     });
 
-    // Копирование
     copyBtn.addEventListener('click', function() {
       var lines = [];
       lines.push('/* Брейкпоинт: ' + bpLabel(bp) + ' */');
       lines.push('/* Ширина окна: ' + window.innerWidth + 'px */');
       lines.push('');
+
+      var lastG = null;
       PARAMS.forEach(function(p) {
-        var c = readComputed(p.key);
-        lines.push(p.key + ': ' + c.value + p.unit + ';');
+        if (p.group && p.group !== lastG) {
+          lines.push('/* ' + p.group + ' */');
+          lastG = p.group;
+        }
+        var c = readComputed(p.key, p.raw);
+        var val = p.raw ? c.value : (c.value + p.unit);
+        lines.push(p.key + ': ' + val + ';');
       });
       var text = lines.join('\n');
 
@@ -2291,8 +2329,8 @@ body.overlay-active #view-home.is-active .hero-actions {
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
-        if (/^hero-tuner-v\d+(:|$)/.test(keys[i])) {
-          // оставлено для совместимости, но не удаляем наши новые ключи
+        if (/^hero-tuner-v1(:|$)/.test(keys[i])) {
+          localStorage.removeItem(keys[i]);
         }
       }
     } catch (e) { /* ignore */ }
