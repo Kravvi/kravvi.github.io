@@ -3,7 +3,7 @@
 <head>
 <base target="_top">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
 <meta name="description" content="Александр Кравви — графический и UI/UX дизайнер, фотограф, ретушёр.">
 <meta name="theme-color" content="#0A0A0A">
 <meta property="og:title" content="Александр Кравви — визитка">
@@ -114,6 +114,13 @@ svg { display: block; }
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
+
+  /* Динамическая нижняя "мёртвая зона" от адресной строки браузера.
+     Обновляется из JS через visualViewport API. */
+  --vv-bottom: 0px;
+  /* Итоговый безопасный отступ снизу: максимум из системного
+     safe-area и динамического оверлея браузера. */
+  --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
 }
 
 @media (max-width: 1024px) {
@@ -183,7 +190,7 @@ svg { display: block; }
     padding:
       calc(var(--gap) + var(--safe-top))
       calc(var(--gap) + var(--safe-right))
-      calc(var(--gap) + var(--safe-bottom))
+      calc(var(--gap) + var(--bottom-safe))
       calc(var(--gap) + var(--safe-left));
     justify-content: flex-start;
   }
@@ -305,7 +312,7 @@ svg { display: block; }
     padding:
       0
       max(10px, var(--safe-right))
-      max(10px, var(--safe-bottom))
+      max(10px, var(--bottom-safe))
       max(10px, var(--safe-left)) !important;
     gap: 10px !important;
   }
@@ -327,6 +334,7 @@ svg { display: block; }
 html, body {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-ui);
@@ -442,7 +450,7 @@ body.is-loading { visibility: hidden; }
 
 .copyright {
   position: fixed;
-  bottom: calc(20px + var(--safe-bottom));
+  bottom: calc(20px + var(--bottom-safe));
   right: calc(24px + var(--safe-right));
   z-index: 100;
   font-family: var(--font-ui);
@@ -473,7 +481,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   .lang-btn  { font-size: 11px; padding: 5px 10px; top: calc(14px + var(--safe-top)); right: calc(18px + var(--safe-right)); }
   .lang-menu { top: calc(42px + var(--safe-top)); right: calc(18px + var(--safe-right)); min-width: 76px; }
   .lang-item { padding: 5px 12px; font-size: 11px; }
-  .copyright { font-size: 9px; letter-spacing: 0.2em; bottom: calc(16px + var(--safe-bottom)); right: calc(18px + var(--safe-right)); }
+  .copyright { font-size: 9px; letter-spacing: 0.2em; bottom: calc(16px + var(--bottom-safe)); right: calc(18px + var(--safe-right)); }
 }
 
 /* ============================================================
@@ -841,7 +849,7 @@ body.overlay-active #view-home.is-active .hero-actions {
   padding:
     calc(60px + var(--safe-top))
     calc(60px + var(--safe-right))
-    calc(60px + var(--safe-bottom))
+    calc(60px + var(--bottom-safe))
     calc(60px + var(--safe-left));
   overflow: hidden;
   isolation: isolate;
@@ -1789,6 +1797,47 @@ body.overlay-active #view-home.is-active .hero-actions {
     else navigate();
   }
 
+  /* ----------------------------------------------------------
+     Динамическая адресная строка мобильных браузеров.
+
+     Вычисляем, на сколько пикселей «визуальный» вьюпорт
+     меньше «layout»-вьюпорта (это и есть высота адресной
+     строки браузера, если она прижата к низу). Значение
+     кладём в CSS-переменную --vv-bottom, которая учитывается
+     в .copyright, .view-grid и .grid через --bottom-safe.
+
+     Пересчёт троттлится через requestAnimationFrame, чтобы
+     не грузить CPU при частых событиях scroll.
+     ---------------------------------------------------------- */
+  function initViewportFix() {
+    if (!window.visualViewport) return;
+
+    var root = document.documentElement;
+    var lastOffset = -1;
+    var rafPending = false;
+
+    function update() {
+      rafPending = false;
+      var vv = window.visualViewport;
+      var offset = window.innerHeight - (vv.offsetTop + vv.height);
+      if (offset < 0) offset = 0;
+      offset = Math.round(offset);
+      if (offset === lastOffset) return;
+      lastOffset = offset;
+      root.style.setProperty('--vv-bottom', offset + 'px');
+    }
+
+    function schedule() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(update);
+    }
+
+    window.visualViewport.addEventListener('resize', schedule);
+    window.visualViewport.addEventListener('scroll', schedule);
+    update();
+  }
+
   function bindEvents() {
     window.addEventListener('hashchange', navigate);
 
@@ -1869,6 +1918,7 @@ body.overlay-active #view-home.is-active .hero-actions {
       }
     } catch (e) { /* ignore */ }
 
+    initViewportFix();
     buildGrids();
     applyPatterns();
     applyI18n();
