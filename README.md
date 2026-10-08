@@ -45,8 +45,8 @@ A fully static website. Hosted on GitHub Pages.
 ## Repository Structure
 
 ```
-├── index.html                              
-├── .nojekyll                               
+├── index.html ← main file (inline HTML+CSS+JS)
+├── .nojekyll ← disables Jekyll on GitHub Pages
 ├── README.md
 ├── favicon/
 │   ├── android-chrome-192x192.png
@@ -55,14 +55,14 @@ A fully static website. Hosted on GitHub Pages.
 │   ├── favicon-16x16.png
 │   ├── favicon-32x32.png
 │   ├── favicon-48x48.png
-│   └── favicon.ico
+│   └── favicon.ico ← legacy fallback, not referenced in HTML
 ├── images/
-│   ├── VV SIte.png                         
-│   ├── VV 1600x1067.webp                   
+│   ├── VV SIte.png ← original (fallback for <img>)
+│   ├── VV 1600x1067.webp ← primary size
 │   ├── VV 1920x1280.webp
 │   └── VV 2356x1571.webp
 └── preview/
-    └── preview 1200x630.jpg                
+    └── preview 1200x630.jpg ← image for OG preview             
 ```
 ---
 
