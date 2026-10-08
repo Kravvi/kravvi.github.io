@@ -9,6 +9,7 @@
 <meta property="og:title" content="Digital card">
 <meta property="og:description" content="Визитка Александра Кравви. Графического и UI/UX дизайнера, фотографа, ретушёра.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://kravvi.github.io/">
 <meta property="og:image" content="https://kravvi.github.io/preview/preview%201200x630.jpg">
 <meta property="og:image:secure_url" content="https://kravvi.github.io/preview/preview%201200x630.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -135,7 +136,11 @@ svg { display: block; }
   --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
 }
 
-@media (max-width: 1024px) {
+/* ============================================================
+   TABLET + PHONE  ·  ≤1024px ИЛИ (touch и ≤1366px)
+   ============================================================ */
+@media (max-width: 1024px),
+       ((hover: none) and (pointer: coarse) and (max-width: 1366px)) {
   :root {
     --gap: 14px;
     --glass-radius: 22px;
@@ -184,22 +189,6 @@ svg { display: block; }
     text-align: center;
   }
 
-  .home-stage::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 55%;
-    z-index: 2;
-    pointer-events: none;
-    background: linear-gradient(
-      0deg,
-      #0A0A0A 0%,
-      rgba(10,10,10,0.92) 30%,
-      rgba(10,10,10,0.62) 62%,
-      rgba(10,10,10,0) 100%
-    );
-  }
-
   .view-grid {
     padding:
       calc(var(--gap) + var(--safe-top))
@@ -221,12 +210,17 @@ svg { display: block; }
   }
 }
 
-@media (max-width: 1024px) and (min-width: 701px) {
+/* ============================================================
+   TABLET  ·  701–1024px ИЛИ (touch и 701–1366px)
+   ============================================================ */
+@media (min-width: 701px) and (max-width: 1024px),
+       ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
   :root {
     --ref-w: 900;
     --hero-top: 16vh;
     --hero-gap: 3vh;
     --photo-h: 104vh;
+    --photo-h-max: 150vw;
     --name-size: 22vw;
     --name-opsz: 96;
     --name-stroke: 0px;
@@ -246,6 +240,9 @@ svg { display: block; }
   }
 }
 
+/* ============================================================
+   PHONE  ·  ≤700px
+   ============================================================ */
 @media (max-width: 700px) {
   :root {
     --gap: 10px;
@@ -255,24 +252,24 @@ svg { display: block; }
 
     --ref-w: 402;
 
-    --hero-top: 14vh;
+    --hero-top: 15vh;
     --hero-gap: 7.8vh;
     --photo-h: 104vh;
-    --photo-h-max: 185vw;
+    --photo-h-max: 213vw;
     --name-size: 22.9vw;
     --name-x: 0vw;
-    --name-y: 8.1vh;
+    --name-y: 3.1vh;
     --name-opsz: 30;
     --name-stroke: 0.33px;
 
     --author-size-v: 19;
     --author-x: 0vw;
-    --author-y: 9.9vh;
+    --author-y: 4.9vh;
 
     --desc-size-v: 14;
     --desc-width-v: 292;
     --desc-x: 0vw;
-    --desc-y: 10.6vh;
+    --desc-y: 5.6vh;
 
     --btn-size-v: 11.3;
     --btn-gap-v: 14;
@@ -280,14 +277,14 @@ svg { display: block; }
     --btn-pad-x: 1.75em;
     --btn-scale: 0.95;
     --btn-x: 0vw;
-    --btn-y: 9vh;
+    --btn-y: 4vh;
 
     --actions-max-w: 250px;
+
+    --hero-stack-gap: 35px;
   }
 
-  html.is-firefox-mobile {
-    --btn-scale: 1.1;
-  }
+  html.is-firefox-mobile { --btn-scale: 1.1; }
 
   .hero-name {
     font-optical-sizing: none;
@@ -596,7 +593,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   align-items: flex-end;
   pointer-events: none;
 }
-
 .hero-photo-wrap picture { display: contents; }
 
 .hero-photo {
@@ -1249,7 +1245,7 @@ body.overlay-active #view-home.is-active .hero-actions {
             srcset="images/VV%201600x1067.webp 1600w,
                     images/VV%201920x1280.webp 1920w,
                     images/VV%202356x1571.webp 2356w"
-            sizes="(max-width: 700px) 125vw, (max-width: 1024px) 95vw, 40vw">
+            sizes="(max-width: 700px) 130vw, (max-width: 1024px) 100vw, 60vw">
           <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async" fetchpriority="high">
         </picture>
       </div>
@@ -1937,27 +1933,20 @@ body.overlay-active #view-home.is-active .hero-actions {
 </script>
 
 <!-- ============================================================
-     POSITION TUNER (опциональный редактор).
-     Активируется только при ?tuner=1 или если в localStorage
-     уже есть сохранённое состояние. Полностью изолирован,
-     не трогает основной CSS/JS.
+     LAYOUT TUNER · открой с ?tuner=1
      ============================================================ -->
 <script>
 (function () {
   'use strict';
 
-  var STORAGE_KEY = 'kravvi-tuner-v2';
-  var FLAG_KEY    = 'kravvi-tuner-flag-v2';
+  var STORAGE_KEY = 'kravvi-tuner-v5';
 
   var params = null;
-  try { params = new URLSearchParams(location.search); } catch (e) { params = null; }
+  try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
 
   if (tunerParam === '0') {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(FLAG_KEY);
-    } catch (e) {}
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     return;
   }
 
@@ -1970,120 +1959,131 @@ body.overlay-active #view-home.is-active .hero-actions {
   var shouldActivate = (tunerParam === '1') || (savedState !== null);
   if (!shouldActivate) return;
 
-  try { localStorage.setItem(FLAG_KEY, '1'); } catch (e) {}
+  var GROUPS = [
+    {
+      id: 'name',
+      title: 'KRAVVI',
+      props: [
+        { key: '--hero-top',    label: 'Top',    unit: 'vh', step: 0.1 },
+        { key: '--name-size',   label: 'Size',   unit: 'vw', step: 0.1 },
+        { key: '--name-x',      label: 'X',      unit: 'vw', step: 0.1 },
+        { key: '--name-y',      label: 'Y',      unit: 'vh', step: 0.1 },
+        { key: '--name-opsz',   label: 'opsz',   unit: '',   step: 1   },
+        { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
+      ]
+    },
+    {
+      id: 'photo',
+      title: 'Photo',
+      props: [
+        { key: '--photo-h',     label: 'Height',     unit: 'vh', step: 1 },
+        { key: '--photo-h-max', label: 'Max-height', unit: 'vw', step: 5 }
+      ]
+    },
+    {
+      id: 'stack',
+      title: 'Stack',
+      props: [
+        { key: '--hero-gap',       label: 'KRAVVI gap', unit: 'vh', step: 0.1 },
+        { key: '--hero-stack-gap', label: 'Text gap',   unit: 'px', step: 1 }
+      ]
+    },
+    {
+      id: 'author',
+      title: 'Author',
+      props: [
+        { key: '--author-size-v', label: 'Size', unit: '',   step: 0.5 },
+        { key: '--author-x',      label: 'X',    unit: 'vw', step: 0.5 },
+        { key: '--author-y',      label: 'Y',    unit: 'vh', step: 0.1 }
+      ]
+    },
+    {
+      id: 'tagline',
+      title: 'Tagline',
+      props: [
+        { key: '--desc-size-v',  label: 'Size',  unit: '',   step: 0.5 },
+        { key: '--desc-width-v', label: 'Width', unit: '',   step: 4 },
+        { key: '--desc-x',       label: 'X',     unit: 'vw', step: 0.5 },
+        { key: '--desc-y',       label: 'Y',     unit: 'vh', step: 0.1 }
+      ]
+    },
+    {
+      id: 'buttons',
+      title: 'Buttons',
+      props: [
+        { key: '--btn-size-v', label: 'Size',  unit: '',   step: 0.5 },
+        { key: '--btn-gap-v',  label: 'Gap',   unit: '',   step: 1 },
+        { key: '--btn-pad-x',  label: 'Pad X', unit: 'em', step: 0.05 },
+        { key: '--btn-pad-y',  label: 'Pad Y', unit: 'em', step: 0.05 },
+        { key: '--btn-x',      label: 'X',     unit: 'vw', step: 0.5 },
+        { key: '--btn-y',      label: 'Y',     unit: 'vh', step: 0.1 }
+      ]
+    }
+  ];
 
-  /* ---------------------------------------------------------- */
-  /*  КОНФИГ: какие переменные какому элементу принадлежат      */
-  /* ---------------------------------------------------------- */
-  var UNIT = {
-    '--name-size':      'vw',
-    '--name-x':         'vw',
-    '--name-y':         'vh',
-    '--name-opsz':      '',
-    '--photo-h':        'vh',
-    '--author-size-v':  '',
-    '--author-x':       'vw',
-    '--author-y':       'vh',
-    '--desc-size-v':    '',
-    '--desc-width-v':   '',
-    '--desc-x':         'vw',
-    '--desc-y':         'vh',
-    '--btn-size-v':     '',
-    '--btn-gap-v':      '',
-    '--btn-pad-x':      'em',
-    '--btn-pad-y':      'em',
-    '--btn-x':          'vw',
-    '--btn-y':          'vh'
-  };
-
-  var PROPS = {
-    name: [
-      { key: '--name-size', label: 'Size' },
-      { key: '--name-x',    label: 'X' },
-      { key: '--name-y',    label: 'Y' },
-      { key: '--name-opsz', label: 'opsz' }
-    ],
-    photo: [
-      { key: '--photo-h', label: 'Height' }
-    ],
-    author: [
-      { key: '--author-size-v', label: 'Size' },
-      { key: '--author-x',      label: 'X' },
-      { key: '--author-y',      label: 'Y' }
-    ],
-    tagline: [
-      { key: '--desc-size-v',   label: 'Size' },
-      { key: '--desc-width-v',  label: 'Width' },
-      { key: '--desc-x',        label: 'X' },
-      { key: '--desc-y',        label: 'Y' }
-    ],
-    buttons: [
-      { key: '--btn-size-v', label: 'Size' },
-      { key: '--btn-gap-v',  label: 'Gap' },
-      { key: '--btn-pad-x',  label: 'Pad X' },
-      { key: '--btn-pad-y',  label: 'Pad Y' },
-      { key: '--btn-x',      label: 'X' },
-      { key: '--btn-y',      label: 'Y' }
-    ]
-  };
-
-  var SELECTORS = {
-    name:    '.hero-name',
-    photo:   '.hero-photo',
-    author:  '.hero-author',
-    tagline: '.hero-tagline',
-    buttons: '.hero-actions'
-  };
-
-  /* Дефолты из оригинального CSS (числа без единиц). */
   var DEFAULTS = {
     desktop: {
-      '--name-size': '21.3', '--name-x': '0', '--name-y': '0', '--name-opsz': '96',
-      '--photo-h': '104',
+      '--hero-top': '10.3', '--name-size': '21.3', '--name-x': '0', '--name-y': '0',
+      '--name-opsz': '96', '--name-stroke': '0',
+      '--photo-h': '104', '--photo-h-max': '175',
+      '--hero-gap': '4.1', '--hero-stack-gap': '28',
       '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
       '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '-31', '--desc-y': '0.5',
       '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
       '--btn-x': '-31.2', '--btn-y': '-0.3'
     },
     tablet: {
-      '--name-size': '22', '--name-x': '0', '--name-y': '0', '--name-opsz': '96',
-      '--photo-h': '104',
+      '--hero-top': '16', '--name-size': '22', '--name-x': '0', '--name-y': '0',
+      '--name-opsz': '96', '--name-stroke': '0',
+      '--photo-h': '104', '--photo-h-max': '150',
+      '--hero-gap': '3', '--hero-stack-gap': '28',
       '--author-size-v': '22', '--author-x': '0', '--author-y': '0',
       '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '0', '--desc-y': '1',
       '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
       '--btn-x': '0', '--btn-y': '0.2'
     },
     phone: {
-      '--name-size': '22.9', '--name-x': '0', '--name-y': '8.1', '--name-opsz': '30',
-      '--photo-h': '104',
-      '--author-size-v': '19', '--author-x': '0', '--author-y': '9.9',
-      '--desc-size-v': '14', '--desc-width-v': '292', '--desc-x': '0', '--desc-y': '10.6',
+      '--hero-top': '15', '--name-size': '22.9', '--name-x': '0', '--name-y': '3.1',
+      '--name-opsz': '30', '--name-stroke': '0.33',
+      '--photo-h': '104', '--photo-h-max': '213',
+      '--hero-gap': '7.8', '--hero-stack-gap': '35',
+      '--author-size-v': '19', '--author-x': '0', '--author-y': '4.9',
+      '--desc-size-v': '14', '--desc-width-v': '292', '--desc-x': '0', '--desc-y': '5.6',
       '--btn-size-v': '11.3', '--btn-gap-v': '14', '--btn-pad-x': '1.75', '--btn-pad-y': '0.85',
-      '--btn-x': '0', '--btn-y': '9'
+      '--btn-x': '0', '--btn-y': '4'
     }
   };
 
   var ALL_KEYS = (function () {
     var out = [];
-    Object.keys(PROPS).forEach(function (el) {
-      PROPS[el].forEach(function (p) {
+    GROUPS.forEach(function (g) {
+      g.props.forEach(function (p) {
         if (out.indexOf(p.key) === -1) out.push(p.key);
       });
     });
     return out;
   })();
 
-  /* ---------------------------------------------------------- */
-  /*  СОСТОЯНИЕ                                                 */
-  /* ---------------------------------------------------------- */
+  function unitOf(key) {
+    for (var i = 0; i < GROUPS.length; i++)
+      for (var j = 0; j < GROUPS[i].props.length; j++)
+        if (GROUPS[i].props[j].key === key) return GROUPS[i].props[j].unit;
+    return '';
+  }
+
   var state = savedState || {};
   var currentContext = detectContext();
-  var currentElement = 'name';
-  var currentStep = 0.1;
   var appliedVars = [];
+
+  function isTouchContext() {
+    return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }
 
   function detectContext() {
     var w = window.innerWidth;
+    var isTouch = isTouchContext();
+
+    if (isTouch && w > 1024 && w <= 1366) return 'tablet';
     if (w > 1024) return 'desktop';
     if (w > 700)  return 'tablet';
     return 'phone';
@@ -2098,19 +2098,16 @@ body.overlay-active #view-home.is-active .hero-actions {
     });
     return out;
   }
-
   function setValue(ctx, key, value) {
     if (!state[ctx]) state[ctx] = {};
     state[ctx][key] = String(value);
     saveState();
   }
-
   function saveState() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
   }
 
   function applyContextValues() {
-    // Снять предыдущие инлайн-стили
     appliedVars.forEach(function (k) {
       document.documentElement.style.removeProperty(k);
     });
@@ -2120,8 +2117,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     ALL_KEYS.forEach(function (k) {
       var v = vals[k];
       if (v == null || v === '') return;
-      var unit = UNIT[k] || '';
-      document.documentElement.style.setProperty(k, v + unit);
+      document.documentElement.style.setProperty(k, v + unitOf(k));
       appliedVars.push(k);
     });
   }
@@ -2129,241 +2125,253 @@ body.overlay-active #view-home.is-active .hero-actions {
   function fmt(n) {
     var s = Number(n);
     if (!isFinite(s)) return '0';
-    // Округление до 4 знаков, без хвостовых нулей
     return String(parseFloat(s.toFixed(4)));
   }
 
-  /* ---------------------------------------------------------- */
-  /*  СТИЛИ ПАНЕЛИ (изолированные, с префиксом .tuner-)         */
-  /* ---------------------------------------------------------- */
   var styles = document.createElement('style');
   styles.textContent = ''
-    + '.tuner-fab{position:fixed;right:16px;bottom:64px;z-index:2147483000;'
-    + 'width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,255,255,.18);'
-    + 'background:rgba(20,20,20,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);'
-    + 'color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;'
-    + 'box-shadow:0 6px 24px rgba(0,0,0,.5);padding:0}'
-    + '.tuner-fab:hover{background:rgba(40,40,40,.9)}'
-    + '.tuner-fab svg{width:22px;height:22px;display:block;stroke:currentColor;fill:none;'
-    + 'stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}'
-    + '.tuner-panel{position:fixed;top:16px;right:16px;bottom:16px;width:360px;'
-    + 'max-width:calc(100vw - 32px);z-index:2147483001;'
-    + 'background:rgba(18,18,18,.96);backdrop-filter:blur(20px) saturate(1.2);'
-    + '-webkit-backdrop-filter:blur(20px) saturate(1.2);'
-    + 'border:1px solid rgba(255,255,255,.1);border-radius:14px;color:#fff;'
-    + 'font:12px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;'
+    + '.tuner-fab{position:fixed;right:20px;bottom:20px;z-index:2147483000;'
+    + 'width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.14);'
+    + 'background:rgba(20,20,22,.88);backdrop-filter:blur(16px) saturate(1.3);'
+    + '-webkit-backdrop-filter:blur(16px) saturate(1.3);color:#fff;'
+    + 'display:flex;align-items:center;justify-content:center;cursor:pointer;'
+    + 'box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03) inset;'
+    + 'padding:0;transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s ease}'
+    + '.tuner-fab:hover{background:rgba(35,35,38,.95);transform:scale(1.06)}'
+    + '.tuner-fab:active{transform:scale(.94)}'
+    + '.tuner-fab svg{width:20px;height:20px;display:block;stroke:currentColor;fill:none;'
+    + 'stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}'
+
+    + '.tuner-panel{position:fixed;right:20px;bottom:84px;width:360px;'
+    + 'max-width:calc(100vw - 40px);max-height:calc(100dvh - 120px);z-index:2147483001;'
+    + 'background:rgba(16,16,18,.95);backdrop-filter:blur(24px) saturate(1.4);'
+    + '-webkit-backdrop-filter:blur(24px) saturate(1.4);'
+    + 'border:1px solid rgba(255,255,255,.09);border-radius:18px;color:#fff;'
+    + 'font:13px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;'
     + 'display:flex;flex-direction:column;overflow:hidden;'
-    + 'box-shadow:0 16px 48px rgba(0,0,0,.6)}'
-    + '.tuner-panel[hidden]{display:none}'
-    + '.tuner-head{padding:10px 12px;display:flex;align-items:center;justify-content:space-between;'
-    + 'border-bottom:1px solid rgba(255,255,255,.08);font-weight:600;font-size:13px;flex-shrink:0}'
-    + '.tuner-head .tuner-dot{display:inline-block;width:8px;height:8px;border-radius:50%;'
-    + 'background:#A8895C;margin-right:8px;vertical-align:middle}'
-    + '.tuner-close{background:none;border:0;color:#fff;font-size:20px;line-height:1;cursor:pointer;'
-    + 'padding:0 4px;font-family:inherit}'
-    + '.tuner-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}'
-    + '.tuner-group{display:flex;flex-direction:column;gap:6px}'
-    + '.tuner-label{font-size:10px;opacity:.55;text-transform:uppercase;letter-spacing:.08em}'
-    + '.tuner-tabs{display:flex;flex-wrap:wrap;gap:4px}'
-    + '.tuner-tabs button{flex:1;min-width:56px;padding:6px 8px;background:rgba(255,255,255,.06);'
-    + 'border:1px solid transparent;border-radius:6px;color:#fff;cursor:pointer;font-size:11px;'
-    + 'font-family:inherit;transition:background .15s ease,border-color .15s ease}'
-    + '.tuner-tabs button:hover{background:rgba(255,255,255,.12)}'
-    + '.tuner-tabs button.is-active{background:rgba(168,137,92,.35);border-color:rgba(168,137,92,.7)}'
-    + '.tuner-step-row{display:grid;grid-template-columns:60px 1fr;gap:8px;align-items:center}'
-    + '.tuner-step-row input{width:100%;background:rgba(255,255,255,.06);'
-    + 'border:1px solid rgba(255,255,255,.12);border-radius:4px;color:#fff;padding:5px 6px;'
-    + 'font-size:12px;font-family:inherit;text-align:right}'
+    + 'box-shadow:0 24px 72px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.03) inset;'
+    + 'opacity:0;transform:translateY(10px) scale(.97);transform-origin:bottom right;'
+    + 'pointer-events:none;'
+    + 'transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1)}'
+    + '.tuner-panel.is-open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}'
+
+    + '.tuner-head{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;'
+    + 'border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}'
+    + '.tuner-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;letter-spacing:.01em}'
+    + '.tuner-dot{width:6px;height:6px;border-radius:50%;background:#A8895C;box-shadow:0 0 10px rgba(168,137,92,.8)}'
+    + '.tuner-close{width:26px;height:26px;display:flex;align-items:center;justify-content:center;'
+    + 'background:transparent;border:0;color:rgba(255,255,255,.55);cursor:pointer;border-radius:8px;'
+    + 'font-size:18px;line-height:1;padding:0;font-family:inherit;transition:background .15s,color .15s}'
+    + '.tuner-close:hover{background:rgba(255,255,255,.08);color:#fff}'
+
+    + '.tuner-body{flex:1;overflow-y:auto;padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px;'
+    + 'scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}'
+    + '.tuner-body::-webkit-scrollbar{width:6px}'
+    + '.tuner-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}'
+
+    + '.tuner-group{display:flex;flex-direction:column;gap:7px}'
+    + '.tuner-group-title{font-size:10px;font-weight:600;opacity:.55;text-transform:uppercase;letter-spacing:.14em}'
+
+    + '.tuner-tabs{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
+    + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
+    + '.tuner-tabs button{flex:1;padding:7px 6px;background:transparent;border:0;border-radius:8px;'
+    + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;font-family:inherit;font-weight:500;'
+    + 'transition:background .15s,color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '.tuner-tabs button:hover{color:#fff;background:rgba(255,255,255,.05)}'
+    + '.tuner-tabs button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
+    + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
+
+    + '.tuner-step{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
+    + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
+    + '.tuner-step button{flex:1;padding:6px 4px;background:transparent;border:0;border-radius:8px;'
+    + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;font-family:inherit;font-weight:500;'
+    + 'transition:background .15s,color .15s}'
+    + '.tuner-step button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
+    + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
+
     + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
-    + '.tuner-prop{display:grid;grid-template-columns:66px 1fr;gap:8px;align-items:center}'
-    + '.tuner-prop-label{font-size:11px;opacity:.7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
-    + '.tuner-prop-controls{display:grid;grid-template-columns:26px 1fr 22px 26px;gap:4px;align-items:center}'
-    + '.tuner-prop-controls button{background:rgba(255,255,255,.08);border:0;color:#fff;'
-    + 'border-radius:4px;padding:4px 0;cursor:pointer;font-size:14px;line-height:1;font-family:inherit}'
-    + '.tuner-prop-controls button:hover{background:rgba(255,255,255,.18)}'
-    + '.tuner-prop-controls input{width:100%;background:rgba(255,255,255,.06);'
-    + 'border:1px solid rgba(255,255,255,.12);border-radius:4px;color:#fff;padding:4px 6px;'
-    + 'font-size:12px;font-family:inherit;text-align:right}'
-    + '.tuner-unit{font-size:10px;opacity:.5;text-align:center;pointer-events:none}'
-    + '.tuner-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;'
-    + 'padding-top:8px;border-top:1px solid rgba(255,255,255,.08)}'
-    + '.tuner-actions button{padding:7px;background:rgba(255,255,255,.08);border:0;color:#fff;'
-    + 'border-radius:6px;cursor:pointer;font-size:11px;font-family:inherit}'
-    + '.tuner-actions button:hover{background:rgba(255,255,255,.18)}'
-    + '.tuner-actions button.wide{grid-column:1/-1}'
-    + '.tuner-json{width:100%;min-height:90px;background:rgba(0,0,0,.5);'
-    + 'border:1px solid rgba(255,255,255,.1);color:#eee;font-family:ui-monospace,monospace;'
-    + 'font-size:10px;padding:6px;border-radius:4px;resize:vertical;box-sizing:border-box}'
-    + '.tuner-outline{outline:2px dashed rgba(168,137,92,.9) !important;'
-    + 'outline-offset:3px !important}'
+    + '.tuner-prop{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;padding:2px 0}'
+    + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
+    + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+    + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 26px 28px;gap:4px;align-items:center}'
+    + '.tuner-prop-controls button{background:rgba(255,255,255,.05);border:0;color:rgba(255,255,255,.75);'
+    + 'border-radius:7px;padding:0;height:28px;cursor:pointer;font-size:16px;font-family:inherit;font-weight:400;'
+    + 'display:flex;align-items:center;justify-content:center;'
+    + 'transition:background .12s,color .12s,transform .12s}'
+    + '.tuner-prop-controls button:hover{background:rgba(255,255,255,.11);color:#fff}'
+    + '.tuner-prop-controls button:active{background:rgba(255,255,255,.18);transform:scale(.92)}'
+    + '.tuner-prop-controls input{width:100%;background:rgba(255,255,255,.04);'
+    + 'border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#fff;padding:5px 6px;'
+    + 'font-size:12.5px;font-family:inherit;text-align:center;font-weight:500;font-variant-numeric:tabular-nums;'
+    + 'transition:border-color .15s,background .15s}'
+    + '.tuner-prop-controls input:focus{outline:none;border-color:rgba(168,137,92,.6);background:rgba(255,255,255,.07)}'
+    + '.tuner-prop-controls input::-webkit-outer-spin-button,'
+    + '.tuner-prop-controls input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}'
+    + '.tuner-prop-controls input[type=number]{-moz-appearance:textfield}'
+    + '.tuner-unit{font-size:10px;color:rgba(255,255,255,.35);text-align:center;pointer-events:none;'
+    + 'font-variant-numeric:tabular-nums}'
+
+    + '.tuner-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:12px;margin-top:2px;'
+    + 'border-top:1px solid rgba(255,255,255,.06)}'
+    + '.tuner-actions button{padding:8px 10px;background:rgba(255,255,255,.05);border:0;'
+    + 'color:rgba(255,255,255,.8);border-radius:9px;cursor:pointer;font-size:11.5px;font-family:inherit;'
+    + 'font-weight:500;letter-spacing:.01em;transition:background .15s,color .15s}'
+    + '.tuner-actions button:hover{background:rgba(255,255,255,.1);color:#fff}'
+    + '.tuner-actions button:active{transform:scale(.97)}'
+    + '.tuner-actions button.wide{grid-column:1/-1;background:rgba(168,137,92,.18);color:#E8C89A;'
+    + 'border:1px solid rgba(168,137,92,.3)}'
+    + '.tuner-actions button.wide:hover{background:rgba(168,137,92,.28);color:#fff}'
+    + '.tuner-actions button.danger{color:rgba(255,140,140,.85)}'
+    + '.tuner-actions button.danger:hover{background:rgba(255,80,80,.14);color:#ffb0b0}'
+
+    + '.tuner-json{width:100%;min-height:110px;background:rgba(0,0,0,.55);'
+    + 'border:1px solid rgba(255,255,255,.08);color:#e0e0e0;'
+    + 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;'
+    + 'padding:8px 10px;border-radius:9px;resize:vertical;box-sizing:border-box;line-height:1.5}'
+    + '.tuner-json:focus{outline:none;border-color:rgba(168,137,92,.5)}'
+
     + '@media (max-width:700px){'
-    + '.tuner-panel{top:8px;right:8px;bottom:8px;left:8px;width:auto}'
-    + '.tuner-fab{width:52px;height:52px;right:12px;bottom:72px}'
+    + '.tuner-fab{right:14px;bottom:14px;width:52px;height:52px}'
+    + '.tuner-panel{right:8px;left:8px;bottom:76px;width:auto;max-width:none;'
+    + 'max-height:calc(100dvh - 100px);border-radius:16px}'
     + '}';
+
   document.head.appendChild(styles);
 
-  /* ---------------------------------------------------------- */
-  /*  DOM                                                       */
-  /* ---------------------------------------------------------- */
   var fab = document.createElement('button');
   fab.type = 'button';
   fab.className = 'tuner-fab';
-  fab.title = 'Position tuner';
-  fab.setAttribute('aria-label', 'Open position tuner');
+  fab.title = 'Layout tuner';
+  fab.setAttribute('aria-label', 'Open layout tuner');
   fab.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
-    + '<circle cx="12" cy="12" r="3"/>'
-    + '<path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1'
-    + 'a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1'
-    + 'a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8'
-    + 'l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1'
-    + 'a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8'
-    + 'l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1'
-    + 'a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8'
-    + 'l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1'
-    + 'a1.7 1.7 0 0 0-1.5 1z"/>'
+    + '<path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/>'
+    + '<path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/>'
+    + '<path d="M4 18h12"/><path d="M20 18h0"/><circle cx="18" cy="18" r="2"/>'
     + '</svg>';
 
   var panel = document.createElement('div');
   panel.className = 'tuner-panel';
-  panel.hidden = true;
   panel.innerHTML = ''
     + '<div class="tuner-head">'
-    +   '<span><span class="tuner-dot"></span>Position Tuner</span>'
+    +   '<span class="tuner-title"><span class="tuner-dot"></span>Layout Tuner</span>'
     +   '<button class="tuner-close" type="button" aria-label="Close">×</button>'
     + '</div>'
     + '<div class="tuner-body">'
     +   '<div class="tuner-group">'
-    +     '<div class="tuner-label">Context</div>'
+    +     '<div class="tuner-group-title">Context</div>'
     +     '<div class="tuner-tabs" data-role="contexts">'
-    +       '<button type="button" data-ctx="desktop">PC</button>'
+    +       '<button type="button" data-ctx="desktop">Desktop</button>'
     +       '<button type="button" data-ctx="tablet">Tablet</button>'
     +       '<button type="button" data-ctx="phone">Phone</button>'
     +     '</div>'
     +   '</div>'
     +   '<div class="tuner-group">'
-    +     '<div class="tuner-label">Element</div>'
-    +     '<div class="tuner-tabs" data-role="elements">'
-    +       '<button type="button" data-el="name">Name</button>'
-    +       '<button type="button" data-el="photo">Photo</button>'
-    +       '<button type="button" data-el="author">Author</button>'
-    +       '<button type="button" data-el="tagline">Tagline</button>'
-    +       '<button type="button" data-el="buttons">Buttons</button>'
+    +     '<div class="tuner-group-title">Step</div>'
+    +     '<div class="tuner-step" data-role="step">'
+    +       '<button type="button" data-step="0.1">0.1</button>'
+    +       '<button type="button" data-step="0.5" class="is-active">0.5</button>'
+    +       '<button type="button" data-step="1">1</button>'
+    +       '<button type="button" data-step="5">5</button>'
     +     '</div>'
     +   '</div>'
-    +   '<div class="tuner-group">'
-    +     '<div class="tuner-label">Step</div>'
-    +     '<div class="tuner-step-row">'
-    +       '<span style="font-size:11px;opacity:.7">Δ</span>'
-    +       '<input type="number" data-role="step" value="0.1" step="0.001" min="0.001">'
-    +     '</div>'
-    +   '</div>'
-    +   '<div class="tuner-group">'
-    +     '<div class="tuner-label">Properties</div>'
-    +     '<div class="tuner-props" data-role="props"></div>'
-    +   '</div>'
+    +   '<div data-role="groups"></div>'
     +   '<div class="tuner-actions">'
-    +     '<button type="button" data-action="copy">Copy JSON</button>'
-    +     '<button type="button" data-action="reset-el">Reset element</button>'
+    +     '<button type="button" class="wide" data-action="copy">Copy JSON</button>'
     +     '<button type="button" data-action="reset-ctx">Reset context</button>'
-    +     '<button type="button" data-action="reset-all">Reset all</button>'
-    +     '<button type="button" class="wide" data-action="outline">Toggle outlines</button>'
+    +     '<button type="button" class="danger" data-action="reset-all">Reset all</button>'
     +   '</div>'
-    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy JSON → сюда появится результат"></textarea>'
+    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy JSON → результат появится здесь"></textarea>'
     + '</div>';
 
   document.body.appendChild(fab);
   document.body.appendChild(panel);
 
-  /* ---------------------------------------------------------- */
-  /*  ПОДСВЕТКА АКТИВНОГО ЭЛЕМЕНТА                              */
-  /* ---------------------------------------------------------- */
-  var outlineOn = true;
-  function refreshOutline() {
-    Object.keys(SELECTORS).forEach(function (k) {
-      var el = document.querySelector(SELECTORS[k]);
-      if (!el) return;
-      if (outlineOn && k === currentElement) el.classList.add('tuner-outline');
-      else el.classList.remove('tuner-outline');
-    });
-  }
+  var currentStep = 0.5;
 
-  /* ---------------------------------------------------------- */
-  /*  РЕНДЕР ПАНЕЛИ                                             */
-  /* ---------------------------------------------------------- */
   function renderContexts() {
     panel.querySelectorAll('[data-role="contexts"] button').forEach(function (b) {
       b.classList.toggle('is-active', b.getAttribute('data-ctx') === currentContext);
     });
   }
-  function renderElements() {
-    panel.querySelectorAll('[data-role="elements"] button').forEach(function (b) {
-      b.classList.toggle('is-active', b.getAttribute('data-el') === currentElement);
+  function renderStep() {
+    panel.querySelectorAll('[data-role="step"] button').forEach(function (b) {
+      var v = parseFloat(b.getAttribute('data-step'));
+      b.classList.toggle('is-active', Math.abs(v - currentStep) < 0.0001);
     });
   }
-  function renderProps() {
-    var box = panel.querySelector('[data-role="props"]');
+  function renderGroups() {
+    var box = panel.querySelector('[data-role="groups"]');
     box.innerHTML = '';
-    var props = PROPS[currentElement] || [];
     var vals = getValues(currentContext);
-    props.forEach(function (p) {
-      var row = document.createElement('div');
-      row.className = 'tuner-prop';
 
-      var label = document.createElement('div');
-      label.className = 'tuner-prop-label';
-      label.textContent = p.label + (UNIT[p.key] ? ' (' + UNIT[p.key] + ')' : '');
+    GROUPS.forEach(function (g) {
+      var groupEl = document.createElement('div');
+      groupEl.className = 'tuner-group';
 
-      var ctrls = document.createElement('div');
-      ctrls.className = 'tuner-prop-controls';
+      var title = document.createElement('div');
+      title.className = 'tuner-group-title';
+      title.textContent = g.title;
+      groupEl.appendChild(title);
 
-      var minus = document.createElement('button');
-      minus.type = 'button';
-      minus.textContent = '−';
-      minus.setAttribute('data-dir', '-1');
-      minus.setAttribute('data-key', p.key);
+      var propsEl = document.createElement('div');
+      propsEl.className = 'tuner-props';
 
-      var input = document.createElement('input');
-      input.type = 'number';
-      input.step = 'any';
-      input.value = vals[p.key];
-      input.setAttribute('data-key', p.key);
+      g.props.forEach(function (p) {
+        var row = document.createElement('div');
+        row.className = 'tuner-prop';
 
-      var unit = document.createElement('span');
-      unit.className = 'tuner-unit';
-      unit.textContent = UNIT[p.key] || '';
+        var label = document.createElement('div');
+        label.className = 'tuner-prop-label';
+        label.textContent = p.label;
 
-      var plus = document.createElement('button');
-      plus.type = 'button';
-      plus.textContent = '+';
-      plus.setAttribute('data-dir', '1');
-      plus.setAttribute('data-key', p.key);
+        var ctrls = document.createElement('div');
+        ctrls.className = 'tuner-prop-controls';
 
-      ctrls.appendChild(minus);
-      ctrls.appendChild(input);
-      ctrls.appendChild(unit);
-      ctrls.appendChild(plus);
+        var minus = document.createElement('button');
+        minus.type = 'button';
+        minus.textContent = '−';
+        minus.setAttribute('data-dir', '-1');
+        minus.setAttribute('data-key', p.key);
 
-      row.appendChild(label);
-      row.appendChild(ctrls);
-      box.appendChild(row);
+        var input = document.createElement('input');
+        input.type = 'number';
+        input.step = 'any';
+        input.value = vals[p.key];
+        input.setAttribute('data-key', p.key);
+
+        var unitEl = document.createElement('span');
+        unitEl.className = 'tuner-unit';
+        unitEl.textContent = p.unit || '—';
+
+        var plus = document.createElement('button');
+        plus.type = 'button';
+        plus.textContent = '+';
+        plus.setAttribute('data-dir', '1');
+        plus.setAttribute('data-key', p.key);
+
+        ctrls.appendChild(minus);
+        ctrls.appendChild(input);
+        ctrls.appendChild(unitEl);
+        ctrls.appendChild(plus);
+
+        row.appendChild(label);
+        row.appendChild(ctrls);
+        propsEl.appendChild(row);
+      });
+
+      groupEl.appendChild(propsEl);
+      box.appendChild(groupEl);
     });
   }
-
   function renderAll() {
     renderContexts();
-    renderElements();
-    renderProps();
-    refreshOutline();
+    renderStep();
+    renderGroups();
   }
 
-  /* ---------------------------------------------------------- */
-  /*  СОБЫТИЯ                                                   */
-  /* ---------------------------------------------------------- */
-  fab.addEventListener('click', function () {
-    panel.hidden = !panel.hidden;
-  });
+  fab.addEventListener('click', function () { panel.classList.toggle('is-open'); });
   panel.querySelector('.tuner-close').addEventListener('click', function () {
-    panel.hidden = true;
+    panel.classList.remove('is-open');
   });
 
   panel.querySelector('[data-role="contexts"]').addEventListener('click', function (e) {
@@ -2374,21 +2382,14 @@ body.overlay-active #view-home.is-active .hero-actions {
     renderAll();
   });
 
-  panel.querySelector('[data-role="elements"]').addEventListener('click', function (e) {
-    var b = e.target.closest('button[data-el]');
+  panel.querySelector('[data-role="step"]').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-step]');
     if (!b) return;
-    currentElement = b.getAttribute('data-el');
-    renderElements();
-    renderProps();
-    refreshOutline();
+    currentStep = parseFloat(b.getAttribute('data-step'));
+    renderStep();
   });
 
-  panel.querySelector('[data-role="step"]').addEventListener('input', function (e) {
-    var v = parseFloat(e.target.value);
-    if (isFinite(v) && v > 0) currentStep = v;
-  });
-
-  panel.querySelector('[data-role="props"]').addEventListener('click', function (e) {
+  panel.querySelector('[data-role="groups"]').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-dir]');
     if (!b) return;
     var key = b.getAttribute('data-key');
@@ -2398,10 +2399,10 @@ body.overlay-active #view-home.is-active .hero-actions {
     var next = cur + dir * currentStep;
     setValue(currentContext, key, fmt(next));
     applyContextValues();
-    renderProps();
+    renderGroups();
   });
 
-  panel.querySelector('[data-role="props"]').addEventListener('input', function (e) {
+  panel.querySelector('[data-role="groups"]').addEventListener('input', function (e) {
     var input = e.target.closest('input[data-key]');
     if (!input) return;
     var key = input.getAttribute('data-key');
@@ -2420,31 +2421,17 @@ body.overlay-active #view-home.is-active .hero-actions {
       var json = exportJSON();
       var ta = panel.querySelector('[data-role="json"]');
       ta.value = json;
-      try {
-        ta.select();
-        document.execCommand('copy');
-      } catch (err) {}
+      try { ta.select(); document.execCommand('copy'); } catch (err) {}
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(json).catch(function () {});
       }
+      var old = b.textContent;
       b.textContent = 'Copied!';
-      setTimeout(function () { b.textContent = 'Copy JSON'; }, 1200);
-    }
-
-    if (action === 'reset-el') {
-      if (!confirm('Сбросить все свойства элемента «' + currentElement + '» в контексте «' + currentContext + '»?')) return;
-      if (state[currentContext]) {
-        PROPS[currentElement].forEach(function (p) {
-          delete state[currentContext][p.key];
-        });
-        saveState();
-      }
-      applyContextValues();
-      renderProps();
+      setTimeout(function () { b.textContent = old; }, 1200);
     }
 
     if (action === 'reset-ctx') {
-      if (!confirm('Сбросить весь контекст «' + currentContext + '»?')) return;
+      if (!confirm('Сбросить контекст «' + currentContext + '»?')) return;
       delete state[currentContext];
       saveState();
       applyContextValues();
@@ -2452,22 +2439,14 @@ body.overlay-active #view-home.is-active .hero-actions {
     }
 
     if (action === 'reset-all') {
-      if (!confirm('Сбросить ВСЕ сохранённые значения во всех контекстах?')) return;
+      if (!confirm('Сбросить ВСЕ значения во всех контекстах?')) return;
       state = {};
       saveState();
       applyContextValues();
       renderAll();
     }
-
-    if (action === 'outline') {
-      outlineOn = !outlineOn;
-      refreshOutline();
-    }
   });
 
-  /* ---------------------------------------------------------- */
-  /*  ЭКСПОРТ                                                   */
-  /* ---------------------------------------------------------- */
   function exportJSON() {
     var out = {};
     ['desktop', 'tablet', 'phone'].forEach(function (ctx) {
@@ -2476,16 +2455,13 @@ body.overlay-active #view-home.is-active .hero-actions {
       ALL_KEYS.forEach(function (k) {
         var v = vals[k];
         if (v == null || v === '') return;
-        o[k] = String(v) + (UNIT[k] || '');
+        o[k] = String(v) + unitOf(k);
       });
       out[ctx] = o;
     });
     return JSON.stringify(out, null, 2);
   }
 
-  /* ---------------------------------------------------------- */
-  /*  РЕАКЦИЯ НА СМЕНУ КОНТЕКСТА (resize/orientation)           */
-  /* ---------------------------------------------------------- */
   function onResize() {
     var next = detectContext();
     if (next === currentContext) return;
@@ -2503,9 +2479,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     rT = setTimeout(onResize, 150);
   });
 
-  /* ---------------------------------------------------------- */
-  /*  СТАРТ                                                     */
-  /* ---------------------------------------------------------- */
   applyContextValues();
   renderAll();
 
