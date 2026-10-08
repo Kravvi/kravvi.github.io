@@ -44,7 +44,7 @@ svg { display: block; }
    2. TOKENS
    ============================================================ */
 :root {
-  --font-hero:    "Bodoni Moda", Georgia, "Times New Roman", serif;
+  --font-hero: "Bodoni Moda", Georgia, "Times New Roman", serif;
   --font-ui: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
   --bg: #0A0A0A;
@@ -70,28 +70,28 @@ svg { display: block; }
   --cols: 4;
 
   --ref-w: 1920;
-  --hero-top: 10.3vh;
-  --hero-gap: 4.1vh;
-  --hero-text-gap: 8px;
-  --hero-stack-gap: 28px;
-  --photo-h: 104vh;
-  --photo-h-max: 175vw;
+
+  /* ---------- HOME FRAME ---------- */
+  --frame-h: 104%;           /* % от #app (100dvh) */
+  --frame-ar-w: 2356;        /* AR фото (ширина) */
+  --frame-ar-h: 1571;        /* AR фото (высота) */
+
+  /* ---------- ИМЯ (вне фрейма) ---------- */
+  --name-top: 10.3vh;
   --name-size: 21.3vw;
-  --name-x: 0vw;
-  --name-y: 0vh;
   --name-opsz: 96;
   --name-stroke: 0px;
 
+  /* ---------- СТЕК ВНУТРИ ФРЕЙМА ---------- */
+  /* Координаты в единицах контейнера фрейма (cqw/cqh) */
+  --stack-x: 6.5vw;          /* на ПК удобнее vw — как было в старой схеме */
+  --stack-y: 50cqh;
+
+  --hero-text-gap: 8px;
+  --hero-stack-gap: 28px;
+
+  /* ---------- ТИПОГРАФИКА ГЛАВНОЙ ---------- */
   --author-size-v: 22;
-  --author-x: -31vw;
-  --author-y: 0vh;
-
-  --desc-x: -31vw;
-  --desc-y: 0.5vh;
-
-  --btn-x: -31.2vw;
-  --btn-y: -0.3vh;
-
   --desc-size-v: 16;
   --desc-width-v: 478;
   --btn-size-v: 13;
@@ -133,220 +133,6 @@ svg { display: block; }
 
   --vv-bottom: 0px;
   --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
-}
-
-@media (max-width: 1024px) {
-  :root {
-    --gap: 14px;
-    --glass-radius: 22px;
-    --glass-blur: 22px;
-
-    --hero-gap: 3vh;
-    --photo-h: 104vh;
-    --photo-h-max: 150vw;
-
-    --name-x: 0vw;
-    --name-y: 0vh;
-    --author-x: 0vw;
-    --author-y: 0vh;
-    --desc-x: 0vw;
-    --desc-y: 0vh;
-    --btn-x: 0vw;
-    --btn-y: 0vh;
-
-    --actions-max-w: 2000px;
-  }
-
-  .hero-stack {
-    position: absolute !important;
-    top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap)) !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    transform: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: var(--hero-stack-gap);
-    padding-left: max(20px, var(--safe-left));
-    padding-right: max(20px, var(--safe-right));
-    pointer-events: none;
-  }
-  .hero-stack > * { pointer-events: auto; }
-
-  .hero-text { align-items: center; text-align: center; }
-  .hero-actions { justify-content: center; }
-
-  .hero-author {
-    width: var(--desc-width);
-    box-sizing: border-box;
-    text-align: center;
-  }
-
-  .home-stage::after {
-    content: "";
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    height: 55%;
-    z-index: 2;
-    pointer-events: none;
-    background: linear-gradient(
-      0deg,
-      #0A0A0A 0%,
-      rgba(10,10,10,0.92) 30%,
-      rgba(10,10,10,0.62) 62%,
-      rgba(10,10,10,0) 100%
-    );
-  }
-
-  .view-grid {
-    padding:
-      calc(var(--gap) + var(--safe-top))
-      calc(var(--gap) + var(--safe-right))
-      calc(var(--gap) + var(--bottom-safe))
-      calc(var(--gap) + var(--safe-left));
-    justify-content: flex-start;
-  }
-
-  .view-header {
-    max-width: none;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .grid {
-    max-width: none;
-    max-height: none;
-  }
-}
-
-@media (max-width: 1024px) and (min-width: 701px) {
-  :root {
-    --ref-w: 900;
-    --hero-top: 16vh;
-    --hero-gap: 3vh;
-    --photo-h: 104vh;
-    --name-size: 22vw;
-    --name-opsz: 96;
-    --name-stroke: 0px;
-    --name-x: 0vw;
-    --name-y: 0vh;
-    --author-size-v: 22;
-    --author-x: 0vw;
-    --author-y: 0vh;
-    --desc-size-v: 16;
-    --desc-width-v: 478;
-    --desc-x: 0vw;
-    --desc-y: 1vh;
-    --btn-size-v: 13;
-    --btn-gap-v: 15;
-    --btn-x: 0vw;
-    --btn-y: 0.2vh;
-  }
-}
-
-@media (max-width: 700px) {
-  :root {
-    --gap: 10px;
-    --cols: 2;
-    --glass-radius: 20px;
-    --glass-blur: 20px;
-
-    --ref-w: 402;
-
-    --hero-top: 14vh;
-    --hero-gap: 7.8vh;
-    --photo-h: 104vh;
-    --photo-h-max: 185vw;
-    --name-size: 22.9vw;
-    --name-x: 0vw;
-    --name-y: 8.1vh;
-    --name-opsz: 30;
-    --name-stroke: 0.33px;
-
-    --author-size-v: 19;
-    --author-x: 0vw;
-    --author-y: 9.9vh;
-
-    --desc-size-v: 14;
-    --desc-width-v: 292;
-    --desc-x: 0vw;
-    --desc-y: 10.6vh;
-
-    --btn-size-v: 11.3;
-    --btn-gap-v: 14;
-    --btn-pad-y: 0.85em;
-    --btn-pad-x: 1.75em;
-    --btn-scale: 0.95;
-    --btn-x: 0vw;
-    --btn-y: 9vh;
-
-    --actions-max-w: 250px;
-  }
-
-  /* Firefox для Android: чуть крупнее кнопки, чтобы компенсировать
-     его раздутый viewport. */
-  html.is-firefox-mobile {
-    --btn-scale: 1.1;
-  }
-
-  .hero-name {
-    font-optical-sizing: none;
-    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
-    font-weight: 400;
-  }
-
-  .hero-tagline {
-    text-align: justify !important;
-    text-justify: inter-word !important;
-    text-align-last: left !important;
-    hyphens: none !important;
-    -webkit-hyphens: none !important;
-    -ms-hyphens: none !important;
-    overflow-wrap: normal;
-    word-break: normal;
-  }
-
-  .view-grid {
-    padding: 0 !important;
-    gap: 0 !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-  }
-  .view-header {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding:
-      calc(10px + var(--safe-top))
-      max(10px, var(--safe-right))
-      6px
-      max(10px, var(--safe-left)) !important;
-  }
-  .grid {
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: none !important;
-    align-self: stretch !important;
-    flex: 1 1 auto;
-    min-height: 0;
-    padding:
-      0
-      max(10px, var(--safe-right))
-      max(10px, var(--bottom-safe))
-      max(10px, var(--safe-left)) !important;
-    gap: 10px !important;
-  }
-
-  [data-tile-id="photo-archive"] .tile-content,
-  [data-tile-id="mail"] .tile-content {
-    flex-direction: column-reverse;
-  }
-  [data-tile-id="photo-archive"] .tile-bottom,
-  [data-tile-id="mail"] .tile-bottom {
-    align-items: flex-end;
-    text-align: right;
-  }
 }
 
 /* ============================================================
@@ -546,9 +332,10 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   overflow: hidden;
 }
 
+/* ---------- ИМЯ ---------- */
 .hero-name {
   position: absolute;
-  top: var(--hero-top);
+  top: var(--name-top);
   left: 50%;
   margin: 0;
   font-family: var(--font-hero);
@@ -573,7 +360,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 
   opacity: 0;
   filter: blur(14px);
-  transform: translateX(-50%) translate(var(--name-x), calc(var(--name-y) + 20px));
+  transform: translateX(-50%) translateY(20px);
   transition:
     opacity 400ms var(--ease-in-soft),
     filter 400ms var(--ease-in-soft),
@@ -582,32 +369,41 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 #view-home.is-active .hero-name {
   opacity: 1;
   filter: blur(0);
-  transform: translateX(-50%) translate(var(--name-x), var(--name-y));
+  transform: translateX(-50%) translateY(0);
   transition:
     opacity var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     filter var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     transform var(--dur-name) var(--ease-out-smooth) var(--delay-name);
 }
 
-.hero-photo-wrap {
+/* ---------- ФРЕЙМ (фото + стек) ---------- */
+.hero-frame {
   position: absolute;
-  inset: 0;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  pointer-events: none;
-}
-
-/* <picture> не должен участвовать в layout — img остаётся
-   прямым flex-элементом .hero-photo-wrap. */
-.hero-photo-wrap picture { display: contents; }
-
-.hero-photo {
-  position: relative;
-  height: min(var(--photo-h), var(--photo-h-max));
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  aspect-ratio: var(--frame-ar-w) / var(--frame-ar-h);
+  height: var(--frame-h);
   width: auto;
   max-width: none;
+  z-index: 2;
+  pointer-events: none;
+  container-type: size;
+  container-name: heroframe;
+}
+
+.hero-frame picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.hero-photo {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
@@ -630,11 +426,11 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     transform var(--dur-photo) var(--ease-out-smooth) var(--delay-photo);
 }
 
+/* ---------- СТЕК ---------- */
 .hero-stack {
   position: absolute;
-  top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap));
-  left: 50%;
-  transform: translateX(-50%);
+  left: var(--stack-x);
+  top: var(--stack-y);
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -663,7 +459,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 
   opacity: 0;
   filter: blur(10px);
-  transform: translate(var(--author-x), calc(var(--author-y) + 14px));
+  transform: translateY(14px);
   transition:
     opacity 400ms var(--ease-in-soft),
     filter 400ms var(--ease-in-soft),
@@ -672,7 +468,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 #view-home.is-active .hero-author {
   opacity: 1;
   filter: blur(0);
-  transform: translate(var(--author-x), var(--author-y));
+  transform: translateY(0);
   transition:
     opacity var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
     filter var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
@@ -693,7 +489,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 
   opacity: 0;
   filter: blur(10px);
-  transform: translate(var(--desc-x), calc(var(--desc-y) + 18px));
+  transform: translateY(18px);
   transition:
     opacity 400ms var(--ease-in-soft),
     filter 400ms var(--ease-in-soft),
@@ -702,7 +498,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 #view-home.is-active .hero-tagline {
   opacity: 1;
   filter: blur(0);
-  transform: translate(var(--desc-x), var(--desc-y));
+  transform: translateY(0);
   transition:
     opacity var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
     filter var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
@@ -719,16 +515,10 @@ body.overlay-active #view-home.is-active .hero-tagline {
     filter 500ms var(--ease-in-soft),
     transform 500ms var(--ease-in-soft);
 }
-body.overlay-active #view-home.is-active .hero-author {
-  transform: translate(var(--author-x), calc(var(--author-y) + 20px));
-}
-body.overlay-active #view-home.is-active .hero-tagline {
-  transform: translate(var(--desc-x), calc(var(--desc-y) + 20px));
-}
+body.overlay-active #view-home.is-active .hero-author { transform: translateY(20px); }
+body.overlay-active #view-home.is-active .hero-tagline { transform: translateY(20px); }
 
-/* ============================================================
-   КНОПКИ ГЛАВНОЙ
-   ============================================================ */
+/* ---------- КНОПКИ ГЛАВНОЙ ---------- */
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -736,21 +526,21 @@ body.overlay-active #view-home.is-active .hero-tagline {
   max-width: var(--actions-max-w);
 
   opacity: 0;
-  transform: translate(var(--btn-x), calc(var(--btn-y) + 18px));
+  transform: translateY(18px);
   transition:
     opacity 400ms var(--ease-in-soft),
     transform 400ms var(--ease-in-soft);
 }
 #view-home.is-active .hero-actions {
   opacity: 1;
-  transform: translate(var(--btn-x), var(--btn-y));
+  transform: translateY(0);
   transition:
     opacity var(--dur-btn) var(--ease-out-smooth) var(--delay-btn),
     transform var(--dur-btn) var(--ease-out-smooth) var(--delay-btn);
 }
 body.overlay-active #view-home.is-active .hero-actions {
   opacity: 0;
-  transform: translate(var(--btn-x), calc(var(--btn-y) + 24px));
+  transform: translateY(24px);
   pointer-events: none;
   transition:
     opacity 500ms var(--ease-in-soft),
@@ -1217,6 +1007,221 @@ body.overlay-active #view-home.is-active .hero-actions {
   .back-btn svg { width: 14px; height: 14px; }
 }
 
+/* ============================================================
+   10. АДАПТИВ — ПЛАНШЕТ (701–1024)
+   ============================================================ */
+@media (max-width: 1024px) {
+  :root {
+    --gap: 14px;
+    --glass-radius: 22px;
+    --glass-blur: 22px;
+
+    --frame-h: 100%;
+    --hero-stack-gap: 24px;
+
+    --actions-max-w: 2000px;
+  }
+
+  /* Стек центрируется */
+  .hero-stack {
+    left: 0;
+    right: 0;
+    width: auto;
+    max-width: none;
+    align-items: center;
+    padding-left: max(20px, var(--safe-left));
+    padding-right: max(20px, var(--safe-right));
+    box-sizing: border-box;
+  }
+  .hero-text { align-items: center; text-align: center; }
+  .hero-actions { justify-content: center; }
+
+  .hero-author {
+    width: var(--desc-width);
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .view-grid {
+    padding:
+      calc(var(--gap) + var(--safe-top))
+      calc(var(--gap) + var(--safe-right))
+      calc(var(--gap) + var(--bottom-safe))
+      calc(var(--gap) + var(--safe-left));
+    justify-content: flex-start;
+  }
+
+  .view-header {
+    max-width: none;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .grid {
+    max-width: none;
+    max-height: none;
+  }
+}
+
+/* Планшет, портрет */
+@media (max-width: 1024px) and (min-width: 701px) and (orientation: portrait) {
+  :root {
+    --ref-w: 900;
+    --frame-h: 100%;
+    --name-top: 14vh;
+    --name-size: 22vw;
+    --name-opsz: 96;
+    --name-stroke: 0px;
+    --stack-y: 34cqh;
+    --author-size-v: 22;
+    --desc-size-v: 16;
+    --desc-width-v: 478;
+    --btn-size-v: 13;
+    --btn-gap-v: 15;
+  }
+}
+
+/* Планшет, ландшафт */
+@media (max-width: 1024px) and (min-width: 701px) and (orientation: landscape) {
+  :root {
+    --ref-w: 1024;
+    --frame-h: 100%;
+    --name-top: 8vh;
+    --name-size: 14vw;
+    --name-opsz: 96;
+    --name-stroke: 0px;
+    --stack-y: 38cqh;
+    --author-size-v: 20;
+    --desc-size-v: 15;
+    --desc-width-v: 420;
+    --btn-size-v: 12;
+    --btn-gap-v: 14;
+  }
+}
+
+/* ============================================================
+   11. АДАПТИВ — ТЕЛЕФОН (≤700)
+   ============================================================ */
+@media (max-width: 700px) {
+  :root {
+    --gap: 10px;
+    --cols: 2;
+    --glass-radius: 20px;
+    --glass-blur: 20px;
+
+    --ref-w: 402;
+
+    --hero-stack-gap: 20px;
+
+    --btn-pad-y: 0.85em;
+    --btn-pad-x: 1.75em;
+    --btn-scale: 0.95;
+
+    --actions-max-w: 250px;
+  }
+
+  /* Firefox Android: чуть крупнее кнопки */
+  html.is-firefox-mobile {
+    --btn-scale: 1.1;
+  }
+
+  .hero-name {
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
+    font-weight: 400;
+  }
+
+  .hero-tagline {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .view-grid {
+    padding: 0 !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+  .view-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding:
+      calc(10px + var(--safe-top))
+      max(10px, var(--safe-right))
+      6px
+      max(10px, var(--safe-left)) !important;
+  }
+  .grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    align-self: stretch !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding:
+      0
+      max(10px, var(--safe-right))
+      max(10px, var(--bottom-safe))
+      max(10px, var(--safe-left)) !important;
+    gap: 10px !important;
+  }
+
+  [data-tile-id="photo-archive"] .tile-content,
+  [data-tile-id="mail"] .tile-content {
+    flex-direction: column-reverse;
+  }
+  [data-tile-id="photo-archive"] .tile-bottom,
+  [data-tile-id="mail"] .tile-bottom {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+/* Телефон, портрет */
+@media (max-width: 700px) and (orientation: portrait) {
+  :root {
+    --frame-h: 85%;
+    --name-top: 22.1vh;
+    --name-size: 22.9vw;
+    --name-opsz: 30;
+    --name-stroke: 0.33px;
+    --stack-y: 58cqh;
+    --author-size-v: 19;
+    --desc-size-v: 14;
+    --desc-width-v: 292;
+    --btn-size-v: 11.3;
+    --btn-gap-v: 14;
+  }
+}
+
+/* Телефон, ландшафт */
+@media (max-width: 700px) and (orientation: landscape) {
+  :root {
+    --ref-w: 700;
+    --frame-h: 95%;
+    --name-top: 10vh;
+    --name-size: 12vw;
+    --name-opsz: 30;
+    --name-stroke: 0.33px;
+    --stack-y: 42cqh;
+    --author-size-v: 16;
+    --desc-size-v: 13;
+    --desc-width-v: 340;
+    --btn-size-v: 11;
+    --btn-gap-v: 12;
+    --actions-max-w: 400px;
+  }
+}
+
+/* ============================================================
+   12. REDUCED MOTION
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
@@ -1246,26 +1251,28 @@ body.overlay-active #view-home.is-active .hero-actions {
   <section id="view-home" class="view-home" aria-hidden="false">
     <div class="home-stage">
       <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
-      <div class="hero-photo-wrap">
+
+      <div class="hero-frame">
         <picture>
           <source
             type="image/webp"
             srcset="images/VV%201600x1067.webp 1600w,
                     images/VV%201920x1280.webp 1920w,
                     images/VV%202356x1571.webp 2356w"
-            sizes="(max-width: 700px) 125vw, (max-width: 1024px) 95vw, 40vw">
+            sizes="(max-width: 700px) 100vw, (max-width: 1024px) 100vw, 90vw">
           <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async" fetchpriority="high">
         </picture>
-      </div>
-      <div class="hero-stack">
-        <div class="hero-text">
-          <p class="hero-author" data-i18n="hero.author">Александр Кравви</p>
-          <p class="hero-tagline" data-i18n="hero.tagline">Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.</p>
-        </div>
-        <div class="hero-actions">
-          <a class="btn-pill" href="#/contacts"  data-nav="/contacts"  data-i18n="btn.contacts">Контакты</a>
-          <a class="btn-pill" href="#/portfolio" data-nav="/portfolio" data-i18n="btn.portfolio">Портфолио</a>
-          <a class="btn-pill" href="https://archive.gallery.photo/gallery/thoughts" target="_blank" rel="noopener noreferrer" data-i18n="btn.thoughts">Мысли</a>
+
+        <div class="hero-stack">
+          <div class="hero-text">
+            <p class="hero-author" data-i18n="hero.author">Александр Кравви</p>
+            <p class="hero-tagline" data-i18n="hero.tagline">Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="btn-pill" href="#/contacts"  data-nav="/contacts"  data-i18n="btn.contacts">Контакты</a>
+            <a class="btn-pill" href="#/portfolio" data-nav="/portfolio" data-i18n="btn.portfolio">Портфолио</a>
+            <a class="btn-pill" href="https://archive.gallery.photo/gallery/thoughts" target="_blank" rel="noopener noreferrer" data-i18n="btn.thoughts">Мысли</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1517,9 +1524,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   }
 
-  /* Firefox для Android. Нужен, чтобы подставить чуть более крупные
-     кнопки — у него раздутый viewport, и стандартные значения
-     выглядят мельче, чем на других мобильных. */
   function isFirefoxMobile() {
     var ua = navigator.userAgent || '';
     return /Firefox/.test(ua) && /Android|Mobile/.test(ua);
@@ -1802,7 +1806,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     else navigate();
   }
 
-  /* Динамическая адресная строка мобильных браузеров. */
   function initViewportFix() {
     if (!window.visualViewport) return;
 
@@ -1907,7 +1910,6 @@ body.overlay-active #view-home.is-active .hero-actions {
       document.documentElement.classList.add('is-firefox-mobile');
     }
 
-    /* Чистим ключи старого редактора, если они остались у пользователя. */
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
