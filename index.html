@@ -207,6 +207,9 @@ svg { display: block; }
     max-width: none;
     max-height: none;
   }
+
+  /* Line break for photo-archive tile description — tablet + phone only */
+  .br-mobile { display: block; }
 }
 
 /* ============================================================
@@ -302,6 +305,11 @@ svg { display: block; }
     word-break: normal;
   }
 
+  /* Slightly smaller view title (Contacts / Portfolio) — phone only */
+  .view-title {
+    font-size: 1.15rem;
+  }
+
   .view-grid {
     padding: 0 !important;
     gap: 0 !important;
@@ -372,7 +380,9 @@ body.is-loading { visibility: hidden; }
   position: fixed;
   top: calc(22px + var(--safe-top));
   left: calc(24px + var(--safe-left));
-  z-index: 100;
+  /* z-index 0 — ниже #app (z-index: 1), чтобы главное фото
+     перекрывало надпись, если фото зайдёт на неё. */
+  z-index: 0;
   font-family: var(--font-ui);
   font-weight: 400;
   font-size: 10.5px;
@@ -1140,6 +1150,11 @@ body.overlay-active #view-home.is-active .hero-actions {
   text-shadow: 0 1px 10px rgba(0,0,0,0.4);
 }
 
+/* Служебный span для принудительного переноса строки в описании
+   плитки «Фотоархив» — работает только на планшете и телефоне.
+   На десктопе элемент ведёт себя как inline (без переноса). */
+.br-mobile { display: inline; }
+
 /* ============================================================
    9. BACK BUTTON
    ============================================================ */
@@ -1322,7 +1337,7 @@ body.overlay-active #view-home.is-active .hero-actions {
       'nav.portfolio.title': 'Портфолио',
       'nav.contacts.title':  'Контакты',
       'tile.photoArchive.title': 'Фотоархив',
-      'tile.photoArchive.desc':  'Архив — портфолио фоторабот за период с 2015 по 2022 год',
+      'tile.photoArchive.desc':  'Архив — портфолио фоторабот<span class="br-mobile"> за период с 2015 по 2022 год</span>',
       'tile.behance.title':      'Behance',
       'tile.behance.desc':       'Дизайн-проекты',
       'tile.dribbble.title':     'Dribbble',
@@ -1356,7 +1371,7 @@ body.overlay-active #view-home.is-active .hero-actions {
       'nav.portfolio.title': 'Portfolio',
       'nav.contacts.title':  'Contacts',
       'tile.photoArchive.title': 'Photoarchive',
-      'tile.photoArchive.desc':  'Archive — portfolio of photographic works from 2015 to 2022',
+      'tile.photoArchive.desc':  'Archive — portfolio of photographic works<span class="br-mobile"> from 2015 to 2022</span>',
       'tile.behance.title':      'Behance',
       'tile.behance.desc':       'Design projects',
       'tile.dribbble.title':     'Dribbble',
@@ -1390,7 +1405,7 @@ body.overlay-active #view-home.is-active .hero-actions {
       'nav.portfolio.title': 'Portfolio',
       'nav.contacts.title':  'Kontakte',
       'tile.photoArchive.title': 'Fotoarchiv',
-      'tile.photoArchive.desc':  'Archiv — Portfolio fotografischer Arbeiten aus den Jahren 2015 bis 2022',
+      'tile.photoArchive.desc':  'Archiv — Portfolio fotografischer Arbeiten<span class="br-mobile"> aus den Jahren 2015 bis 2022</span>',
       'tile.behance.title':      'Behance',
       'tile.behance.desc':       'Designprojekte',
       'tile.dribbble.title':     'Dribbble',
@@ -1419,7 +1434,7 @@ body.overlay-active #view-home.is-active .hero-actions {
         titleKey: 'tile.behance.title', descKey: 'tile.behance.desc' },
       { id: 'dribbble', url: '', disabled: true,
         titleKey: 'tile.dribbble.title', descKey: 'tile.dribbble.desc' },
-      { id: 'photo-archive', url: 'https://sites.google.com/view/vvarchive',
+      { id: 'photo-archive', url: 'https://kravvi.github.io/archive',
         titleKey: 'tile.photoArchive.title', descKey: 'tile.photoArchive.desc' }
     ],
     contacts: [
@@ -1530,7 +1545,16 @@ body.overlay-active #view-home.is-active .hero-actions {
 
     $$('[data-i18n]').forEach(function (el) {
       var k = el.getAttribute('data-i18n');
-      if (dict[k] != null) el.textContent = dict[k];
+      if (dict[k] == null) return;
+      var val = dict[k];
+      /* Строки с HTML (например, разрыв строки в описании плитки
+         «Фотоархив» — <span class="br-mobile">) вставляются как
+         innerHTML. Остальные — как текстовый контент. */
+      if (val.indexOf('<') !== -1) {
+        el.innerHTML = val;
+      } else {
+        el.textContent = val;
+      }
     });
 
     var cur = document.getElementById('lang-current');
