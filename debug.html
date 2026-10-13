@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>viewport debug</title>
+<style>
+  body { font: 13px monospace; padding: 12px; background:#111; color:#eee; margin:0; }
+  div { padding:2px 0; }
+  b { color:#A8895C; }
+</style>
+</head>
+<body>
+<div id="out">…</div>
+<script>
+function update() {
+  var vv = window.visualViewport || {};
+  var d = document.documentElement;
+  document.getElementById('out').innerHTML =
+    '<div><b>innerW</b>: '  + window.innerWidth  + '</div>' +
+    '<div><b>innerH</b>: '  + window.innerHeight + '</div>' +
+    '<div><b>outerW</b>: '  + window.outerWidth  + '</div>' +
+    '<div><b>outerH</b>: '  + window.outerHeight + '</div>' +
+    '<div><b>screenW</b>: ' + screen.width  + '</div>' +
+    '<div><b>screenH</b>: ' + screen.height + '</div>' +
+    '<div><b>dpr</b>: '     + window.devicePixelRatio + '</div>' +
+    '<div><b>doc.clientW</b>: ' + d.clientWidth  + '</div>' +
+    '<div><b>doc.clientH</b>: ' + d.clientHeight + '</div>' +
+    '<div><b>vv.width</b>: '    + vv.width    + '</div>' +
+    '<div><b>vv.height</b>: '   + vv.height   + '</div>' +
+    '<div><b>vv.offsetTop</b>: '  + vv.offsetTop  + '</div>' +
+    '<div><b>vv.offsetLeft</b>: ' + vv.offsetLeft + '</div>' +
+    '<div><b>vv.pageTop</b>: '    + vv.pageTop    + '</div>' +
+    '<div><b>vv.scale</b>: '      + vv.scale      + '</div>' +
+    '<div><b>1vh</b>: ' + (window.innerHeight/100).toFixed(2) + 'px</div>' +
+    '<div><b>1vw</b>: ' + (window.innerWidth /100).toFixed(2) + 'px</div>' +
+    '<div style="margin-top:8px"><b>UA</b>: ' + navigator.userAgent + '</div>';
+}
+update();
+addEventListener('resize', update);
+if (window.visualViewport) {
+  visualViewport.addEventListener('resize', update);
+  visualViewport.addEventListener('scroll', update);
+}
+</script>
+</body>
+</html>
