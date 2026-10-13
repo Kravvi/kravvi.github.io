@@ -70,17 +70,8 @@ svg { display: block; }
   --cols: 4;
 
   --ref-w: 1920;
-
-  /* ДЕСКТОП: KRAVVI привязан к верху экрана (vh).
-     ПЛАНШЕТ/ТЕЛЕФОН: KRAVVI привязан к фото — --name-top
-     в % от высоты .hero-photo-box. */
-  --hero-top: 10.3vh;
-  --name-top: 14;
-
-  /* Стек (автор + кнопки) — всегда привязан к фото,
-     % от высоты .hero-photo-box. */
-  --stack-top: 50%;
-
+  --hero-top: 10.3vh;            /* desktop only: KRAVVI от верха экрана */
+  --hero-gap: 4.1vh;             /* desktop only: зазор между KRAVVI и стеком */
   --hero-text-gap: 8px;
   --hero-stack-gap: 28px;
   --photo-h: 104vh;
@@ -89,6 +80,11 @@ svg { display: block; }
   --name-x: 0vw;
   --name-opsz: 96;
   --name-stroke: 0px;
+
+  /* Tablet/Phone: KRAVVI и стек привязаны к фото.
+     Доли от высоты фото, 0..1. */
+  --name-top: 0.19;
+  --stack-top: 0.50;
 
   --author-size-v: 22;
   --author-x: -31vw;
@@ -153,9 +149,6 @@ svg { display: block; }
     --glass-radius: 22px;
     --glass-blur: 22px;
 
-    --name-top: 16;
-    --stack-top: 40%;
-
     --photo-h: 104vh;
     --photo-h-max: 150vw;
 
@@ -170,25 +163,34 @@ svg { display: block; }
     --actions-max-w: 2000px;
   }
 
-  /* KRAVVI привязан к фото: top = верх .hero-photo-box +
-     (--name-top)% от высоты .hero-photo-box.
-     Верх .hero-photo-box = 100dvh - высота бокса. */
+  /* KRAVVI привязан к фото:
+     top = верх фото (100dvh - высота фото) + доля --name-top от высоты фото.
+     Фото прижато к низу .home-stage, значит его верх = 100dvh - photoH. */
   .hero-name {
     top: calc(
       (100dvh - min(var(--photo-h), var(--photo-h-max)))
-      + (min(var(--photo-h), var(--photo-h-max)) * var(--name-top) / 100)
+      + (min(var(--photo-h), var(--photo-h-max)) * var(--name-top))
     );
   }
 
   .hero-stack {
-    left: 50% !important;
-    width: 100vw !important;
-    max-width: 100vw !important;
-    transform: translateX(-50%) !important;
+    position: absolute !important;
+    top: calc(
+      (100dvh - min(var(--photo-h), var(--photo-h-max)))
+      + (min(var(--photo-h), var(--photo-h-max)) * var(--stack-top))
+    ) !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
+    gap: var(--hero-stack-gap);
     padding-left: max(20px, var(--safe-left));
     padding-right: max(20px, var(--safe-right));
-    box-sizing: border-box;
+    pointer-events: none;
   }
   .hero-stack > * { pointer-events: auto; }
 
@@ -221,10 +223,6 @@ svg { display: block; }
     max-height: none;
   }
 
-  /* Принудительный перенос строки в описании плитки «Фотоархив»
-     на планшете и телефоне. В i18n строка содержит символ \n,
-     который pre-line превращает в перенос. На десктопе
-     white-space остаётся normal — \n схлопывается в пробел. */
   [data-tile-id="photo-archive"] .tile-desc {
     white-space: pre-line;
   }
@@ -237,8 +235,8 @@ svg { display: block; }
        ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
   :root {
     --ref-w: 900;
-    --name-top: 16;
-    --stack-top: 40%;
+    --name-top: 0.19;
+    --stack-top: 0.50;
     --photo-h: 104vh;
     --photo-h-max: 150vw;
     --name-size: 22vw;
@@ -271,10 +269,8 @@ svg { display: block; }
 
     --ref-w: 402;
 
-    /* --name-top = 15.5 — «уровень носа» на фото,
-       в % от высоты .hero-photo-box. */
-    --name-top: 15.5;
-    --stack-top: 29%;
+    --name-top: 0.115;
+    --stack-top: 0.27;
     --photo-h: 92.5vh;
     --photo-h-max: 213vw;
     --name-size: 22.9vw;
@@ -323,7 +319,6 @@ svg { display: block; }
     word-break: normal;
   }
 
-  /* Чуть меньше заголовок открытой секции (Портфолио / Контакты) — только на телефоне */
   .view-title {
     font-size: 1.15rem;
   }
@@ -398,8 +393,6 @@ body.is-loading { visibility: hidden; }
   position: fixed;
   top: calc(22px + var(--safe-top));
   left: calc(24px + var(--safe-left));
-  /* z-index: 0 — ниже #app (z-index: 1), чтобы главное фото
-     перекрывало надпись, если фото зайдёт на неё по формату экрана. */
   z-index: 0;
   font-family: var(--font-ui);
   font-weight: 400;
@@ -568,10 +561,8 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   overflow: hidden;
 }
 
-/* KRAVVI — absolute относительно .home-stage.
-   НА ДЕСКТОПЕ: top: var(--hero-top) — привязка к верху экрана (vh).
-   НА ПЛАНШЕТЕ/ТЕЛЕФОНЕ: top пересчитывается через медиа-запрос,
-   чтобы KRAVVI «сел» на --name-top % от высоты .hero-photo-box. */
+/* ДЕСКТОП: top = var(--hero-top) (vh). Общий планшетно-телефонный
+   медиа-запрос ниже переопределяет top через calc() от высоты фото. */
 .hero-name {
   position: absolute;
   top: var(--hero-top);
@@ -615,28 +606,22 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     transform var(--dur-name) var(--ease-out-smooth) var(--delay-name);
 }
 
-/* Якорь фото: контейнер высотой min(--photo-h, --photo-h-max),
-   прижат к низу. От его высоты считается --stack-top (%). */
-.hero-photo-box {
+.hero-photo-wrap {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  height: min(var(--photo-h), var(--photo-h-max));
+  inset: 0;
+  z-index: 2;
   display: flex;
   justify-content: center;
   align-items: flex-end;
   pointer-events: none;
 }
-.hero-photo-box picture { display: contents; }
+.hero-photo-wrap picture { display: contents; }
 
 .hero-photo {
   position: relative;
-  height: 100%;
+  height: min(var(--photo-h), var(--photo-h-max));
   width: auto;
   max-width: none;
-  display: block;
-  z-index: 2;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
@@ -659,9 +644,11 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     transform var(--dur-photo) var(--ease-out-smooth) var(--delay-photo);
 }
 
+/* ДЕСКТОП: top = --hero-top + высота KRAVVI + --hero-gap.
+   Планшетно-телефонный медиа-запрос ниже переопределяет top. */
 .hero-stack {
   position: absolute;
-  top: var(--stack-top);
+  top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap));
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
@@ -1275,7 +1262,7 @@ body.overlay-active #view-home.is-active .hero-actions {
   <section id="view-home" class="view-home" aria-hidden="false">
     <div class="home-stage">
       <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
-      <div class="hero-photo-box">
+      <div class="hero-photo-wrap">
         <picture>
           <source
             type="image/webp"
@@ -1285,16 +1272,16 @@ body.overlay-active #view-home.is-active .hero-actions {
             sizes="(max-width: 700px) 130vw, (max-width: 1024px) 100vw, 60vw">
           <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async" fetchpriority="high">
         </picture>
-        <div class="hero-stack">
-          <div class="hero-text">
-            <p class="hero-author" data-i18n="hero.author">Александр Кравви</p>
-            <p class="hero-tagline" data-i18n="hero.tagline">Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.</p>
-          </div>
-          <div class="hero-actions">
-            <a class="btn-pill" href="#/contacts"  data-nav="/contacts"  data-i18n="btn.contacts">Контакты</a>
-            <a class="btn-pill" href="#/portfolio" data-nav="/portfolio" data-i18n="btn.portfolio">Портфолио</a>
-            <a class="btn-pill" href="https://archive.gallery.photo/gallery/thoughts" target="_blank" rel="noopener noreferrer" data-i18n="btn.thoughts">Мысли</a>
-          </div>
+      </div>
+      <div class="hero-stack">
+        <div class="hero-text">
+          <p class="hero-author" data-i18n="hero.author">Александр Кравви</p>
+          <p class="hero-tagline" data-i18n="hero.tagline">Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="btn-pill" href="#/contacts"  data-nav="/contacts"  data-i18n="btn.contacts">Контакты</a>
+          <a class="btn-pill" href="#/portfolio" data-nav="/portfolio" data-i18n="btn.portfolio">Портфолио</a>
+          <a class="btn-pill" href="https://archive.gallery.photo/gallery/thoughts" target="_blank" rel="noopener noreferrer" data-i18n="btn.thoughts">Мысли</a>
         </div>
       </div>
     </div>
@@ -1360,8 +1347,6 @@ body.overlay-active #view-home.is-active .hero-actions {
       'nav.portfolio.title': 'Портфолио',
       'nav.contacts.title':  'Контакты',
       'tile.photoArchive.title': 'Фотоархив',
-      /* \n переносится через white-space: pre-line на планшете/телефоне,
-         на десктопе схлопывается в пробел (white-space: normal). */
       'tile.photoArchive.desc':  'Архив — портфолио фоторабот\nза период с 2015 по 2022 год',
       'tile.behance.title':      'Behance',
       'tile.behance.desc':       'Дизайн-проекты',
@@ -1568,9 +1553,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     var ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc) ogDesc.setAttribute('content', dict['meta.description'] || '');
 
-    /* Строки i18n — чистый текст без HTML. Символ \n в описании
-       фотоархива рендерится через CSS white-space: pre-line
-       (только планшет + телефон). */
     $$('[data-i18n]').forEach(function (el) {
       var k = el.getAttribute('data-i18n');
       if (dict[k] != null) el.textContent = dict[k];
@@ -2007,13 +1989,13 @@ body.overlay-active #view-home.is-active .hero-actions {
       title: 'KRAVVI',
       props: [
         /* Desktop: KRAVVI привязан к верху экрана (vh).
-           Tablet/Phone: KRAVVI привязан к фото (% от высоты). */
-        { key: '--hero-top',    label: 'Top (vh)',       unit: 'vh', step: 0.1, contexts: ['desktop'] },
-        { key: '--name-top',    label: 'Top (% of photo)', unit: '', step: 0.5, contexts: ['tablet', 'phone'] },
-        { key: '--name-size',   label: 'Size',           unit: 'vw', step: 0.1 },
-        { key: '--name-x',      label: 'X',              unit: 'vw', step: 0.1 },
-        { key: '--name-opsz',   label: 'opsz',           unit: '',   step: 1   },
-        { key: '--name-stroke', label: 'Stroke',         unit: 'px', step: 0.05 }
+           Tablet/Phone: привязан к фото — доля от высоты фото (безразмерная). */
+        { key: '--hero-top',  label: 'Top (vh)',         unit: 'vh', step: 0.1, contexts: ['desktop'] },
+        { key: '--name-top',  label: 'Top (фото, 0..1)', unit: '',   step: 0.01, contexts: ['tablet', 'phone'] },
+        { key: '--name-size',   label: 'Size',   unit: 'vw', step: 0.1 },
+        { key: '--name-x',      label: 'X',      unit: 'vw', step: 0.1 },
+        { key: '--name-opsz',   label: 'opsz',   unit: '',   step: 1   },
+        { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
       ]
     },
     {
@@ -2028,8 +2010,9 @@ body.overlay-active #view-home.is-active .hero-actions {
       id: 'stack',
       title: 'Stack',
       props: [
-        { key: '--stack-top',      label: 'Top %',    unit: '%',  step: 0.5 },
-        { key: '--hero-stack-gap', label: 'Text gap', unit: 'px', step: 1 }
+        { key: '--hero-gap',       label: 'KRAVVI gap (vh)',   unit: 'vh', step: 0.1, contexts: ['desktop'] },
+        { key: '--stack-top',      label: 'Top (фото, 0..1)',  unit: '',   step: 0.01, contexts: ['tablet', 'phone'] },
+        { key: '--hero-stack-gap', label: 'Text gap',          unit: 'px', step: 1 }
       ]
     },
     {
@@ -2068,11 +2051,11 @@ body.overlay-active #view-home.is-active .hero-actions {
   var DEFAULTS = {
     desktop: {
       '--hero-top': '10.3',
-      '--name-top': '14',
+      '--name-top': '0',
       '--name-size': '21.3', '--name-x': '0',
       '--name-opsz': '96', '--name-stroke': '0',
       '--photo-h': '104', '--photo-h-max': '175',
-      '--stack-top': '50', '--hero-stack-gap': '28',
+      '--hero-gap': '4.1', '--stack-top': '0', '--hero-stack-gap': '28',
       '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
       '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '-31', '--desc-y': '0.5',
       '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
@@ -2080,11 +2063,11 @@ body.overlay-active #view-home.is-active .hero-actions {
     },
     tablet: {
       '--hero-top': '10.3',
-      '--name-top': '16',
+      '--name-top': '0.19',
       '--name-size': '22', '--name-x': '0',
       '--name-opsz': '96', '--name-stroke': '0',
       '--photo-h': '104', '--photo-h-max': '150',
-      '--stack-top': '40', '--hero-stack-gap': '28',
+      '--hero-gap': '3', '--stack-top': '0.50', '--hero-stack-gap': '28',
       '--author-size-v': '22', '--author-x': '0', '--author-y': '0',
       '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '0', '--desc-y': '1',
       '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
@@ -2092,11 +2075,11 @@ body.overlay-active #view-home.is-active .hero-actions {
     },
     phone: {
       '--hero-top': '10.3',
-      '--name-top': '15.5',
+      '--name-top': '0.115',
       '--name-size': '22.9', '--name-x': '0',
       '--name-opsz': '30', '--name-stroke': '0.33',
       '--photo-h': '92.5', '--photo-h-max': '213',
-      '--stack-top': '29', '--hero-stack-gap': '35',
+      '--hero-gap': '7.8', '--stack-top': '0.27', '--hero-stack-gap': '35',
       '--author-size-v': '19', '--author-x': '0', '--author-y': '4.9',
       '--desc-size-v': '14', '--desc-width-v': '292', '--desc-x': '0', '--desc-y': '5.6',
       '--btn-size-v': '11.3', '--btn-gap-v': '14', '--btn-pad-x': '1.75', '--btn-pad-y': '0.85',
@@ -2240,7 +2223,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
 
     + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
-    + '.tuner-prop{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;padding:2px 0}'
+    + '.tuner-prop{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;padding:2px 0}'
     + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
     + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
     + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 26px 28px;gap:4px;align-items:center}'
@@ -2355,8 +2338,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     var vals = getValues(currentContext);
 
     GROUPS.forEach(function (g) {
-      /* Фильтруем параметры: если у prop задан contexts и текущий
-         контекст не входит в него — не показываем. */
       var visibleProps = g.props.filter(function (p) {
         return !p.contexts || p.contexts.indexOf(currentContext) !== -1;
       });
