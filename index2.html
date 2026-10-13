@@ -71,9 +71,14 @@ svg { display: block; }
 
   --ref-w: 1920;
 
-  /* Позиции имени и стека — в % от высоты .hero-photo-box,
-     то есть от высоты фотографии. Фото выросло — имя поднялось. */
-  --name-top: 14%;
+  /* ДЕСКТОП: KRAVVI привязан к верху экрана (vh).
+     ПЛАНШЕТ/ТЕЛЕФОН: KRAVVI привязан к фото — --name-top
+     в % от высоты .hero-photo-box. */
+  --hero-top: 10.3vh;
+  --name-top: 14;
+
+  /* Стек (автор + кнопки) — всегда привязан к фото,
+     % от высоты .hero-photo-box. */
   --stack-top: 50%;
 
   --hero-text-gap: 8px;
@@ -82,7 +87,6 @@ svg { display: block; }
   --photo-h-max: 175vw;
   --name-size: 21.3vw;
   --name-x: 0vw;
-  --name-y: 0vh;
   --name-opsz: 96;
   --name-stroke: 0px;
 
@@ -149,14 +153,13 @@ svg { display: block; }
     --glass-radius: 22px;
     --glass-blur: 22px;
 
-    --name-top: 16%;
+    --name-top: 16;
     --stack-top: 40%;
 
     --photo-h: 104vh;
     --photo-h-max: 150vw;
 
     --name-x: 0vw;
-    --name-y: 0vh;
     --author-x: 0vw;
     --author-y: 0vh;
     --desc-x: 0vw;
@@ -165,6 +168,16 @@ svg { display: block; }
     --btn-y: 0vh;
 
     --actions-max-w: 2000px;
+  }
+
+  /* KRAVVI привязан к фото: top = верх .hero-photo-box +
+     (--name-top)% от высоты .hero-photo-box.
+     Верх .hero-photo-box = 100dvh - высота бокса. */
+  .hero-name {
+    top: calc(
+      (100dvh - min(var(--photo-h), var(--photo-h-max)))
+      + (min(var(--photo-h), var(--photo-h-max)) * var(--name-top) / 100)
+    );
   }
 
   .hero-stack {
@@ -224,7 +237,7 @@ svg { display: block; }
        ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
   :root {
     --ref-w: 900;
-    --name-top: 16%;
+    --name-top: 16;
     --stack-top: 40%;
     --photo-h: 104vh;
     --photo-h-max: 150vw;
@@ -232,7 +245,6 @@ svg { display: block; }
     --name-opsz: 96;
     --name-stroke: 0px;
     --name-x: 0vw;
-    --name-y: 0vh;
     --author-size-v: 22;
     --author-x: 0vw;
     --author-y: 0vh;
@@ -259,13 +271,14 @@ svg { display: block; }
 
     --ref-w: 402;
 
-    --name-top: 20%;
+    /* --name-top = 15.5 — «уровень носа» на фото,
+       в % от высоты .hero-photo-box. */
+    --name-top: 15.5;
     --stack-top: 29%;
     --photo-h: 92.5vh;
     --photo-h-max: 213vw;
     --name-size: 22.9vw;
     --name-x: 0vw;
-    --name-y: 3.1vh;
     --name-opsz: 30;
     --name-stroke: 0.33px;
 
@@ -555,25 +568,13 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   overflow: hidden;
 }
 
-/* Якорь: контейнер высотой min(--photo-h, --photo-h-max), прижат к низу.
-   KRAVVI (--name-top) и стек (--stack-top) позиционируются в % от него,
-   то есть всегда на одном и том же месте относительно фотографии. */
-.hero-photo-box {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  height: min(var(--photo-h), var(--photo-h-max));
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  pointer-events: none;
-}
-.hero-photo-box picture { display: contents; }
-
+/* KRAVVI — absolute относительно .home-stage.
+   НА ДЕСКТОПЕ: top: var(--hero-top) — привязка к верху экрана (vh).
+   НА ПЛАНШЕТЕ/ТЕЛЕФОНЕ: top пересчитывается через медиа-запрос,
+   чтобы KRAVVI «сел» на --name-top % от высоты .hero-photo-box. */
 .hero-name {
   position: absolute;
-  top: var(--name-top);
+  top: var(--hero-top);
   left: 50%;
   margin: 0;
   font-family: var(--font-hero);
@@ -598,7 +599,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 
   opacity: 0;
   filter: blur(14px);
-  transform: translateX(-50%) translate(var(--name-x), calc(var(--name-y) + 20px));
+  transform: translateX(-50%) translate(var(--name-x), 20px);
   transition:
     opacity 400ms var(--ease-in-soft),
     filter 400ms var(--ease-in-soft),
@@ -607,12 +608,27 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 #view-home.is-active .hero-name {
   opacity: 1;
   filter: blur(0);
-  transform: translateX(-50%) translate(var(--name-x), var(--name-y));
+  transform: translateX(-50%) translate(var(--name-x), 0);
   transition:
     opacity var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     filter var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     transform var(--dur-name) var(--ease-out-smooth) var(--delay-name);
 }
+
+/* Якорь фото: контейнер высотой min(--photo-h, --photo-h-max),
+   прижат к низу. От его высоты считается --stack-top (%). */
+.hero-photo-box {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: min(var(--photo-h), var(--photo-h-max));
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
+}
+.hero-photo-box picture { display: contents; }
 
 .hero-photo {
   position: relative;
@@ -1258,8 +1274,8 @@ body.overlay-active #view-home.is-active .hero-actions {
 
   <section id="view-home" class="view-home" aria-hidden="false">
     <div class="home-stage">
+      <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
       <div class="hero-photo-box">
-        <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
         <picture>
           <source
             type="image/webp"
@@ -1990,12 +2006,14 @@ body.overlay-active #view-home.is-active .hero-actions {
       id: 'name',
       title: 'KRAVVI',
       props: [
-        { key: '--name-top',    label: 'Top %',  unit: '%',  step: 0.5 },
-        { key: '--name-size',   label: 'Size',   unit: 'vw', step: 0.1 },
-        { key: '--name-x',      label: 'X',      unit: 'vw', step: 0.1 },
-        { key: '--name-y',      label: 'Y',      unit: 'vh', step: 0.1 },
-        { key: '--name-opsz',   label: 'opsz',   unit: '',   step: 1   },
-        { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
+        /* Desktop: KRAVVI привязан к верху экрана (vh).
+           Tablet/Phone: KRAVVI привязан к фото (% от высоты). */
+        { key: '--hero-top',    label: 'Top (vh)',       unit: 'vh', step: 0.1, contexts: ['desktop'] },
+        { key: '--name-top',    label: 'Top (% of photo)', unit: '', step: 0.5, contexts: ['tablet', 'phone'] },
+        { key: '--name-size',   label: 'Size',           unit: 'vw', step: 0.1 },
+        { key: '--name-x',      label: 'X',              unit: 'vw', step: 0.1 },
+        { key: '--name-opsz',   label: 'opsz',           unit: '',   step: 1   },
+        { key: '--name-stroke', label: 'Stroke',         unit: 'px', step: 0.05 }
       ]
     },
     {
@@ -2010,7 +2028,7 @@ body.overlay-active #view-home.is-active .hero-actions {
       id: 'stack',
       title: 'Stack',
       props: [
-        { key: '--stack-top',      label: 'Top %',   unit: '%', step: 0.5 },
+        { key: '--stack-top',      label: 'Top %',    unit: '%',  step: 0.5 },
         { key: '--hero-stack-gap', label: 'Text gap', unit: 'px', step: 1 }
       ]
     },
@@ -2049,7 +2067,9 @@ body.overlay-active #view-home.is-active .hero-actions {
 
   var DEFAULTS = {
     desktop: {
-      '--name-top': '14', '--name-size': '21.3', '--name-x': '0', '--name-y': '0',
+      '--hero-top': '10.3',
+      '--name-top': '14',
+      '--name-size': '21.3', '--name-x': '0',
       '--name-opsz': '96', '--name-stroke': '0',
       '--photo-h': '104', '--photo-h-max': '175',
       '--stack-top': '50', '--hero-stack-gap': '28',
@@ -2059,7 +2079,9 @@ body.overlay-active #view-home.is-active .hero-actions {
       '--btn-x': '-31.2', '--btn-y': '-0.3'
     },
     tablet: {
-      '--name-top': '16', '--name-size': '22', '--name-x': '0', '--name-y': '0',
+      '--hero-top': '10.3',
+      '--name-top': '16',
+      '--name-size': '22', '--name-x': '0',
       '--name-opsz': '96', '--name-stroke': '0',
       '--photo-h': '104', '--photo-h-max': '150',
       '--stack-top': '40', '--hero-stack-gap': '28',
@@ -2069,7 +2091,9 @@ body.overlay-active #view-home.is-active .hero-actions {
       '--btn-x': '0', '--btn-y': '0.2'
     },
     phone: {
-      '--name-top': '20', '--name-size': '22.9', '--name-x': '0', '--name-y': '3.1',
+      '--hero-top': '10.3',
+      '--name-top': '15.5',
+      '--name-size': '22.9', '--name-x': '0',
       '--name-opsz': '30', '--name-stroke': '0.33',
       '--photo-h': '92.5', '--photo-h-max': '213',
       '--stack-top': '29', '--hero-stack-gap': '35',
@@ -2331,6 +2355,13 @@ body.overlay-active #view-home.is-active .hero-actions {
     var vals = getValues(currentContext);
 
     GROUPS.forEach(function (g) {
+      /* Фильтруем параметры: если у prop задан contexts и текущий
+         контекст не входит в него — не показываем. */
+      var visibleProps = g.props.filter(function (p) {
+        return !p.contexts || p.contexts.indexOf(currentContext) !== -1;
+      });
+      if (!visibleProps.length) return;
+
       var groupEl = document.createElement('div');
       groupEl.className = 'tuner-group';
 
@@ -2342,7 +2373,7 @@ body.overlay-active #view-home.is-active .hero-actions {
       var propsEl = document.createElement('div');
       propsEl.className = 'tuner-props';
 
-      g.props.forEach(function (p) {
+      visibleProps.forEach(function (p) {
         var row = document.createElement('div');
         row.className = 'tuner-prop';
 
