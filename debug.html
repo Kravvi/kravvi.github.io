@@ -3,38 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>viewport debug</title>
+<title>viewport debug 2</title>
 <style>
-  body { font: 13px monospace; padding: 12px; background:#111; color:#eee; margin:0; }
-  div { padding:2px 0; }
+  html, body { margin:0; padding:0; background:#111; color:#eee; }
+  body { font: 13px monospace; padding: 12px; }
+  #topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 6px;
+    background: #ff2d2d; z-index: 9999;
+  }
+  #marker {
+    position: absolute; top: 40px; left: 12px;
+    background: #00e676; color: #000; padding: 2px 6px;
+    font-weight: bold;
+  }
+  div.row { padding:2px 0; }
   b { color:#A8895C; }
 </style>
 </head>
 <body>
+<div id="topbar"></div>
+<div id="marker">TOP-MARKER</div>
+<div style="height:60px"></div>
 <div id="out">…</div>
 <script>
 function update() {
   var vv = window.visualViewport || {};
   var d = document.documentElement;
   document.getElementById('out').innerHTML =
-    '<div><b>innerW</b>: '  + window.innerWidth  + '</div>' +
-    '<div><b>innerH</b>: '  + window.innerHeight + '</div>' +
-    '<div><b>outerW</b>: '  + window.outerWidth  + '</div>' +
-    '<div><b>outerH</b>: '  + window.outerHeight + '</div>' +
-    '<div><b>screenW</b>: ' + screen.width  + '</div>' +
-    '<div><b>screenH</b>: ' + screen.height + '</div>' +
-    '<div><b>dpr</b>: '     + window.devicePixelRatio + '</div>' +
-    '<div><b>doc.clientW</b>: ' + d.clientWidth  + '</div>' +
-    '<div><b>doc.clientH</b>: ' + d.clientHeight + '</div>' +
-    '<div><b>vv.width</b>: '    + vv.width    + '</div>' +
-    '<div><b>vv.height</b>: '   + vv.height   + '</div>' +
-    '<div><b>vv.offsetTop</b>: '  + vv.offsetTop  + '</div>' +
-    '<div><b>vv.offsetLeft</b>: ' + vv.offsetLeft + '</div>' +
-    '<div><b>vv.pageTop</b>: '    + vv.pageTop    + '</div>' +
-    '<div><b>vv.scale</b>: '      + vv.scale      + '</div>' +
-    '<div><b>1vh</b>: ' + (window.innerHeight/100).toFixed(2) + 'px</div>' +
-    '<div><b>1vw</b>: ' + (window.innerWidth /100).toFixed(2) + 'px</div>' +
-    '<div style="margin-top:8px"><b>UA</b>: ' + navigator.userAgent + '</div>';
+    '<div class="row"><b>innerH</b>: '  + window.innerHeight + '</div>' +
+    '<div class="row"><b>vv.height</b>: '   + vv.height   + '</div>' +
+    '<div class="row"><b>vv.offsetTop</b>: '  + vv.offsetTop  + '</div>' +
+    '<div class="row"><b>1vh</b>: ' + (window.innerHeight/100).toFixed(2) + 'px</div>' +
+    '<div class="row"><b>UA</b>: ' + navigator.userAgent + '</div>';
 }
 update();
 addEventListener('resize', update);
