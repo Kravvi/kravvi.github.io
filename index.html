@@ -1237,6 +1237,8 @@ body.overlay-active #view-home.is-active .hero-actions {
    ============================================================ */
 body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
+  /* Единый отступ для всех верхних элементов, чтобы они стояли на одной линии */
+  --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
 }
 
 /* 1. Увеличение жирности KRAVVI только на ПК в Telegram */
@@ -1247,34 +1249,27 @@ body.telegram-mini-app {
   }
 }
 
-/* Сдвигаем верхние элементы вниз под панель Telegram */
-body.telegram-mini-app .brand-tag {
-  top: calc(22px + var(--tg-top) + var(--safe-top));
-}
-body.telegram-mini-app .lang-btn {
-  top: calc(18px + var(--tg-top) + var(--safe-top));
-}
-body.telegram-mini-app .lang-menu {
-  top: calc(48px + var(--tg-top) + var(--safe-top));
-}
+/* 2. Верхние элементы на главной (надпись и выбор языка) */
+body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
+body.telegram-mini-app .lang-btn { top: var(--tg-pad); }
+body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
 
-/* 2. Исправление наложения в Bento Grid (Портфолио/Контакты) */
-body.telegram-mini-app .view-grid {
-  padding-top: calc(60px + var(--tg-top) + var(--safe-top));
-}
+/* 3. Bento Grid (Портфолио/Контакты) */
+body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 
-/* Адаптация для мобильных экранов */
+/* 4. Адаптация для мобильных экранов */
 @media (max-width: 700px) {
-  body.telegram-mini-app .brand-tag { top: calc(18px + var(--tg-top) + var(--safe-top)); }
-  body.telegram-mini-app .lang-btn { top: calc(14px + var(--tg-top) + var(--safe-top)); }
-  body.telegram-mini-app .lang-menu { top: calc(42px + var(--tg-top) + var(--safe-top)); }
+  body.telegram-mini-app {
+    --tg-pad: calc(8px + var(--tg-top) + var(--safe-top));
+  }
+  
+  body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
   
   body.telegram-mini-app .view-grid {
-    padding: 0 !important;
+    padding: 0 !important; 
   }
-  /* Добавляем отступ, чтобы кнопка Назад не залезала под кнопки Telegram */
   body.telegram-mini-app .view-header {
-    padding-top: calc(60px + var(--tg-top) + var(--safe-top)) !important;
+    padding-top: var(--tg-pad) !important;
     padding-bottom: 10px !important;
   }
 }
