@@ -1237,8 +1237,7 @@ body.overlay-active #view-home.is-active .hero-actions {
    ============================================================ */
 body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
-  /* Единый отступ для всех верхних элементов, чтобы они стояли на одной линии */
-  --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
+  --tg-pad: calc(12px + var(--tg-top) + var(--safe-top)); /* По умолчанию (ПК) */
 }
 
 /* 1. Увеличение жирности KRAVVI только на ПК в Telegram */
@@ -1257,10 +1256,18 @@ body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
 /* 3. Bento Grid (Портфолио/Контакты) */
 body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 
-/* 4. Адаптация для мобильных экранов */
+/* 4. Отступ для ПЛАНШЕТОВ */
+@media (min-width: 701px) and (max-width: 1024px),
+       ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
+  body.telegram-mini-app {
+    --tg-pad: calc(15px + var(--tg-top) + var(--safe-top)); /* Отступ для планшетов */
+  }
+}
+
+/* 5. Отступ для ТЕЛЕФОНОВ */
 @media (max-width: 700px) {
   body.telegram-mini-app {
-    --tg-pad: calc(8px + var(--tg-top) + var(--safe-top));
+    --tg-pad: calc(15px + var(--tg-top) + var(--safe-top)); /* Отступ для телефонов */
   }
   
   body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
