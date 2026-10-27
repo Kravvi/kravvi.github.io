@@ -1804,7 +1804,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       function finish(ok) { if (!done) { done = true; resolve(ok); } }
       img.addEventListener('load', function () { finish(true); });
       img.addEventListener('error', function () { finish(false); });
-      setTimeout(function () { finish(false); }, 6000);
+      setTimeout(function () { finish(false); }, 3000); // Страховка 3 сек
     });
   }
 
@@ -1971,9 +1971,12 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       try { history.replaceState(null, '', '#/'); } catch (e) { location.hash = '#/'; }
     }
 
-    revealBody();
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { navigate(); });
+    // Ждем загрузку WebP/фото перед показом, чтобы избежать "обрывков"
+    preloadHeroPhoto().then(function () {
+      revealBody();
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { navigate(); });
+      });
     });
   }
 
