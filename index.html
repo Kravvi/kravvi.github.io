@@ -1239,7 +1239,15 @@ body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
 }
 
-/* Сдвигаем верхние элементы вниз под панель Telegram (работает и на ПК, и на мобилках) */
+/* 1. Увеличение жирности KRAVVI только на ПК в Telegram */
+@media (hover: hover) and (pointer: fine) {
+  body.telegram-mini-app .hero-name {
+    -webkit-text-stroke: 0.35px currentColor;
+    text-stroke: 0.35px currentColor;
+  }
+}
+
+/* Сдвигаем верхние элементы вниз под панель Telegram */
 body.telegram-mini-app .brand-tag {
   top: calc(22px + var(--tg-top) + var(--safe-top));
 }
@@ -1250,7 +1258,7 @@ body.telegram-mini-app .lang-menu {
   top: calc(48px + var(--tg-top) + var(--safe-top));
 }
 
-/* Сдвигаем контент внутренних страниц (Портфолио/Контакты) */
+/* 2. Исправление наложения в Bento Grid (Портфолио/Контакты) */
 body.telegram-mini-app .view-grid {
   padding-top: calc(60px + var(--tg-top) + var(--safe-top));
 }
@@ -1260,8 +1268,14 @@ body.telegram-mini-app .view-grid {
   body.telegram-mini-app .brand-tag { top: calc(18px + var(--tg-top) + var(--safe-top)); }
   body.telegram-mini-app .lang-btn { top: calc(14px + var(--tg-top) + var(--safe-top)); }
   body.telegram-mini-app .lang-menu { top: calc(42px + var(--tg-top) + var(--safe-top)); }
+  
+  body.telegram-mini-app .view-grid {
+    padding: 0 !important;
+  }
+  /* Добавляем отступ, чтобы кнопка Назад не залезала под кнопки Telegram */
   body.telegram-mini-app .view-header {
-    padding-top: calc(10px + var(--tg-top) + var(--safe-top)) !important;
+    padding-top: calc(60px + var(--tg-top) + var(--safe-top)) !important;
+    padding-bottom: 10px !important;
   }
 }
 </style>
