@@ -1303,7 +1303,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
                     images/VV%201920x1280.webp 1920w,
                     images/VV%202356x1571.webp 2356w"
             sizes="(max-width: 700px) 130vw, (max-width: 1024px) 100vw, 60vw">
-          <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async" fetchpriority="high">
+          <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async">
         </picture>
       </div>
       <div class="hero-stack">
@@ -1971,13 +1971,9 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       try { history.replaceState(null, '', '#/'); } catch (e) { location.hash = '#/'; }
     }
 
-    setTimeout(revealBody, 2500);
-
-    preloadHeroPhoto().then(function () {
-      revealBody();
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () { navigate(); });
-      });
+    revealBody();
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { navigate(); });
     });
   }
 
