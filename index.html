@@ -1237,7 +1237,8 @@ body.overlay-active #view-home.is-active .hero-actions {
    ============================================================ */
 body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
-  --tg-pad: calc(12px + var(--tg-top) + var(--safe-top)); /* По умолчанию (ПК) */
+  /* Единый отступ для всех верхних элементов, чтобы они стояли на одной линии */
+  --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
 }
 
 /* 1. Увеличение жирности KRAVVI только на ПК в Telegram */
@@ -1256,18 +1257,10 @@ body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
 /* 3. Bento Grid (Портфолио/Контакты) */
 body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 
-/* 4. Отступ для ПЛАНШЕТОВ */
-@media (min-width: 701px) and (max-width: 1024px),
-       ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
-  body.telegram-mini-app {
-    --tg-pad: calc(15px + var(--tg-top) + var(--safe-top)); /* Отступ для планшетов */
-  }
-}
-
-/* 5. Отступ для ТЕЛЕФОНОВ */
+/* 4. Адаптация для мобильных экранов */
 @media (max-width: 700px) {
   body.telegram-mini-app {
-    --tg-pad: calc(35px + var(--tg-top) + var(--safe-top)); /* Отступ для телефонов */
+    --tg-pad: calc(8px + var(--tg-top) + var(--safe-top));
   }
   
   body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
@@ -1282,7 +1275,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 }
 </style>
 </head>
-<body class="is-loading">
+<body class="is-loading" tabindex="-1">
 
 <div class="brand-tag" aria-hidden="true">VISUAL &amp; CREATIVE</div>
 
@@ -2561,6 +2554,24 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 
   // 2. Инициализация и полноэкранный режим
   tg.ready();
+
+  // ФИКС ПЕРВОГО КЛИКА: принудительно фокусируем страницу, чтобы WebView не съедал первый тап
+  setTimeout(function() {
+    if (document.body && document.body.focus) {
+      document.body.focus();
+    }
+    window.focus();
+  }, 50);
+
+  var firstTouchHandler = function() {
+    window.focus();
+    if (document.body) document.body.focus();
+    document.removeEventListener('touchstart', firstTouchHandler);
+    document.removeEventListener('mousedown', firstTouchHandler);
+  };
+  document.addEventListener('touchstart', firstTouchHandler, { once: true, passive: true });
+  document.addEventListener('mousedown', firstTouchHandler, { once: true, passive: true });
+
   if (tg.expand) tg.expand();
   if (tg.requestFullscreen) tg.requestFullscreen();
 
