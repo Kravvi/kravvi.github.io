@@ -1260,7 +1260,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 /* 4. Адаптация для мобильных экранов */
 @media (max-width: 700px) {
   body.telegram-mini-app {
-    --tg-pad: calc(8px + var(--tg-top) + var(--safe-top));
+    --tg-pad: calc(32px + var(--tg-top) + var(--safe-top));
   }
   
   body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
@@ -1275,7 +1275,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 }
 </style>
 </head>
-<body class="is-loading" tabindex="-1">
+<body class="is-loading">
 
 <div class="brand-tag" aria-hidden="true">VISUAL &amp; CREATIVE</div>
 
@@ -2554,24 +2554,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 
   // 2. Инициализация и полноэкранный режим
   tg.ready();
-
-  // ФИКС ПЕРВОГО КЛИКА: принудительно фокусируем страницу, чтобы WebView не съедал первый тап
-  setTimeout(function() {
-    if (document.body && document.body.focus) {
-      document.body.focus();
-    }
-    window.focus();
-  }, 50);
-
-  var firstTouchHandler = function() {
-    window.focus();
-    if (document.body) document.body.focus();
-    document.removeEventListener('touchstart', firstTouchHandler);
-    document.removeEventListener('mousedown', firstTouchHandler);
-  };
-  document.addEventListener('touchstart', firstTouchHandler, { once: true, passive: true });
-  document.addEventListener('mousedown', firstTouchHandler, { once: true, passive: true });
-
   if (tg.expand) tg.expand();
   if (tg.requestFullscreen) tg.requestFullscreen();
 
