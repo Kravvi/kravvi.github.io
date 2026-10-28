@@ -2546,29 +2546,38 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   var tg = window.Telegram && window.Telegram.WebApp;
   if (!tg) return; // Если открыто в обычном браузере — выходим
 
-  // 1. Добавляем класс для CSS (для всех устройств)
-  if (tg.initData) {
+  // Строгое определение Mini App (игнорируем встроенные браузеры Telegram)
+  var isMiniApp = false;
+  if (tg.initData && tg.initData.length > 0) {
+    isMiniApp = true;
+  } else if (location.hash.indexOf('tgWebAppVersion') !== -1) {
+    isMiniApp = true;
+  }
+
+  if (isMiniApp) {
     document.body.classList.add('telegram-mini-app');
-  }
 
-  // 2. Инициализация и полноэкранный режим
-  tg.ready();
-  if (tg.expand) tg.expand();
-  if (tg.requestFullscreen) tg.requestFullscreen();
+    tg.ready();
+    if (tg.expand) tg.expand();
+    if (tg.requestFullscreen) tg.requestFullscreen();
 
-  // 3. Сбор safe-area отступов (на ПК будет 0, на телефоне — нужное значение)
-  function updateSafeArea() {
-    var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
-              (tg.safeAreaInset && tg.safeAreaInset.top) ||
-              0;
-    document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
-  }
+    // Сбор safe-area отступов (на ПК будет 0, на телефоне — нужное значение)
+    function updateSafeArea() {
+      var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
+                (tg.safeAreaInset && tg.safeAreaInset.top) ||
+                0;
+      document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
+    }
 
-  updateSafeArea();
+    updateSafeArea();
 
-  // 4. Обновление при изменении viewport (поворот экрана, клавиатура)
-  if (tg.onEvent) {
-    tg.onEvent('viewportChanged', updateSafeArea);
+    // Обновление при изменении viewport (поворот экрана, клавиатура)
+    if (tg.onEvent) {
+      tg.onEvent('viewportChanged', updateSafeArea);
+    }
+  } else {
+    // Во встроенном браузере просто вызываем ready, без классов и полноэкранного режима
+    tg.ready();
   }
 })();
 </script>
