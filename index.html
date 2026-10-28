@@ -209,10 +209,6 @@ svg { display: block; }
     max-height: none;
   }
 
-  /* Принудительный перенос строки в описании плитки «Фотоархив»
-     на планшете и телефоне. В i18n строка содержит символ \n,
-     который pre-line превращает в перенос. На десктопе
-     white-space остаётся normal — \n схлопывается в пробел. */
   [data-tile-id="photo-archive"] .tile-desc {
     white-space: pre-line;
   }
@@ -311,7 +307,6 @@ svg { display: block; }
     word-break: normal;
   }
 
-  /* Чуть меньше заголовок открытой секции (Портфолио / Контакты) — только на телефоне */
   .view-title {
     font-size: 1.15rem;
   }
@@ -386,8 +381,6 @@ body.is-loading { visibility: hidden; }
   position: fixed;
   top: calc(22px + var(--safe-top));
   left: calc(24px + var(--safe-left));
-  /* z-index: 0 — ниже #app (z-index: 1), чтобы главное фото
-     перекрывало надпись, если фото зайдёт на неё по формату экрана. */
   z-index: 0;
   font-family: var(--font-ui);
   font-weight: 400;
@@ -1237,11 +1230,9 @@ body.overlay-active #view-home.is-active .hero-actions {
    ============================================================ */
 body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
-  /* Единый отступ для всех верхних элементов, чтобы они стояли на одной линии */
   --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
 }
 
-/* 1. Увеличение жирности KRAVVI только на ПК в Telegram */
 @media (hover: hover) and (pointer: fine) {
   body.telegram-mini-app .hero-name {
     -webkit-text-stroke: 0.35px currentColor;
@@ -1249,15 +1240,12 @@ body.telegram-mini-app {
   }
 }
 
-/* 2. Верхние элементы на главной (надпись и выбор языка) */
 body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
 body.telegram-mini-app .lang-btn { top: var(--tg-pad); }
 body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
 
-/* 3. Bento Grid (Портфолио/Контакты) */
 body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 
-/* 4. Адаптация для мобильных экранов */
 @media (max-width: 700px) {
   body.telegram-mini-app {
     --tg-pad: calc(32px + var(--tg-top) + var(--safe-top));
@@ -1742,6 +1730,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (menu) menu.classList.remove('is-open');
   }
 
+  function updateBackButton(viewName) {
+    var tg = window.Telegram && window.Telegram.WebApp;
+    if (!tg || !tg.BackButton) return;
+    if (viewName === 'home') {
+      tg.BackButton.hide();
+    } else {
+      tg.BackButton.show();
+    }
+  }
+
   function setView(name) {
     var home      = document.getElementById('view-home');
     var portfolio = document.getElementById('view-portfolio');
@@ -1763,6 +1761,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     document.body.classList.toggle('overlay-active', isOverlay);
 
     clearHomeButtonEffects();
+    updateBackButton(name);
 
     if (name === 'portfolio') {
       portfolio.classList.add('is-entering');
@@ -1784,7 +1783,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var name = ROUTES[h];
     if (!name) {
       if (h !== '/') {
-        try { location.replace('#/'); } catch (e) { location.hash = '#/'; }
+        try { history.replaceState({ page: 'home' }, '', '#/'); } catch (e) { location.hash = '#/'; }
+        setView('home');
         return;
       }
       setView('home');
@@ -1804,7 +1804,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       function finish(ok) { if (!done) { done = true; resolve(ok); } }
       img.addEventListener('load', function () { finish(true); });
       img.addEventListener('error', function () { finish(false); });
-      setTimeout(function () { finish(false); }, 3000); // Страховка 3 сек
+      setTimeout(function () { finish(false); }, 3000);
     });
   }
 
@@ -1813,7 +1813,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function goHome() {
     var h = location.hash;
     if (h && h !== '#' && h !== '#/') {
-      location.hash = '#/';
+      history.pushState({ page: 'home' }, '', '#/');
+      navigate();
     } else {
       navigate();
     }
@@ -1837,15 +1838,15 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       nav.classList.add('is-tapped');
 
       setTimeout(function () {
-        if (location.hash !== targetHash) location.hash = targetHash;
-        else navigate();
+        history.pushState({ page: route }, '', targetHash);
+        navigate();
       }, TAP_ANIM_MS);
 
       return;
     }
 
-    if (location.hash !== targetHash) location.hash = targetHash;
-    else navigate();
+    history.pushState({ page: route }, '', targetHash);
+    navigate();
   }
 
   function initViewportFix() {
@@ -1878,7 +1879,19 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   }
 
   function bindEvents() {
-    window.addEventListener('hashchange', navigate);
+    window.addEventListener('popstate', function (e) {
+      if (e.state && e.state.page) {
+        setView(e.state.page);
+        return;
+      }
+      var h = parseHash();
+      var name = ROUTES[h];
+      if (name) {
+        setView(name);
+      } else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.close) {
+        window.Telegram.WebApp.close();
+      }
+    });
 
     window.addEventListener('resize', debounce(function () {
       applyPatterns();
@@ -1944,6 +1957,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }, true);
   }
 
+  window.updateBackButton = updateBackButton;
+  window.getCurrentView = function () {
+    return ROUTES[parseHash()] || 'home';
+  };
+
   function init() {
     var yearEl = document.getElementById('copy-year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
@@ -1967,11 +1985,12 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     applyI18n();
     bindEvents();
 
-    if (!location.hash) {
-      try { history.replaceState(null, '', '#/'); } catch (e) { location.hash = '#/'; }
-    }
+    var initialHash = parseHash();
+    var initialView = ROUTES[initialHash] || 'home';
+    try {
+      history.replaceState({ page: initialView }, '', '#' + (initialView === 'home' ? '/' : '/' + initialView));
+    } catch (e) { /* ignore */ }
 
-    // Ждем загрузку WebP/фото перед показом, чтобы избежать "обрывков"
     preloadHeroPhoto().then(function () {
       revealBody();
       requestAnimationFrame(function () {
@@ -2544,9 +2563,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function initTelegram() {
   var tg = window.Telegram && window.Telegram.WebApp;
-  if (!tg) return; // Если открыто в обычном браузере — выходим
+  if (!tg) return;
 
-  // Строгое определение Mini App (игнорируем встроенные браузеры Telegram)
   var isMiniApp = false;
   if (tg.initData && tg.initData.length > 0) {
     isMiniApp = true;
@@ -2561,7 +2579,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (tg.expand) tg.expand();
     if (tg.requestFullscreen) tg.requestFullscreen();
 
-    // Сбор safe-area отступов (на ПК будет 0, на телефоне — нужное значение)
     function updateSafeArea() {
       var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
                 (tg.safeAreaInset && tg.safeAreaInset.top) ||
@@ -2571,12 +2588,20 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 
     updateSafeArea();
 
-    // Обновление при изменении viewport (поворот экрана, клавиатура)
     if (tg.onEvent) {
       tg.onEvent('viewportChanged', updateSafeArea);
     }
+
+    if (tg.BackButton) {
+      tg.BackButton.onClick(function () {
+        window.history.back();
+      });
+
+      if (window.updateBackButton && window.getCurrentView) {
+        window.updateBackButton(window.getCurrentView());
+      }
+    }
   } else {
-    // Во встроенном браузере просто вызываем ready, без классов и полноэкранного режима
     tg.ready();
   }
 })();
