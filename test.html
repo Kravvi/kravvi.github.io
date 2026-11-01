@@ -3,6 +3,7 @@
 <head>
 <base target="_top">
 <meta charset="UTF-8">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 <meta name="description" content="Визитка Александра Кравви. Графического и UI/UX дизайнера, фотографа, ретушёра.">
 <meta name="theme-color" content="#0A0A0A">
@@ -70,21 +71,17 @@ svg { display: block; }
   --cols: 4;
 
   --ref-w: 1920;
-  --hero-top: 10.3vh;            /* desktop only: KRAVVI от верха экрана */
-  --hero-gap: 4.1vh;             /* desktop only: зазор между KRAVVI и стеком */
+  --hero-top: 10.3vh;
+  --hero-gap: 4.1vh;
   --hero-text-gap: 8px;
   --hero-stack-gap: 28px;
   --photo-h: 104vh;
   --photo-h-max: 175vw;
   --name-size: 21.3vw;
   --name-x: 0vw;
+  --name-y: 0vh;
   --name-opsz: 96;
   --name-stroke: 0px;
-
-  /* Tablet/Phone: KRAVVI и стек привязаны к фото.
-     Доли от высоты фото, 0..1. */
-  --name-top: 0.19;
-  --stack-top: 0.50;
 
   --author-size-v: 22;
   --author-x: -31vw;
@@ -141,6 +138,7 @@ svg { display: block; }
 
 /* ============================================================
    TABLET + PHONE  ·  ≤1024px ИЛИ (touch и ≤1366px)
+   Привязка всех элементов к прямоугольнику фото через %.
    ============================================================ */
 @media (max-width: 1024px),
        ((hover: none) and (pointer: coarse) and (max-width: 1366px)) {
@@ -152,55 +150,123 @@ svg { display: block; }
     --photo-h: 104vh;
     --photo-h-max: 150vw;
 
-    --name-x: 0vw;
-    --author-x: 0vw;
-    --author-y: 0vh;
-    --desc-x: 0vw;
-    --desc-y: 0vh;
-    --btn-x: 0vw;
-    --btn-y: 0vh;
+    /* fallback до JS-расчёта; JS перезапишет inline-стилем на <html> */
+    --photo-left: 0px;
+    --photo-top: 0px;
+    --photo-w: 100vw;
+    --photo-h-real: 100vh;
+
+    /* Позиции — % от прямоугольника фото, 0 = центр.
+       Размеры — % от --photo-w. */
+    --name-x: 0;
+    --name-y: -23;
+    --name-size-v: 10.6;
+    --name-opsz: 96;
+    --name-stroke: 0;
+
+    --author-x: 0;
+    --author-y: -10;
+    --author-size-v: 1.17;
+
+    --desc-x: 0;
+    --desc-y: -5;
+    --desc-size-v: 0.85;
+    --desc-width-v: 25.5;
+
+    --btn-x: 0;
+    --btn-y: 5;
+    --btn-size-v: 0.69;
+    --btn-gap-v: 0.8;
+    --btn-pad-x: 2.2;
+    --btn-pad-y: 1;
+    --btn-scale: 1;
 
     --actions-max-w: 2000px;
   }
 
-  /* KRAVVI привязан к фото:
-     top = верх фото (100dvh - высота фото) + доля --name-top от высоты фото.
-     Фото прижато к низу .home-stage, значит его верх = 100dvh - photoH. */
+  /* Фото прижимается к низу, но с учётом нижнего safe-area */
+  .hero-photo-wrap { bottom: var(--bottom-safe); }
+
+  /* Убираем потоковые контейнеры — все дети позиционируются от .home-stage */
+  .hero-stack,
+  .hero-text { display: contents; }
+
+  /* -------- KRAVVI -------- */
   .hero-name {
-    top: calc(
-      (100dvh - min(var(--photo-h), var(--photo-h-max)))
-      + (min(var(--photo-h), var(--photo-h-max)) * var(--name-top))
-    );
+    position: absolute;
+    left: calc(var(--photo-left) + var(--photo-w) * (50 + var(--name-x)) / 100);
+    top: calc(var(--photo-top) + var(--photo-h-real) * (50 + var(--name-y)) / 100);
+    margin: 0;
+    font-size: calc(var(--photo-w) * var(--name-size-v) / 100);
+    transform: translate(-50%, -50%) translateY(20px);
+    z-index: 4;
+  }
+  #view-home.is-active .hero-name {
+    transform: translate(-50%, -50%);
   }
 
-  .hero-stack {
-    position: absolute !important;
-    top: calc(
-      (100dvh - min(var(--photo-h), var(--photo-h-max)))
-      + (min(var(--photo-h), var(--photo-h-max)) * var(--stack-top))
-    ) !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    transform: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: var(--hero-stack-gap);
-    padding-left: max(20px, var(--safe-left));
-    padding-right: max(20px, var(--safe-right));
-    pointer-events: none;
-  }
-  .hero-stack > * { pointer-events: auto; }
-
-  .hero-text { align-items: center; text-align: center; }
-  .hero-actions { justify-content: center; }
-
+  /* -------- Author -------- */
   .hero-author {
-    width: var(--desc-width);
-    box-sizing: border-box;
-    text-align: center;
+    position: absolute;
+    left: calc(var(--photo-left) + var(--photo-w) * (50 + var(--author-x)) / 100);
+    top: calc(var(--photo-top) + var(--photo-h-real) * (50 + var(--author-y)) / 100);
+    font-size: calc(var(--photo-w) * var(--author-size-v) / 100);
+    width: auto;
+    max-width: calc(var(--photo-w) * 0.9);
+    text-align: left;
+    transform: translate(-50%, -50%) translateY(14px);
+    z-index: 4;
+  }
+  #view-home.is-active .hero-author {
+    transform: translate(-50%, -50%);
+  }
+
+  /* -------- Tagline -------- */
+  .hero-tagline {
+    position: absolute;
+    left: calc(var(--photo-left) + var(--photo-w) * (50 + var(--desc-x)) / 100);
+    top: calc(var(--photo-top) + var(--photo-h-real) * (50 + var(--desc-y)) / 100);
+    font-size: calc(var(--photo-w) * var(--desc-size-v) / 100);
+    width: calc(var(--photo-w) * var(--desc-width-v) / 100);
+    max-width: none;
+    text-align: left;
+    transform: translate(-50%, -50%) translateY(18px);
+    z-index: 4;
+  }
+  #view-home.is-active .hero-tagline {
+    transform: translate(-50%, -50%);
+  }
+
+  /* -------- Buttons -------- */
+  .hero-actions {
+    position: absolute;
+    left: calc(var(--photo-left) + var(--photo-w) * (50 + var(--btn-x)) / 100);
+    top: calc(var(--photo-top) + var(--photo-h-real) * (50 + var(--btn-y)) / 100);
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--photo-w) * var(--btn-gap-v) / 100);
+    max-width: calc(var(--photo-w) * 0.9);
+    justify-content: center;
+    transform: translate(-50%, -50%) translateY(18px);
+    z-index: 4;
+  }
+  #view-home.is-active .hero-actions {
+    transform: translate(-50%, -50%);
+  }
+
+  .hero-actions .btn-pill {
+    font-size: calc(var(--photo-w) * var(--btn-size-v) * var(--btn-scale) / 100);
+  }
+
+  /* -------- Overlay state (когда открыт bento) -------- */
+  body.overlay-active #view-home.is-active .hero-author {
+    transform: translate(-50%, -50%) translateY(20px);
+  }
+  body.overlay-active #view-home.is-active .hero-tagline {
+    transform: translate(-50%, -50%) translateY(20px);
+  }
+  body.overlay-active #view-home.is-active .hero-actions {
+    transform: translate(-50%, -50%) translateY(24px);
   }
 
   .view-grid {
@@ -234,26 +300,30 @@ svg { display: block; }
 @media (min-width: 701px) and (max-width: 1024px),
        ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
   :root {
-    --ref-w: 900;
-    --name-top: 0.19;
-    --stack-top: 0.50;
-    --photo-h: 104vh;
-    --photo-h-max: 150vw;
-    --name-size: 22vw;
+    --photo-h: 104;
+    --photo-h-max: 150;
+
+    --name-x: 0;
+    --name-y: -23;
+    --name-size-v: 10.6;
     --name-opsz: 96;
-    --name-stroke: 0px;
-    --name-x: 0vw;
-    --author-size-v: 22;
-    --author-x: 0vw;
-    --author-y: 0vh;
-    --desc-size-v: 16;
-    --desc-width-v: 478;
-    --desc-x: 0vw;
-    --desc-y: 1vh;
-    --btn-size-v: 13;
-    --btn-gap-v: 15;
-    --btn-x: 0vw;
-    --btn-y: 0.2vh;
+    --name-stroke: 0;
+
+    --author-x: 0;
+    --author-y: -10;
+    --author-size-v: 1.17;
+
+    --desc-x: 0;
+    --desc-y: -5;
+    --desc-size-v: 0.85;
+    --desc-width-v: 25.5;
+
+    --btn-x: 0;
+    --btn-y: 5;
+    --btn-size-v: 0.69;
+    --btn-gap-v: 0.8;
+    --btn-pad-x: 2.2;
+    --btn-pad-y: 1;
   }
 }
 
@@ -267,35 +337,31 @@ svg { display: block; }
     --glass-radius: 20px;
     --glass-blur: 20px;
 
-    --ref-w: 402;
+    --photo-h: 92.5;
+    --photo-h-max: 213;
 
-    --name-top: 0.115;
-    --stack-top: 0.27;
-    --photo-h: 92.5vh;
-    --photo-h-max: 213vw;
-    --name-size: 22.9vw;
-    --name-x: 0vw;
+    --name-x: 0;
+    --name-y: -36;
+    --name-size-v: 7.6;
     --name-opsz: 30;
-    --name-stroke: 0.33px;
+    --name-stroke: 0.33;
 
-    --author-size-v: 19;
-    --author-x: 0vw;
-    --author-y: 4.9vh;
+    --author-x: 0;
+    --author-y: -23;
+    --author-size-v: 1.57;
 
-    --desc-size-v: 14;
-    --desc-width-v: 292;
-    --desc-x: 0vw;
-    --desc-y: 5.6vh;
+    --desc-x: 0;
+    --desc-y: -20;
+    --desc-size-v: 1.15;
+    --desc-width-v: 24;
 
-    --btn-size-v: 11.3;
-    --btn-gap-v: 14;
-    --btn-pad-y: 0.85em;
-    --btn-pad-x: 1.75em;
-    --btn-scale: 0.95;
-    --btn-x: 0vw;
-    --btn-y: 3.5vh;
-
-    --actions-max-w: 250px;
+    --btn-x: 0;
+    --btn-y: -8;
+    --btn-size-v: 0.93;
+    --btn-gap-v: 1.15;
+    --btn-pad-x: 1.75;
+    --btn-pad-y: 0.85;
+    --btn-scale: 1;
 
     --hero-stack-gap: 35px;
   }
@@ -561,8 +627,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   overflow: hidden;
 }
 
-/* ДЕСКТОП: top = var(--hero-top) (vh). Общий планшетно-телефонный
-   медиа-запрос ниже переопределяет top через calc() от высоты фото. */
 .hero-name {
   position: absolute;
   top: var(--hero-top);
@@ -590,7 +654,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 
   opacity: 0;
   filter: blur(14px);
-  transform: translateX(-50%) translate(var(--name-x), 20px);
+  transform: translateX(-50%) translate(var(--name-x), calc(var(--name-y) + 20px));
   transition:
     opacity 400ms var(--ease-in-soft),
     filter 400ms var(--ease-in-soft),
@@ -599,7 +663,7 @@ body.overlay-active .copyright  { transform: translateY(8px); }
 #view-home.is-active .hero-name {
   opacity: 1;
   filter: blur(0);
-  transform: translateX(-50%) translate(var(--name-x), 0);
+  transform: translateX(-50%) translate(var(--name-x), var(--name-y));
   transition:
     opacity var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     filter var(--dur-name) var(--ease-out-smooth) var(--delay-name),
@@ -644,8 +708,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     transform var(--dur-photo) var(--ease-out-smooth) var(--delay-photo);
 }
 
-/* ДЕСКТОП: top = --hero-top + высота KRAVVI + --hero-gap.
-   Планшетно-телефонный медиа-запрос ниже переопределяет top. */
 .hero-stack {
   position: absolute;
   top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap));
@@ -1240,6 +1302,43 @@ body.overlay-active #view-home.is-active .hero-actions {
     transition-delay: 0ms !important;
   }
 }
+
+/* ============================================================
+   TELEGRAM MINI APP
+   ============================================================ */
+body.telegram-mini-app {
+  --tg-top: var(--tg-content-safe-area-inset-top, 0px);
+  --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body.telegram-mini-app .hero-name {
+    -webkit-text-stroke: 0.35px currentColor;
+    text-stroke: 0.35px currentColor;
+  }
+}
+
+body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
+body.telegram-mini-app .lang-btn { top: var(--tg-pad); }
+body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+
+body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
+
+@media (max-width: 700px) {
+  body.telegram-mini-app {
+    --tg-pad: calc(32px + var(--tg-top) + var(--safe-top));
+  }
+  
+  body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+  
+  body.telegram-mini-app .view-grid {
+    padding: 0 !important; 
+  }
+  body.telegram-mini-app .view-header {
+    padding-top: var(--tg-pad) !important;
+    padding-bottom: 10px !important;
+  }
+}
 </style>
 </head>
 <body class="is-loading">
@@ -1270,7 +1369,7 @@ body.overlay-active #view-home.is-active .hero-actions {
                     images/VV%201920x1280.webp 1920w,
                     images/VV%202356x1571.webp 2356w"
             sizes="(max-width: 700px) 130vw, (max-width: 1024px) 100vw, 60vw">
-          <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async" fetchpriority="high">
+          <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async">
         </picture>
       </div>
       <div class="hero-stack">
@@ -1709,6 +1808,16 @@ body.overlay-active #view-home.is-active .hero-actions {
     if (menu) menu.classList.remove('is-open');
   }
 
+  function updateBackButton(viewName) {
+    var tg = window.Telegram && window.Telegram.WebApp;
+    if (!tg || !tg.BackButton) return;
+    if (viewName === 'home') {
+      tg.BackButton.hide();
+    } else {
+      tg.BackButton.show();
+    }
+  }
+
   function setView(name) {
     var home      = document.getElementById('view-home');
     var portfolio = document.getElementById('view-portfolio');
@@ -1730,6 +1839,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     document.body.classList.toggle('overlay-active', isOverlay);
 
     clearHomeButtonEffects();
+    updateBackButton(name);
 
     if (name === 'portfolio') {
       portfolio.classList.add('is-entering');
@@ -1751,7 +1861,8 @@ body.overlay-active #view-home.is-active .hero-actions {
     var name = ROUTES[h];
     if (!name) {
       if (h !== '/') {
-        try { location.replace('#/'); } catch (e) { location.hash = '#/'; }
+        try { history.replaceState({ page: 'home' }, '', '#/'); } catch (e) { location.hash = '#/'; }
+        setView('home');
         return;
       }
       setView('home');
@@ -1771,8 +1882,26 @@ body.overlay-active #view-home.is-active .hero-actions {
       function finish(ok) { if (!done) { done = true; resolve(ok); } }
       img.addEventListener('load', function () { finish(true); });
       img.addEventListener('error', function () { finish(false); });
-      setTimeout(function () { finish(false); }, 6000);
+      setTimeout(function () { finish(false); }, 3000);
     });
+  }
+
+  /* ============================================================
+     UPDATE PHOTO FRAME — измеряет реальный прямоугольник фото
+     и пишет px-значения в :root для Tablet/Phone позиционирования
+     ============================================================ */
+  function updatePhotoFrame() {
+    var stage = document.querySelector('.home-stage');
+    var img = document.getElementById('hero-photo');
+    if (!stage || !img) return;
+    var sRect = stage.getBoundingClientRect();
+    var iRect = img.getBoundingClientRect();
+    if (iRect.width <= 0 || iRect.height <= 0) return;
+    var root = document.documentElement;
+    root.style.setProperty('--photo-w', iRect.width + 'px');
+    root.style.setProperty('--photo-h-real', iRect.height + 'px');
+    root.style.setProperty('--photo-left', (iRect.left - sRect.left) + 'px');
+    root.style.setProperty('--photo-top', (iRect.top - sRect.top) + 'px');
   }
 
   function revealBody() { document.body.classList.remove('is-loading'); }
@@ -1780,7 +1909,8 @@ body.overlay-active #view-home.is-active .hero-actions {
   function goHome() {
     var h = location.hash;
     if (h && h !== '#' && h !== '#/') {
-      location.hash = '#/';
+      history.pushState({ page: 'home' }, '', '#/');
+      navigate();
     } else {
       navigate();
     }
@@ -1804,15 +1934,15 @@ body.overlay-active #view-home.is-active .hero-actions {
       nav.classList.add('is-tapped');
 
       setTimeout(function () {
-        if (location.hash !== targetHash) location.hash = targetHash;
-        else navigate();
+        history.pushState({ page: route }, '', targetHash);
+        navigate();
       }, TAP_ANIM_MS);
 
       return;
     }
 
-    if (location.hash !== targetHash) location.hash = targetHash;
-    else navigate();
+    history.pushState({ page: route }, '', targetHash);
+    navigate();
   }
 
   function initViewportFix() {
@@ -1828,9 +1958,12 @@ body.overlay-active #view-home.is-active .hero-actions {
       var offset = window.innerHeight - (vv.offsetTop + vv.height);
       if (offset < 0) offset = 0;
       offset = Math.round(offset);
-      if (offset === lastOffset) return;
-      lastOffset = offset;
-      root.style.setProperty('--vv-bottom', offset + 'px');
+      if (offset !== lastOffset) {
+        lastOffset = offset;
+        root.style.setProperty('--vv-bottom', offset + 'px');
+      }
+      /* пересчёт фото-рамки (фото сдвигается вверх при появлении адресной строки) */
+      updatePhotoFrame();
     }
 
     function schedule() {
@@ -1845,14 +1978,28 @@ body.overlay-active #view-home.is-active .hero-actions {
   }
 
   function bindEvents() {
-    window.addEventListener('hashchange', navigate);
+    window.addEventListener('popstate', function (e) {
+      if (e.state && e.state.page) {
+        setView(e.state.page);
+        return;
+      }
+      var h = parseHash();
+      var name = ROUTES[h];
+      if (name) {
+        setView(name);
+      } else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.close) {
+        window.Telegram.WebApp.close();
+      }
+    });
 
     window.addEventListener('resize', debounce(function () {
       applyPatterns();
+      updatePhotoFrame();
     }, 120));
 
     window.addEventListener('orientationchange', debounce(function () {
       applyPatterns();
+      updatePhotoFrame();
     }, 150));
 
     var langBtn = document.getElementById('lang-btn');
@@ -1911,6 +2058,11 @@ body.overlay-active #view-home.is-active .hero-actions {
     }, true);
   }
 
+  window.updateBackButton = updateBackButton;
+  window.getCurrentView = function () {
+    return ROUTES[parseHash()] || 'home';
+  };
+
   function init() {
     var yearEl = document.getElementById('copy-year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
@@ -1934,13 +2086,18 @@ body.overlay-active #view-home.is-active .hero-actions {
     applyI18n();
     bindEvents();
 
-    if (!location.hash) {
-      try { history.replaceState(null, '', '#/'); } catch (e) { location.hash = '#/'; }
-    }
+    var img = document.getElementById('hero-photo');
+    if (img) img.addEventListener('load', updatePhotoFrame);
+    updatePhotoFrame();
 
-    setTimeout(revealBody, 2500);
+    var initialHash = parseHash();
+    var initialView = ROUTES[initialHash] || 'home';
+    try {
+      history.replaceState({ page: initialView }, '', '#' + (initialView === 'home' ? '/' : '/' + initialView));
+    } catch (e) { /* ignore */ }
 
     preloadHeroPhoto().then(function () {
+      updatePhotoFrame();
       revealBody();
       requestAnimationFrame(function () {
         requestAnimationFrame(function () { navigate(); });
@@ -1983,17 +2140,18 @@ body.overlay-active #view-home.is-active .hero-actions {
   var shouldActivate = (tunerParam === '1') || (savedState !== null);
   if (!shouldActivate) return;
 
-  var GROUPS = [
+  /* ============================================================
+     GROUPS · Desktop (vw/vh/px/em — старые формулы)
+     ============================================================ */
+  var GROUPS_DESKTOP = [
     {
       id: 'name',
       title: 'KRAVVI',
       props: [
-        /* Desktop: KRAVVI привязан к верху экрана (vh).
-           Tablet/Phone: привязан к фото — доля от высоты фото (безразмерная). */
-        { key: '--hero-top',  label: 'Top (vh)',         unit: 'vh', step: 0.1, contexts: ['desktop'] },
-        { key: '--name-top',  label: 'Top (фото, 0..1)', unit: '',   step: 0.01, contexts: ['tablet', 'phone'] },
+        { key: '--hero-top',    label: 'Top',    unit: 'vh', step: 0.1 },
         { key: '--name-size',   label: 'Size',   unit: 'vw', step: 0.1 },
         { key: '--name-x',      label: 'X',      unit: 'vw', step: 0.1 },
+        { key: '--name-y',      label: 'Y',      unit: 'vh', step: 0.1 },
         { key: '--name-opsz',   label: 'opsz',   unit: '',   step: 1   },
         { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
       ]
@@ -2010,9 +2168,8 @@ body.overlay-active #view-home.is-active .hero-actions {
       id: 'stack',
       title: 'Stack',
       props: [
-        { key: '--hero-gap',       label: 'KRAVVI gap (vh)',   unit: 'vh', step: 0.1, contexts: ['desktop'] },
-        { key: '--stack-top',      label: 'Top (фото, 0..1)',  unit: '',   step: 0.01, contexts: ['tablet', 'phone'] },
-        { key: '--hero-stack-gap', label: 'Text gap',          unit: 'px', step: 1 }
+        { key: '--hero-gap',       label: 'KRAVVI gap', unit: 'vh', step: 0.1 },
+        { key: '--hero-stack-gap', label: 'Text gap',   unit: 'px', step: 1 }
       ]
     },
     {
@@ -2048,61 +2205,129 @@ body.overlay-active #view-home.is-active .hero-actions {
     }
   ];
 
+  /* ============================================================
+     GROUPS · Tablet / Phone (всё привязано к --photo-w / --photo-h-real)
+     unit в UI — %, но в CSS пишется как безразмерное число (cssUnitOf).
+     ============================================================ */
+  var GROUPS_MOBILE = [
+    {
+      id: 'photo',
+      title: 'Photo',
+      props: [
+        { key: '--photo-h',     label: 'Height', unit: 'vh', step: 1 },
+        { key: '--photo-h-max', label: 'Max',    unit: 'vw', step: 5 }
+      ]
+    },
+    {
+      id: 'name',
+      title: 'KRAVVI',
+      props: [
+        { key: '--name-x',      label: 'X',      unit: '%',  step: 0.5 },
+        { key: '--name-y',      label: 'Y',      unit: '%',  step: 0.5 },
+        { key: '--name-size-v', label: 'Size',   unit: '%',  step: 0.1 },
+        { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
+      ]
+    },
+    {
+      id: 'author',
+      title: 'Author',
+      props: [
+        { key: '--author-x',      label: 'X',    unit: '%', step: 0.5 },
+        { key: '--author-y',      label: 'Y',    unit: '%', step: 0.5 },
+        { key: '--author-size-v', label: 'Size', unit: '%', step: 0.05 }
+      ]
+    },
+    {
+      id: 'tagline',
+      title: 'Tagline',
+      props: [
+        { key: '--desc-x',       label: 'X',     unit: '%', step: 0.5 },
+        { key: '--desc-y',       label: 'Y',     unit: '%', step: 0.5 },
+        { key: '--desc-size-v',  label: 'Size',  unit: '%', step: 0.05 },
+        { key: '--desc-width-v', label: 'Width', unit: '%', step: 0.5 }
+      ]
+    },
+    {
+      id: 'buttons',
+      title: 'Buttons',
+      props: [
+        { key: '--btn-x',      label: 'X',     unit: '%',  step: 0.5 },
+        { key: '--btn-y',      label: 'Y',     unit: '%',  step: 0.5 },
+        { key: '--btn-size-v', label: 'Size',  unit: '%',  step: 0.05 },
+        { key: '--btn-gap-v',  label: 'Gap',   unit: '%',  step: 0.05 },
+        { key: '--btn-pad-x',  label: 'Pad X', unit: 'em', step: 0.05 },
+        { key: '--btn-pad-y',  label: 'Pad Y', unit: 'em', step: 0.05 }
+      ]
+    }
+  ];
+
   var DEFAULTS = {
     desktop: {
-      '--hero-top': '10.3',
-      '--name-top': '0',
-      '--name-size': '21.3', '--name-x': '0',
+      '--hero-top': '10.3', '--name-size': '21.3', '--name-x': '0', '--name-y': '0',
       '--name-opsz': '96', '--name-stroke': '0',
       '--photo-h': '104', '--photo-h-max': '175',
-      '--hero-gap': '4.1', '--stack-top': '0', '--hero-stack-gap': '28',
+      '--hero-gap': '4.1', '--hero-stack-gap': '28',
       '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
       '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '-31', '--desc-y': '0.5',
       '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
       '--btn-x': '-31.2', '--btn-y': '-0.3'
     },
     tablet: {
-      '--hero-top': '10.3',
-      '--name-top': '0.19',
-      '--name-size': '22', '--name-x': '0',
-      '--name-opsz': '96', '--name-stroke': '0',
       '--photo-h': '104', '--photo-h-max': '150',
-      '--hero-gap': '3', '--stack-top': '0.50', '--hero-stack-gap': '28',
-      '--author-size-v': '22', '--author-x': '0', '--author-y': '0',
-      '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '0', '--desc-y': '1',
-      '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
-      '--btn-x': '0', '--btn-y': '0.2'
+      '--name-x': '0', '--name-y': '-23', '--name-size-v': '10.6',
+      '--name-opsz': '96', '--name-stroke': '0',
+      '--author-x': '0', '--author-y': '-10', '--author-size-v': '1.17',
+      '--desc-x': '0', '--desc-y': '-5', '--desc-size-v': '0.85', '--desc-width-v': '25.5',
+      '--btn-x': '0', '--btn-y': '5', '--btn-size-v': '0.69', '--btn-gap-v': '0.8',
+      '--btn-pad-x': '2.2', '--btn-pad-y': '1'
     },
     phone: {
-      '--hero-top': '10.3',
-      '--name-top': '0.115',
-      '--name-size': '22.9', '--name-x': '0',
-      '--name-opsz': '30', '--name-stroke': '0.33',
       '--photo-h': '92.5', '--photo-h-max': '213',
-      '--hero-gap': '7.8', '--stack-top': '0.27', '--hero-stack-gap': '35',
-      '--author-size-v': '19', '--author-x': '0', '--author-y': '4.9',
-      '--desc-size-v': '14', '--desc-width-v': '292', '--desc-x': '0', '--desc-y': '5.6',
-      '--btn-size-v': '11.3', '--btn-gap-v': '14', '--btn-pad-x': '1.75', '--btn-pad-y': '0.85',
-      '--btn-x': '0', '--btn-y': '3.5'
+      '--name-x': '0', '--name-y': '-36', '--name-size-v': '7.6',
+      '--name-opsz': '30', '--name-stroke': '0.33',
+      '--author-x': '0', '--author-y': '-23', '--author-size-v': '1.57',
+      '--desc-x': '0', '--desc-y': '-20', '--desc-size-v': '1.15', '--desc-width-v': '24',
+      '--btn-x': '0', '--btn-y': '-8', '--btn-size-v': '0.93', '--btn-gap-v': '1.15',
+      '--btn-pad-x': '1.75', '--btn-pad-y': '0.85'
     }
   };
 
+  function groupsFor(ctx) {
+    return ctx === 'desktop' ? GROUPS_DESKTOP : GROUPS_MOBILE;
+  }
+
+  function unitOf(key, groups) {
+    for (var i = 0; i < groups.length; i++)
+      for (var j = 0; j < groups[i].props.length; j++)
+        if (groups[i].props[j].key === key) return groups[i].props[j].unit;
+    return '';
+  }
+
+  /* CSS-unit — то, что реально пишется в style.setProperty.
+     Для mobile: X/Y/Size/Width — безразмерные (в CSS calc с *100 и /100). */
+  function cssUnitOf(key, ctx) {
+    if (ctx === 'desktop') return unitOf(key, GROUPS_DESKTOP);
+    if (key === '--photo-h') return 'vh';
+    if (key === '--photo-h-max') return 'vw';
+    if (key === '--name-stroke') return 'px';
+    if (key === '--btn-pad-x' || key === '--btn-pad-y') return 'em';
+    return '';
+  }
+
+  function displayUnitOf(key, ctx) {
+    return unitOf(key, groupsFor(ctx));
+  }
+
   var ALL_KEYS = (function () {
     var out = [];
-    GROUPS.forEach(function (g) {
-      g.props.forEach(function (p) {
-        if (out.indexOf(p.key) === -1) out.push(p.key);
-      });
+    GROUPS_DESKTOP.forEach(function (g) {
+      g.props.forEach(function (p) { if (out.indexOf(p.key) === -1) out.push(p.key); });
+    });
+    GROUPS_MOBILE.forEach(function (g) {
+      g.props.forEach(function (p) { if (out.indexOf(p.key) === -1) out.push(p.key); });
     });
     return out;
   })();
-
-  function unitOf(key) {
-    for (var i = 0; i < GROUPS.length; i++)
-      for (var j = 0; j < GROUPS[i].props.length; j++)
-        if (GROUPS[i].props[j].key === key) return GROUPS[i].props[j].unit;
-    return '';
-  }
 
   var state = savedState || {};
   var currentContext = detectContext();
@@ -2126,7 +2351,12 @@ body.overlay-active #view-home.is-active .hero-actions {
     var out = {};
     var d = DEFAULTS[ctx] || {};
     var s = state[ctx] || {};
-    ALL_KEYS.forEach(function (k) {
+    var groups = groupsFor(ctx);
+    var keys = [];
+    groups.forEach(function (g) {
+      g.props.forEach(function (p) { if (keys.indexOf(p.key) === -1) keys.push(p.key); });
+    });
+    keys.forEach(function (k) {
       out[k] = (s[k] != null) ? s[k] : d[k];
     });
     return out;
@@ -2147,10 +2377,17 @@ body.overlay-active #view-home.is-active .hero-actions {
     appliedVars = [];
 
     var vals = getValues(currentContext);
-    ALL_KEYS.forEach(function (k) {
+    var groups = groupsFor(currentContext);
+    var keys = [];
+    groups.forEach(function (g) {
+      g.props.forEach(function (p) { if (keys.indexOf(p.key) === -1) keys.push(p.key); });
+    });
+
+    keys.forEach(function (k) {
       var v = vals[k];
       if (v == null || v === '') return;
-      document.documentElement.style.setProperty(k, v + unitOf(k));
+      var u = cssUnitOf(k, currentContext);
+      document.documentElement.style.setProperty(k, v + u);
       appliedVars.push(k);
     });
   }
@@ -2223,7 +2460,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
 
     + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
-    + '.tuner-prop{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;padding:2px 0}'
+    + '.tuner-prop{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;padding:2px 0}'
     + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
     + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
     + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 26px 28px;gap:4px;align-items:center}'
@@ -2336,13 +2573,9 @@ body.overlay-active #view-home.is-active .hero-actions {
     var box = panel.querySelector('[data-role="groups"]');
     box.innerHTML = '';
     var vals = getValues(currentContext);
+    var groups = groupsFor(currentContext);
 
-    GROUPS.forEach(function (g) {
-      var visibleProps = g.props.filter(function (p) {
-        return !p.contexts || p.contexts.indexOf(currentContext) !== -1;
-      });
-      if (!visibleProps.length) return;
-
+    groups.forEach(function (g) {
       var groupEl = document.createElement('div');
       groupEl.className = 'tuner-group';
 
@@ -2354,7 +2587,7 @@ body.overlay-active #view-home.is-active .hero-actions {
       var propsEl = document.createElement('div');
       propsEl.className = 'tuner-props';
 
-      visibleProps.forEach(function (p) {
+      g.props.forEach(function (p) {
         var row = document.createElement('div');
         row.className = 'tuner-prop';
 
@@ -2489,11 +2722,16 @@ body.overlay-active #view-home.is-active .hero-actions {
     var out = {};
     ['desktop', 'tablet', 'phone'].forEach(function (ctx) {
       var vals = getValues(ctx);
+      var groups = groupsFor(ctx);
+      var keys = [];
+      groups.forEach(function (g) {
+        g.props.forEach(function (p) { if (keys.indexOf(p.key) === -1) keys.push(p.key); });
+      });
       var o = {};
-      ALL_KEYS.forEach(function (k) {
+      keys.forEach(function (k) {
         var v = vals[k];
         if (v == null || v === '') return;
-        o[k] = String(v) + unitOf(k);
+        o[k] = String(v) + displayUnitOf(k, ctx);
       });
       out[ctx] = o;
     });
@@ -2520,6 +2758,53 @@ body.overlay-active #view-home.is-active .hero-actions {
   applyContextValues();
   renderAll();
 
+})();
+</script>
+
+<script>
+(function initTelegram() {
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if (!tg) return;
+
+  var isMiniApp = false;
+  if (tg.initData && tg.initData.length > 0) {
+    isMiniApp = true;
+  } else if (location.hash.indexOf('tgWebAppVersion') !== -1) {
+    isMiniApp = true;
+  }
+
+  if (isMiniApp) {
+    document.body.classList.add('telegram-mini-app');
+
+    tg.ready();
+    if (tg.expand) tg.expand();
+    if (tg.requestFullscreen) tg.requestFullscreen();
+
+    function updateSafeArea() {
+      var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
+                (tg.safeAreaInset && tg.safeAreaInset.top) ||
+                0;
+      document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
+    }
+
+    updateSafeArea();
+
+    if (tg.onEvent) {
+      tg.onEvent('viewportChanged', updateSafeArea);
+    }
+
+    if (tg.BackButton) {
+      tg.BackButton.onClick(function () {
+        window.history.back();
+      });
+
+      if (window.updateBackButton && window.getCurrentView) {
+        window.updateBackButton(window.getCurrentView());
+      }
+    }
+  } else {
+    tg.ready();
+  }
 })();
 </script>
 </body>
