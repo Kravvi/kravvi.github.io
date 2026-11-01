@@ -155,9 +155,18 @@ svg { display: block; }
       calc(var(--gap) + var(--safe-left));
     justify-content: flex-start;
   }
-  .view-header { max-width: none; justify-content: center; gap: 10px; }
-  .grid { max-width: none; max-height: none; }
-  [data-tile-id="photo-archive"] .tile-desc { white-space: pre-line; }
+  .view-header {
+    max-width: none;
+    justify-content: center;
+    gap: 10px;
+  }
+  .grid {
+    max-width: none;
+    max-height: none;
+  }
+  [data-tile-id="photo-archive"] .tile-desc {
+    white-space: pre-line;
+  }
 }
 
 @media (min-width: 701px) and (max-width: 1024px),
@@ -216,7 +225,9 @@ svg { display: block; }
     --actions-max-w: 250px;
   }
   html.is-firefox-mobile { --btn-scale: 1.1; }
-  .view-title { font-size: 1.15rem; }
+  .view-title {
+    font-size: 1.15rem;
+  }
   .view-grid {
     padding: 0 !important;
     gap: 0 !important;
@@ -247,9 +258,14 @@ svg { display: block; }
     gap: 10px !important;
   }
   [data-tile-id="photo-archive"] .tile-content,
-  [data-tile-id="mail"] .tile-content { flex-direction: column-reverse; }
+  [data-tile-id="mail"] .tile-content {
+    flex-direction: column-reverse;
+  }
   [data-tile-id="photo-archive"] .tile-bottom,
-  [data-tile-id="mail"] .tile-bottom { align-items: flex-end; text-align: right; }
+  [data-tile-id="mail"] .tile-bottom {
+    align-items: flex-end;
+    text-align: right;
+  }
 }
 
 /* ============================================================
@@ -777,7 +793,10 @@ body.overlay-active #view-home.is-active .hero-actions {
   pointer-events: none;
 }
 .view-grid.is-active::before { opacity: 1; }
-.view-grid > * { position: relative; z-index: 1; }
+.view-grid > * {
+  position: relative;
+  z-index: 1;
+}
 .view-header {
   width: 100%;
   max-width: var(--grid-max-w);
@@ -886,12 +905,18 @@ body.overlay-active #view-home.is-active .hero-actions {
     calc(var(--i, 0) * var(--step-ms) * 1ms);
 }
 .view-grid.is-active .tile:hover::after { opacity: 1; }
-.view-grid.is-active .tile:hover .tile-content { transform: translateY(-2px); }
+.view-grid.is-active .tile:hover .tile-content {
+  transform: translateY(-2px);
+}
 .view-grid.is-active .tile:active .tile-content {
   transform: translateY(-1px) scale(0.985);
   transition-duration: 200ms;
 }
-.tile.is-disabled { cursor: not-allowed; opacity: 0.7; pointer-events: none; }
+.tile.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  pointer-events: none;
+}
 .tile.is-disabled::before {
   background: rgba(255, 255, 255, 0.03);
   border-color: rgba(255, 255, 255, 0.04);
@@ -903,109 +928,178 @@ body.overlay-active #view-home.is-active .hero-actions {
   gap: 10px;
 }
 .tile.is-disabled .tile-top,
-.tile.is-disabled .tile-bottom { display: none; }
+.tile.is-disabled .tile-bottom {
+  display: none;
+}
 .tile-disabled-inner {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  color: var(--text-soft);
+  gap: 10px;
+  width: 100%;
+  height: 100%;
 }
-.tile-disabled-inner svg { opacity: 0.5; }
-.tile-disabled-label {
+.tile-disabled-lock {
+  width: 28px;
+  height: 28px;
+  color: rgba(255, 255, 255, 0.55);
+  flex-shrink: 0;
+}
+.tile-disabled-lock svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+.tile-disabled-text {
   font-family: var(--font-ui);
-  font-weight: 500;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+  font-weight: 400;
+  font-size: clamp(0.66rem, 0.7vw, 0.76rem);
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+.tile-media {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 2;
+}
+.tile-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.22) 55%, rgba(0,0,0,0.62) 100%);
+  pointer-events: none;
 }
 .tile-content {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
-  padding: clamp(14px, 1.6vw, 22px);
-  transition: transform 300ms var(--ease-out-smooth);
+  gap: 8px;
+  width: 100%; height: 100%;
+  padding: clamp(14px, 1.5vw, 22px);
+  transition: transform 450ms var(--ease-out-smooth);
 }
-.tile-top { display: flex; flex-direction: column; gap: 4px; }
-.tile-bottom { display: flex; flex-direction: column; gap: 3px; margin-top: auto; }
-.tile-label {
-  font-family: var(--font-ui);
-  font-weight: 500;
-  font-size: 0.66rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+.tile-top { display: flex; justify-content: flex-end; align-items: flex-start; }
+.tile-arrow {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+  opacity: 0.8;
+  transition:
+    opacity 450ms var(--ease-out-smooth),
+    transform 450ms var(--ease-out-smooth),
+    background-color 450ms var(--ease-out-smooth);
 }
+.tile-arrow svg { width: 12px; height: 12px; }
+.view-grid.is-active .tile:hover .tile-arrow {
+  opacity: 1;
+  background: rgba(255,255,255,0.18);
+  transform: translate(2px, -2px);
+}
+.tile-bottom { display: flex; flex-direction: column; gap: 4px; }
 .tile-title {
   font-family: var(--font-ui);
-  font-weight: 500;
-  font-size: clamp(0.95rem, 1.15vw, 1.15rem);
-  line-height: 1.25;
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.1vw, 1.28rem);
   letter-spacing: 0.01em;
-  color: var(--text);
+  color: #fff;
+  line-height: 1.2;
+  text-shadow: 0 1px 14px rgba(0,0,0,0.5);
 }
 .tile-desc {
   font-family: var(--font-ui);
   font-weight: 300;
-  font-size: clamp(0.74rem, 0.85vw, 0.86rem);
-  line-height: 1.45;
-  color: var(--text-soft);
-}
-.tile[data-tile-id="photo-archive"] .tile-content { justify-content: flex-end; }
-.tile[data-tile-id="photo-archive"] .tile-bottom { margin-top: 0; }
-.tile.is-featured::before {
-  background: rgba(255, 255, 255, 0.045);
-  border-color: rgba(255, 255, 255, 0.09);
-}
-/* Сетка: размеры плиток */
-[data-tile-id="photo-archive"] { grid-column: span 2; grid-row: span 2; }
-[data-tile-id="about"]         { grid-column: span 2; grid-row: span 1; }
-[data-tile-id="services"]      { grid-column: span 1; grid-row: span 1; }
-[data-tile-id="projects"]      { grid-column: span 1; grid-row: span 1; }
-[data-tile-id="contact"]       { grid-column: span 2; grid-row: span 1; }
-[data-tile-id="mail"]          { grid-column: span 1; grid-row: span 1; }
-[data-tile-id="social"]        { grid-column: span 1; grid-row: span 1; }
-@media (max-width: 1024px) {
-  [data-tile-id="photo-archive"] { grid-column: span 2; grid-row: span 2; }
-  [data-tile-id="about"]         { grid-column: span 2; }
-  [data-tile-id="services"],
-  [data-tile-id="projects"]      { grid-column: span 1; }
-  [data-tile-id="contact"]       { grid-column: span 2; }
-  [data-tile-id="mail"],
-  [data-tile-id="social"]        { grid-column: span 1; }
-}
-@media (max-width: 700px) {
-  .grid { grid-auto-rows: minmax(110px, auto); }
-  [data-tile-id="photo-archive"] { grid-column: span 2; grid-row: span 2; }
-  [data-tile-id="about"],
-  [data-tile-id="contact"]       { grid-column: span 2; grid-row: span 1; }
-  [data-tile-id="services"],
-  [data-tile-id="projects"],
-  [data-tile-id="mail"],
-  [data-tile-id="social"]        { grid-column: span 1; grid-row: span 1; }
+  font-size: clamp(0.66rem, 0.72vw, 0.8rem);
+  color: rgba(255,255,255,0.72);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-shadow: 0 1px 10px rgba(0,0,0,0.4);
 }
 
 /* ============================================================
-   9. REDUCED MOTION
+   9. BACK BUTTON
    ============================================================ */
+.glass-btn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  gap: 8px;
+  padding: 0.9em 1.7em;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: clamp(0.88rem, 1vw, 1.05rem);
+  letter-spacing: 0.02em;
+  color: var(--text);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border-radius: 999px;
+  transition:
+    background-color 450ms var(--ease-out-smooth),
+    transform 450ms var(--ease-out-smooth),
+    color 450ms var(--ease-out-smooth);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.glass-btn:hover {
+  background: rgba(255,255,255,0.10);
+  transform: translateY(-2px);
+  color: #fff;
+}
+.glass-btn:active { transform: translateY(-1px) scale(0.985); }
+.back-btn {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-radius: 0;
+  border: 0;
+  flex-shrink: 0;
+  color: #f5f5f6;
+}
+.back-btn:hover,
+.back-btn:active {
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+  color: #fff;
+}
+.back-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  pointer-events: none;
+}
+@media (max-width: 700px) {
+  .glass-btn { padding: 0.8em 1.4em; font-size: 0.9rem; }
+  .tile-arrow { width: 24px; height: 24px; }
+  .tile-arrow svg { width: 11px; height: 11px; }
+  .back-btn { width: 28px; height: 28px; }
+  .back-btn svg { width: 14px; height: 14px; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }
 
 /* ============================================================
    10. TABLET / PHONE — ARTBOARD POSITIONING (container queries)
-   Всё ниже — только для ≤1024 / тач-десктопов до 1366.
-   Десктоп (>1024, точный указатель) не затрагивается.
    ============================================================ */
 @media (max-width: 1024px),
        ((hover: none) and (pointer: coarse) and (max-width: 1366px)) {
@@ -1124,7 +1218,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     top: calc(50% + var(--btn-y) * 1%);
     gap: calc(var(--btn-gap-v) * 1%);
     justify-content: center;
-    max-width: 90%;
+    max-width: var(--actions-max-w);
     z-index: 3;
     pointer-events: auto;
     transform: translate(-50%, -50%) translateY(18px);
@@ -1162,16 +1256,22 @@ body.overlay-active #view-home.is-active .hero-actions {
 /* Phone-specific artboard nudges */
 @media (max-width: 700px) {
   .hero-name {
-    /* Bodoni на телефоне: сглаженный оптический размер */
-    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 600;
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
+    font-weight: 400;
   }
   .hero-tagline {
-    text-align: justify;
-    text-align-last: center;
-    hyphens: none;
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    overflow-wrap: normal;
+    word-break: normal;
   }
   .hero-actions {
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
   }
   .hero-actions .btn-pill {
     white-space: nowrap;
@@ -1179,509 +1279,747 @@ body.overlay-active #view-home.is-active .hero-actions {
 }
 
 /* ============================================================
-   11. TELEGRAM MINI APP
+   TELEGRAM MINI APP
    ============================================================ */
-html.is-telegram { --safe-top: 0px; }
-
-/* ============================================================
-   12. TUNER (dev)
-   ============================================================ */
-#tuner-toggle {
-  position: fixed;
-  right: calc(12px + var(--safe-right));
-  bottom: calc(12px + var(--bottom-safe));
-  z-index: 9999;
-  width: 40px;
-  height: 40px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: var(--text-dim);
-  font-size: 18px;
-  cursor: pointer;
-  user-select: none;
+body.telegram-mini-app {
+  --tg-top: var(--tg-content-safe-area-inset-top, 0px);
+  --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
 }
-html.tuner-on #tuner-toggle { display: inline-flex; }
-#tuner {
-  position: fixed;
-  right: calc(12px + var(--safe-right));
-  bottom: calc(64px + var(--bottom-safe));
-  z-index: 9998;
-  width: 268px;
-  max-height: 62vh;
-  overflow-y: auto;
-  padding: 12px;
-  border-radius: 16px;
-  background: rgba(14,14,16,0.86);
-  border: 1px solid rgba(255,255,255,0.10);
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.55);
-  font-family: var(--font-ui);
-  font-size: 11px;
-  color: var(--text-dim);
-  display: none;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.2) transparent;
+@media (hover: hover) and (pointer: fine) {
+  body.telegram-mini-app .hero-name {
+    -webkit-text-stroke: 0.35px currentColor;
+    text-stroke: 0.35px currentColor;
+  }
 }
-html.tuner-on #tuner.is-open { display: block; }
-#tuner::-webkit-scrollbar { width: 5px; }
-#tuner::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
-.tuner-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
+body.telegram-mini-app .lang-btn { top: var(--tg-pad); }
+body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
+@media (max-width: 700px) {
+  body.telegram-mini-app {
+    --tg-pad: calc(32px + var(--tg-top) + var(--safe-top));
+  }
+  body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+  body.telegram-mini-app .view-grid {
+    padding: 0 !important;
+  }
+  body.telegram-mini-app .view-header {
+    padding-top: var(--tg-pad) !important;
+    padding-bottom: 10px !important;
+  }
 }
-.tuner-head-title {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-soft);
-}
-.tuner-ctx {
-  display: flex;
-  gap: 4px;
-}
-.tuner-ctx-btn {
-  padding: 3px 8px;
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  border-radius: 6px;
-  background: rgba(255,255,255,0.04);
-  transition: background 150ms, color 150ms;
-}
-.tuner-ctx-btn.is-active {
-  background: rgba(255,255,255,0.14);
-  color: #fff;
-}
-.tuner-group { margin-bottom: 10px; }
-.tuner-group-title {
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 5px;
-}
-.tuner-row {
-  display: grid;
-  grid-template-columns: 64px 1fr 52px;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 5px;
-}
-.tuner-row-label { font-size: 10.5px; color: var(--text-soft); }
-.tuner-row-ctrl {
-  display: grid;
-  grid-template-columns: 18px 1fr 18px;
-  align-items: center;
-  gap: 2px;
-}
-.tuner-btn {
-  width: 18px; height: 18px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  background: rgba(255,255,255,0.06);
-  color: var(--text-soft);
-  font-size: 11px;
-  line-height: 1;
-  cursor: pointer;
-  user-select: none;
-  transition: background 120ms;
-}
-.tuner-btn:hover { background: rgba(255,255,255,0.14); }
-.tuner-input {
-  width: 100%;
-  padding: 3px 5px;
-  font-family: var(--font-ui);
-  font-size: 10.5px;
-  text-align: center;
-  color: var(--text);
-  background: rgba(0,0,0,0.35);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 5px;
-  outline: none;
-  -moz-appearance: textfield;
-}
-.tuner-input::-webkit-outer-spin-button,
-.tuner-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.tuner-unit { font-size: 9.5px; color: var(--text-muted); text-align: right; }
-.tuner-foot {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-}
-.tuner-foot button {
-  flex: 1;
-  padding: 6px 8px;
-  font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  border-radius: 7px;
-  background: rgba(255,255,255,0.06);
-  color: var(--text-dim);
-  cursor: pointer;
-  transition: background 150ms, color 150ms;
-}
-.tuner-foot button:hover { background: rgba(255,255,255,0.14); color: #fff; }
 </style>
 </head>
 <body class="is-loading">
-<!-- ==================== УГЛОВЫЕ ЭЛЕМЕНТЫ ==================== -->
-<span class="brand-tag">Digital Card</span>
-<button class="lang-btn" id="langBtn" type="button" aria-label="Язык">
-  <span id="langCurrent">RU</span>
-  <svg width="9" height="9" viewBox="0 0 10 10" fill="none" aria-hidden="true">
-    <path d="M2 3.5L5 6.5L8 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
+<div class="brand-tag" aria-hidden="true">VISUAL &amp; CREATIVE</div>
+<button class="lang-btn" id="lang-btn" type="button" aria-label="Сменить язык">
+  <span id="lang-current">Ru</span>
 </button>
-<div class="lang-menu" id="langMenu" role="menu">
-  <button class="lang-item is-active" data-lang="ru" role="menuitem">RU</button>
-  <button class="lang-item" data-lang="en" role="menuitem">EN</button>
+<div class="lang-menu" id="lang-menu" role="menu" aria-label="Выбор языка">
+  <button type="button" class="lang-item" data-lang="ru" role="menuitem">Ru</button>
+  <button type="button" class="lang-item" data-lang="en" role="menuitem">En</button>
+  <button type="button" class="lang-item" data-lang="de" role="menuitem">De</button>
 </div>
-<span class="copyright">© Kravvi</span>
-<!-- ==================== APP ==================== -->
-<div id="app">
-  <!-- ============ HOME ============ -->
-  <section class="view-home is-active" id="view-home">
+<div class="copyright" aria-hidden="true"><span id="copy-year">2026</span> © KRAVVI</div>
+<main id="app">
+  <section id="view-home" class="view-home" aria-hidden="false">
     <div class="home-stage">
       <div class="home-artboard">
-        <h1 class="hero-name">KRAVVI</h1>
+        <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
         <div class="hero-photo-wrap">
           <picture>
-            <source media="(max-width: 700px)" srcset="photo/hero-700.webp" type="image/webp">
-            <source media="(max-width: 1024px)" srcset="photo/hero-1024.webp" type="image/webp">
-            <source srcset="photo/hero.webp" type="image/webp">
-            <img class="hero-photo" src="photo/hero.jpg" alt="Александр Кравви" width="2356" height="1571" fetchpriority="high" decoding="async">
+            <source
+              type="image/webp"
+              srcset="images/VV%201600x1067.webp 1600w,
+                      images/VV%201920x1280.webp 1920w,
+                      images/VV%202356x1571.webp 2356w"
+              sizes="(max-width: 700px) 130vw, (max-width: 1024px) 100vw, 60vw">
+            <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async">
           </picture>
         </div>
         <div class="hero-stack">
           <div class="hero-text">
-            <div class="hero-author" data-i18n="author">Александр Кравви</div>
-            <p class="hero-tagline" data-i18n="tagline">Графический и UI/UX дизайнер, фотограф, ретушёр. Собираю визуальные истории из света, формы и точной типографики.</p>
+            <p class="hero-author" data-i18n="hero.author">Александр Кравви</p>
+            <p class="hero-tagline" data-i18n="hero.tagline">Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.</p>
           </div>
           <div class="hero-actions">
-            <a class="btn-pill" href="#grid" data-nav="grid" data-i18n="btnPortfolio">Портфолио</a>
-            <a class="btn-pill" href="https://t.me/kravvi" target="_blank" rel="noopener" data-i18n="btnContact">Связаться</a>
+            <a class="btn-pill" href="#/contacts"  data-nav="/contacts"  data-i18n="btn.contacts">Контакты</a>
+            <a class="btn-pill" href="#/portfolio" data-nav="/portfolio" data-i18n="btn.portfolio">Портфолио</a>
+            <a class="btn-pill" href="https://archive.gallery.photo/gallery/thoughts" target="_blank" rel="noopener noreferrer" data-i18n="btn.thoughts">Мысли</a>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <!-- ============ BENTO OVERLAY ============ -->
-  <section class="view-grid" id="view-grid" aria-hidden="true">
-    <div class="view-header">
-      <h2 class="view-title" data-i18n="gridTitle">Навигация</h2>
-    </div>
-    <div class="grid" id="grid">
-      <a class="tile is-featured" href="#photo" data-tile-id="photo-archive" style="--i:0">
-        <div class="tile-content">
-          <div class="tile-top">
-            <span class="tile-label" data-i18n="tilePhotoLabel">Фото</span>
-          </div>
-          <div class="tile-bottom">
-            <span class="tile-title" data-i18n="tilePhotoTitle">Архив</span>
-            <span class="tile-desc" data-i18n="tilePhotoDesc">Портреты, репортаж, предметная съёмка</span>
-          </div>
-        </div>
+  <section id="view-portfolio" class="view-grid" aria-hidden="true">
+    <header class="view-header">
+      <a class="glass-btn back-btn" href="#/" data-nav="/" aria-label="Back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M15 6l-6 6 6 6"/>
+        </svg>
       </a>
-      <a class="tile" href="#about" data-tile-id="about" style="--i:1">
-        <div class="tile-content">
-          <div class="tile-top">
-            <span class="tile-label" data-i18n="tileAboutLabel">О себе</span>
-          </div>
-          <div class="tile-bottom">
-            <span class="tile-desc" data-i18n="tileAboutDesc">Дизайнер, фотограф, ретушёр. Работаю с брендами и людьми.</span>
-          </div>
-        </div>
-      </a>
-      <a class="tile" href="#services" data-tile-id="services" style="--i:2">
-        <div class="tile-content">
-          <div class="tile-top">
-            <span class="tile-label" data-i18n="tileServicesLabel">Услуги</span>
-          </div>
-          <div class="tile-bottom">
-            <span class="tile-title" data-i18n="tileServicesTitle">Дизайн</span>
-          </div>
-        </div>
-      </a>
-      <a class="tile" href="#projects" data-tile-id="projects" style="--i:3">
-        <div class="tile-content">
-          <div class="tile-top">
-            <span class="tile-label" data-i18n="tileProjectsLabel">Проекты</span>
-          </div>
-          <div class="tile-bottom">
-            <span class="tile-title" data-i18n="tileProjectsTitle">Кейсы</span>
-          </div>
-        </div>
-      </a>
-      <a class="tile" href="#contact" data-tile-id="contact" style="--i:4">
-        <div class="tile-content">
-          <div class="tile-top">
-            <span class="tile-label" data-i18n="tileContactLabel">Контакты</span>
-          </div>
-          <div class="tile-bottom">
-            <span class="tile-desc" data-i18n="tileContactDesc">Telegram, почта, соцсети</span>
-          </div>
-        </div>
-      </a>
-      <a class="tile" href="mailto:hello@kravvi.ru" data-tile-id="mail" style="--i:5">
-        <div class="tile-content">
-          <div class="tile-top">
-            <span class="tile-label" data-i18n="tileMailLabel">Почта</span>
-          </div>
-          <div class="tile-bottom">
-            <span class="tile-desc">hello@kravvi.ru</span>
-          </div>
-        </div>
-      </a>
-      <a class="tile" href="https://instagram.com/kravvi" target="_blank" rel="noopener" data-tile-id="social" style="--i:6">
-        <div class="tile-content">
-          <div class="tile-top">
-            <span class="tile-label" data-i18n="tileSocialLabel">Соцсети</span>
-          </div>
-          <div class="tile-bottom">
-            <span class="tile-desc">@kravvi</span>
-          </div>
-        </div>
-      </a>
-    </div>
+      <h2 class="view-title" data-i18n="nav.portfolio.title">Портфолио</h2>
+    </header>
+    <div class="grid" id="grid-portfolio" data-grid="portfolio"></div>
   </section>
-</div>
-<!-- ==================== TUNER ==================== -->
-<button id="tuner-toggle" type="button" aria-label="Tuner">⚙</button>
-<div id="tuner" role="dialog" aria-label="Tuner">
-  <div class="tuner-head">
-    <span class="tuner-head-title">Tuner</span>
-    <div class="tuner-ctx">
-      <button class="tuner-ctx-btn" data-ctx="desktop" type="button">Desk</button>
-      <button class="tuner-ctx-btn" data-ctx="tablet" type="button">Tab</button>
-      <button class="tuner-ctx-btn" data-ctx="phone" type="button">Ph</button>
-    </div>
+  <section id="view-contacts" class="view-grid" aria-hidden="true">
+    <header class="view-header">
+      <a class="glass-btn back-btn" href="#/" data-nav="/" aria-label="Back">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M15 6l-6 6 6 6"/>
+        </svg>
+      </a>
+      <h2 class="view-title" data-i18n="nav.contacts.title">Контакты</h2>
+    </header>
+    <div class="grid" id="grid-contacts" data-grid="contacts"></div>
+  </section>
+</main>
+<noscript>
+  <div style="padding:40px;text-align:center;color:#fff;font-family:sans-serif;">
+    Для работы сайта требуется JavaScript.
   </div>
-  <div id="tuner-body"></div>
-  <div class="tuner-foot">
-    <button type="button" id="tuner-reset">Reset</button>
-    <button type="button" id="tuner-copy">Copy</button>
-  </div>
-</div>
+</noscript>
 <script>
 (function () {
   'use strict';
-  /* ============================================================
-     PRELOAD
-     ============================================================ */
-  function preloadHeroPhoto() {
-    var img = document.querySelector('.hero-photo');
-    var done = false;
-    function finish() {
-      if (done) return;
-      done = true;
-      document.body.classList.remove('is-loading');
-    }
-    if (!img || img.complete) { finish(); return; }
-    img.addEventListener('load', finish, { once: true });
-    img.addEventListener('error', finish, { once: true });
-    setTimeout(finish, 3000);
-  }
-  /* ============================================================
-     I18N
-     ============================================================ */
+  var STEP_MS       = 80;
+  var TRANSITION_MS = 900;
+  var TAP_ANIM_MS   = 150;
+  var ROUTES = {
+    '/':          'home',
+    '/portfolio': 'portfolio',
+    '/contacts':  'contacts'
+  };
   var I18N = {
     ru: {
-      author: 'Александр Кравви',
-      tagline: 'Графический и UI/UX дизайнер, фотограф, ретушёр. Собираю визуальные истории из света, формы и точной типографики.',
-      btnPortfolio: 'Портфолио',
-      btnContact: 'Связаться',
-      gridTitle: 'Навигация',
-      tilePhotoLabel: 'Фото',
-      tilePhotoTitle: 'Архив',
-      tilePhotoDesc: 'Портреты, репортаж, предметная съёмка',
-      tileAboutLabel: 'О себе',
-      tileAboutDesc: 'Дизайнер, фотограф, ретушёр. Работаю с брендами и людьми.',
-      tileServicesLabel: 'Услуги',
-      tileServicesTitle: 'Дизайн',
-      tileProjectsLabel: 'Проекты',
-      tileProjectsTitle: 'Кейсы',
-      tileContactLabel: 'Контакты',
-      tileContactDesc: 'Telegram, почта, соцсети',
-      tileMailLabel: 'Почта',
-      tileSocialLabel: 'Соцсети'
+      'meta.title':       'Digital card',
+      'meta.description': 'Визитка Александра Кравви. Графического и UI/UX дизайнера, фотографа, ретушёра.',
+      'hero.name':        'KRAVVI',
+      'hero.author':      'Александр Кравви',
+      'hero.tagline':     'Я графический и UI/UX дизайнер, фотограф, ретушёр. Создаю и управляю впечатлением о продуктах и личностях.',
+      'btn.contacts':     'Контакты',
+      'btn.portfolio':    'Портфолио',
+      'btn.thoughts':     'Мысли',
+      'btn.back':         'Назад',
+      'nav.portfolio.title': 'Портфолио',
+      'nav.contacts.title':  'Контакты',
+      'tile.photoArchive.title': 'Фотоархив',
+      'tile.photoArchive.desc':  'Архив — портфолио фоторабот\nза период с 2015 по 2022 год',
+      'tile.behance.title':      'Behance',
+      'tile.behance.desc':       'Дизайн-проекты',
+      'tile.dribbble.title':     'Dribbble',
+      'tile.dribbble.desc':      'UI-шоты',
+      'tile.telegram.title':     'Telegram',
+      'tile.telegram.desc':      'Связаться напрямую',
+      'tile.instagram.title':    'Instagram',
+      'tile.instagram.desc':     'Личный профиль',
+      'tile.vkPage.title':       'Страница ВК',
+      'tile.vkPage.desc':        'Личная страница',
+      'tile.vkCommunity.title':  'Сообщество ВК',
+      'tile.vkCommunity.desc':   'Старое сообщество по фотографии',
+      'tile.threads.title':      'Threads',
+      'tile.threads.desc':       'Личный профиль',
+      'tile.facebook.title':     'Facebook',
+      'tile.facebook.desc':      'Личная страница',
+      'tile.mail.title':         'Почта',
+      'tile.mail.desc':          'Написать письмо',
+      'tile.disabled':           'Временно недоступно'
     },
     en: {
-      author: 'Alexander Kravvi',
-      tagline: 'Graphic & UI/UX designer, photographer, retoucher. Building visual stories from light, form, and precise typography.',
-      btnPortfolio: 'Portfolio',
-      btnContact: 'Get in touch',
-      gridTitle: 'Navigation',
-      tilePhotoLabel: 'Photo',
-      tilePhotoTitle: 'Archive',
-      tilePhotoDesc: 'Portraits, reportage, still life',
-      tileAboutLabel: 'About',
-      tileAboutDesc: 'Designer, photographer, retoucher. Working with brands and people.',
-      tileServicesLabel: 'Services',
-      tileServicesTitle: 'Design',
-      tileProjectsLabel: 'Projects',
-      tileProjectsTitle: 'Cases',
-      tileContactLabel: 'Contacts',
-      tileContactDesc: 'Telegram, email, socials',
-      tileMailLabel: 'Email',
-      tileSocialLabel: 'Socials'
+      'meta.title':       'Digital card',
+      'meta.description': 'Business card of Alexandr Kravvi. Graphic and UI/UX designer, photographer, retoucher.',
+      'hero.name':        'KRAVVI',
+      'hero.author':      'Alexandr Kravvi',
+      'hero.tagline':     'I am a graphic and UI/UX designer, photographer, retoucher. I create and manage the impression of products and personalities.',
+      'btn.contacts':     'Contacts',
+      'btn.portfolio':    'Portfolio',
+      'btn.thoughts':     'Thoughts',
+      'btn.back':         'Back',
+      'nav.portfolio.title': 'Portfolio',
+      'nav.contacts.title':  'Contacts',
+      'tile.photoArchive.title': 'Photoarchive',
+      'tile.photoArchive.desc':  'Archive — portfolio of photographic works\nfrom 2015 to 2022',
+      'tile.behance.title':      'Behance',
+      'tile.behance.desc':       'Design projects',
+      'tile.dribbble.title':     'Dribbble',
+      'tile.dribbble.desc':      'UI shots',
+      'tile.telegram.title':     'Telegram',
+      'tile.telegram.desc':      'Reach out directly',
+      'tile.instagram.title':    'Instagram',
+      'tile.instagram.desc':     'Personal profile',
+      'tile.vkPage.title':       'VK Page',
+      'tile.vkPage.desc':        'Personal page',
+      'tile.vkCommunity.title':  'VK Community',
+      'tile.vkCommunity.desc':   'Old photography community',
+      'tile.threads.title':      'Threads',
+      'tile.threads.desc':       'Personal profile',
+      'tile.facebook.title':     'Facebook',
+      'tile.facebook.desc':      'Personal page',
+      'tile.mail.title':         'Email',
+      'tile.mail.desc':          'Send an email',
+      'tile.disabled':           'Temporarily unavailable'
+    },
+    de: {
+      'meta.title':       'Digitale Visitenkarte',
+      'meta.description': 'Visitenkarte von Alexandr Kravvi. Grafik- und UI/UX-Designer, Fotograf, Retuscheur.',
+      'hero.name':        'KRAVVI',
+      'hero.author':      'Alexandr Kravvi',
+      'hero.tagline':     'Ich bin Grafik- und UI/UX-Designer, Fotograf und Retuscheur. Ich gestalte und steuere den Eindruck von Produkten und Persönlichkeiten.',
+      'btn.contacts':     'Kontakte',
+      'btn.portfolio':    'Portfolio',
+      'btn.thoughts':     'Gedanken',
+      'btn.back':         'Zurück',
+      'nav.portfolio.title': 'Portfolio',
+      'nav.contacts.title':  'Kontakte',
+      'tile.photoArchive.title': 'Fotoarchiv',
+      'tile.photoArchive.desc':  'Archiv — Portfolio fotografischer Arbeiten\naus den Jahren 2015 bis 2022',
+      'tile.behance.title':      'Behance',
+      'tile.behance.desc':       'Designprojekte',
+      'tile.dribbble.title':     'Dribbble',
+      'tile.dribbble.desc':      'UI-Shots',
+      'tile.telegram.title':     'Telegram',
+      'tile.telegram.desc':      'Direkt kontaktieren',
+      'tile.instagram.title':    'Instagram',
+      'tile.instagram.desc':     'Persönliches Profil',
+      'tile.vkPage.title':       'VK-Seite',
+      'tile.vkPage.desc':        'Persönliche Seite',
+      'tile.vkCommunity.title':  'VK-Community',
+      'tile.vkCommunity.desc':   'Alte Fotografie-Community',
+      'tile.threads.title':      'Threads',
+      'tile.threads.desc':       'Persönliches Profil',
+      'tile.facebook.title':     'Facebook',
+      'tile.facebook.desc':      'Persönliche Seite',
+      'tile.mail.title':         'E-Mail',
+      'tile.mail.desc':          'E-Mail senden',
+      'tile.disabled':           'Vorübergehend nicht verfügbar'
     }
   };
-  var currentLang = 'ru';
-  function applyLang(lang) {
-    if (!I18N[lang]) return;
-    currentLang = lang;
-    var dict = I18N[lang];
-    document.querySelectorAll('[data-i18n]').forEach(function (el) {
-      var key = el.getAttribute('data-i18n');
-      if (dict[key]) el.textContent = dict[key];
-    });
-    document.getElementById('langCurrent').textContent = lang.toUpperCase();
-    document.querySelectorAll('.lang-item').forEach(function (b) {
-      b.classList.toggle('is-active', b.getAttribute('data-lang') === lang);
-    });
-    document.documentElement.lang = lang;
-    try { localStorage.setItem('kravvi-lang', lang); } catch (e) {}
-  }
-  function initLang() {
-    var saved = null;
-    try { saved = localStorage.getItem('kravvi-lang'); } catch (e) {}
-    var tgLang = null;
-    if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe) {
-      var u = Telegram.WebApp.initDataUnsafe.user;
-      if (u && u.language_code) tgLang = u.language_code.slice(0, 2);
+  var TILES = {
+    portfolio: [
+      { id: 'behance', url: '', disabled: true,
+        titleKey: 'tile.behance.title', descKey: 'tile.behance.desc' },
+      { id: 'dribbble', url: '', disabled: true,
+        titleKey: 'tile.dribbble.title', descKey: 'tile.dribbble.desc' },
+      { id: 'photo-archive', url: 'https://kravvi.github.io/archive',
+        titleKey: 'tile.photoArchive.title', descKey: 'tile.photoArchive.desc' }
+    ],
+    contacts: [
+      { id: 'telegram', url: 'https://t.me/alexkravvi',
+        titleKey: 'tile.telegram.title', descKey: 'tile.telegram.desc' },
+      { id: 'instagram', url: 'https://www.instagram.com/akravvi',
+        titleKey: 'tile.instagram.title', descKey: 'tile.instagram.desc' },
+      { id: 'vk-page', url: 'https://vk.ru/kravvi',
+        titleKey: 'tile.vkPage.title', descKey: 'tile.vkPage.desc' },
+      { id: 'vk-community', url: 'https://vk.ru/kravviphotographer',
+        titleKey: 'tile.vkCommunity.title', descKey: 'tile.vkCommunity.desc' },
+      { id: 'threads', url: 'https://www.threads.com/@akravvi',
+        titleKey: 'tile.threads.title', descKey: 'tile.threads.desc' },
+      { id: 'facebook', url: 'https://www.facebook.com/alexanderkravvi',
+        titleKey: 'tile.facebook.title', descKey: 'tile.facebook.desc' },
+      { id: 'mail',
+        url: 'https://mail.google.com/mail/u/0/?fs=1&tf=cm&source=mailto&to=akravvi@gmail.com',
+        titleKey: 'tile.mail.title', descKey: 'tile.mail.desc' }
+    ]
+  };
+  var PATTERNS = {
+    portfolio: {
+      desktop: {
+        'behance':       '1 / 1 / 2 / 3',
+        'dribbble':      '1 / 3 / 2 / 5',
+        'photo-archive': '2 / 1 / 3 / 5'
+      },
+      mobile: {
+        'behance':       '1 / 1 / 2 / 2',
+        'dribbble':      '1 / 2 / 2 / 3',
+        'photo-archive': '2 / 1 / 3 / 3'
+      }
+    },
+    contacts: {
+      desktop: {
+        'telegram':     '1 / 1 / 3 / 3',
+        'instagram':    '1 / 3 / 2 / 4',
+        'vk-page':      '1 / 4 / 2 / 5',
+        'vk-community': '2 / 3 / 3 / 5',
+        'threads':      '3 / 1 / 4 / 2',
+        'facebook':     '3 / 2 / 4 / 3',
+        'mail':         '3 / 3 / 4 / 5'
+      },
+      mobile: {
+        'telegram':     '1 / 1 / 3 / 3',
+        'instagram':    '3 / 1 / 4 / 2',
+        'vk-page':      '3 / 2 / 4 / 3',
+        'vk-community': '4 / 1 / 5 / 3',
+        'threads':      '5 / 1 / 6 / 2',
+        'facebook':     '5 / 2 / 6 / 3',
+        'mail':         '6 / 1 / 7 / 3'
+      }
     }
-    var nav = (navigator.language || 'ru').slice(0, 2);
-    var lang = saved || (I18N[tgLang] ? tgLang : (I18N[nav] ? nav : 'ru'));
-    applyLang(lang);
-    var btn = document.getElementById('langBtn');
-    var menu = document.getElementById('langMenu');
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      menu.classList.toggle('is-open');
+  };
+  function $$(sel, ctx) {
+    return Array.prototype.slice.call((ctx || document).querySelectorAll(sel));
+  }
+  function debounce(fn, ms) {
+    var t;
+    return function () {
+      var args = arguments, ctx = this;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(ctx, args); }, ms);
+    };
+  }
+  function getLang() {
+    try {
+      var s = localStorage.getItem('lang');
+      if (s === 'ru' || s === 'en' || s === 'de') return s;
+    } catch (e) {}
+    var nav = (navigator.language || 'ru').toLowerCase();
+    if (nav.indexOf('ru') === 0) return 'ru';
+    if (nav.indexOf('en') === 0) return 'en';
+    if (nav.indexOf('de') === 0) return 'de';
+    return 'ru';
+  }
+  function setLang(lang) {
+    if (lang !== 'ru' && lang !== 'en' && lang !== 'de') return;
+    try { localStorage.setItem('lang', lang); } catch (e) {}
+    applyI18n();
+  }
+  function isTouchDevice() {
+    return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }
+  function isFirefoxMobile() {
+    var ua = navigator.userAgent || '';
+    return /Firefox/.test(ua) && /Android|Mobile/.test(ua);
+  }
+  function applyI18n() {
+    var lang = getLang();
+    var dict = I18N[lang] || I18N.ru;
+    document.documentElement.setAttribute('lang', lang);
+    var title = dict['meta.title'] || 'Digital card';
+    document.title = title;
+    var metaDesc = document.querySelector('meta[name="description"]');
+    if (metaDesc) metaDesc.setAttribute('content', dict['meta.description'] || '');
+    var ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', title);
+    var ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', dict['meta.description'] || '');
+    $$('[data-i18n]').forEach(function (el) {
+      var k = el.getAttribute('data-i18n');
+      if (dict[k] != null) el.textContent = dict[k];
     });
-    menu.querySelectorAll('.lang-item').forEach(function (b) {
-      b.addEventListener('click', function () {
-        applyLang(b.getAttribute('data-lang'));
-        menu.classList.remove('is-open');
+    var cur = document.getElementById('lang-current');
+    if (cur) cur.textContent = lang.charAt(0).toUpperCase() + lang.charAt(1);
+    $$('.lang-item').forEach(function (el) {
+      el.classList.toggle('is-active', el.getAttribute('data-lang') === lang);
+    });
+    $$('.back-btn').forEach(function (el) {
+      el.setAttribute('aria-label', dict['btn.back'] || 'Back');
+    });
+    var photo = document.getElementById('hero-photo');
+    if (photo) {
+      var altMap = {
+        ru: 'Александр Кравви',
+        en: 'Alexandr Kravvi',
+        de: 'Alexandr Kravvi'
+      };
+      photo.setAttribute('alt', altMap[lang] || 'Alexandr Kravvi');
+    }
+  }
+  var ARROW_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
+  var LOCK_SVG =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<rect x="4" y="11" width="16" height="10" rx="2"/>' +
+    '<path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  function buildTile(t, i) {
+    var a = document.createElement('a');
+    a.className = 'tile';
+    a.setAttribute('data-tile-id', t.id);
+    a.style.setProperty('--i', String(i));
+    if (t.disabled) {
+      a.classList.add('is-disabled');
+      a.href = '#';
+      a.addEventListener('click', function (e) { e.preventDefault(); });
+      var inner = document.createElement('div');
+      inner.className = 'tile-disabled-inner';
+      var lock = document.createElement('div');
+      lock.className = 'tile-disabled-lock';
+      lock.innerHTML = LOCK_SVG;
+      var label = document.createElement('div');
+      label.className = 'tile-disabled-text';
+      label.setAttribute('data-i18n', 'tile.disabled');
+      inner.appendChild(lock);
+      inner.appendChild(label);
+      var content = document.createElement('div');
+      content.className = 'tile-content';
+      content.appendChild(inner);
+      a.appendChild(content);
+      return a;
+    }
+    if (t.url) {
+      a.href = t.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    } else {
+      a.href = '#';
+      a.addEventListener('click', function (e) { e.preventDefault(); });
+    }
+    var title = document.createElement('div');
+    title.className = 'tile-title';
+    title.setAttribute('data-i18n', t.titleKey);
+    var desc = document.createElement('div');
+    desc.className = 'tile-desc';
+    desc.setAttribute('data-i18n', t.descKey);
+    var arrow = document.createElement('span');
+    arrow.className = 'tile-arrow';
+    arrow.innerHTML = ARROW_SVG;
+    var top = document.createElement('div');
+    top.className = 'tile-top';
+    top.appendChild(arrow);
+    var bottom = document.createElement('div');
+    bottom.className = 'tile-bottom';
+    bottom.appendChild(title);
+    bottom.appendChild(desc);
+    var content = document.createElement('div');
+    content.className = 'tile-content';
+    content.appendChild(top);
+    content.appendChild(bottom);
+    a.appendChild(content);
+    return a;
+  }
+  function buildGrids() {
+    ['portfolio', 'contacts'].forEach(function (kind) {
+      var container = document.getElementById('grid-' + kind);
+      if (!container) return;
+      var frag = document.createDocumentFragment();
+      TILES[kind].forEach(function (t, i) { frag.appendChild(buildTile(t, i)); });
+      container.appendChild(frag);
+    });
+  }
+  function applyPatterns() {
+    var isMobile = window.matchMedia('(max-width: 700px)').matches;
+    var mode = isMobile ? 'mobile' : 'desktop';
+    ['portfolio', 'contacts'].forEach(function (kind) {
+      var table = PATTERNS[kind] && PATTERNS[kind][mode];
+      if (!table) return;
+      $$('[data-grid="' + kind + '"] .tile').forEach(function (tile) {
+        var id = tile.getAttribute('data-tile-id');
+        if (table[id]) tile.style.gridArea = table[id];
       });
     });
-    document.addEventListener('click', function () {
-      menu.classList.remove('is-open');
+  }
+  function parseHash() {
+    var h = location.hash || '';
+    if (h.charAt(0) === '#') h = h.slice(1);
+    if (!h) h = '/';
+    if (h.charAt(0) !== '/') h = '/' + h;
+    return h;
+  }
+  function clearHomeButtonEffects() {
+    var active = document.activeElement;
+    if (active && active.blur) active.blur();
+    $$('.hero-actions .btn-pill').forEach(function (btn) {
+      if (btn.blur) btn.blur();
+      btn.classList.remove('is-tapped');
     });
   }
-  /* ============================================================
-     NAV (home <-> grid)
-     ============================================================ */
-  var viewHome = document.getElementById('view-home');
-  var viewGrid = document.getElementById('view-grid');
-  function openGrid() {
-    viewHome.classList.remove('is-active');
-    viewHome.setAttribute('aria-hidden', 'true');
-    viewGrid.classList.add('is-active', 'is-entering');
-    viewGrid.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('overlay-active');
-    setTimeout(function () { viewGrid.classList.remove('is-entering'); }, 1400);
+  function closeLangMenu() {
+    var menu = document.getElementById('lang-menu');
+    if (menu) menu.classList.remove('is-open');
   }
-  function closeGrid() {
-    viewGrid.classList.remove('is-active', 'is-entering');
-    viewGrid.setAttribute('aria-hidden', 'true');
-    viewHome.classList.add('is-active');
-    viewHome.removeAttribute('aria-hidden');
-    document.body.classList.remove('overlay-active');
+  function updateBackButton(viewName) {
+    var tg = window.Telegram && window.Telegram.WebApp;
+    if (!tg || !tg.BackButton) return;
+    if (viewName === 'home') {
+      tg.BackButton.hide();
+    } else {
+      tg.BackButton.show();
+    }
   }
-  function initNav() {
-    document.querySelectorAll('[data-nav="grid"]').forEach(function (el) {
-      el.addEventListener('click', function (e) {
-        e.preventDefault();
-        openGrid();
+  function setView(name) {
+    var home      = document.getElementById('view-home');
+    var portfolio = document.getElementById('view-portfolio');
+    var contacts  = document.getElementById('view-contacts');
+    home.classList.add('is-active');
+    home.setAttribute('aria-hidden', 'false');
+    var isOverlay = (name === 'portfolio' || name === 'contacts');
+    portfolio.classList.toggle('is-active', name === 'portfolio');
+    contacts.classList.toggle('is-active', name === 'contacts');
+    portfolio.setAttribute('aria-hidden', name === 'portfolio' ? 'false' : 'true');
+    contacts.setAttribute('aria-hidden', name === 'contacts' ? 'false' : 'true');
+    portfolio.classList.remove('is-entering');
+    contacts.classList.remove('is-entering');
+    document.body.classList.toggle('overlay-active', isOverlay);
+    clearHomeButtonEffects();
+    updateBackButton(name);
+    if (name === 'portfolio') {
+      portfolio.classList.add('is-entering');
+      scheduleEnterClear(portfolio);
+    } else if (name === 'contacts') {
+      contacts.classList.add('is-entering');
+      scheduleEnterClear(contacts);
+    }
+  }
+  function scheduleEnterClear(view) {
+    var tilesCount = view.querySelectorAll('.tile').length;
+    var total = TRANSITION_MS + tilesCount * STEP_MS + 150;
+    setTimeout(function () { view.classList.remove('is-entering'); }, total);
+  }
+  function navigate() {
+    var h = parseHash();
+    var name = ROUTES[h];
+    if (!name) {
+      if (h !== '/') {
+        try { history.replaceState({ page: 'home' }, '', '#/'); } catch (e) { location.hash = '#/'; }
+        setView('home');
+        return;
+      }
+      setView('home');
+      return;
+    }
+    setView(name);
+  }
+  function preloadHeroPhoto() {
+    return new Promise(function (resolve) {
+      var img = document.getElementById('hero-photo');
+      if (!img) return resolve(false);
+      if (img.complete && img.naturalWidth > 0) return resolve(true);
+      var done = false;
+      function finish(ok) { if (!done) { done = true; resolve(ok); } }
+      img.addEventListener('load', function () { finish(true); });
+      img.addEventListener('error', function () { finish(false); });
+      setTimeout(function () { finish(false); }, 3000);
+    });
+  }
+  function revealBody() { document.body.classList.remove('is-loading'); }
+  function goHome() {
+    var h = location.hash;
+    if (h && h !== '#' && h !== '#/') {
+      history.pushState({ page: 'home' }, '', '#/');
+      navigate();
+    } else {
+      navigate();
+    }
+  }
+  function handleNavClick(e) {
+    var nav = e.target.closest ? e.target.closest('[data-nav]') : null;
+    if (!nav) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+    e.preventDefault();
+    var route = nav.getAttribute('data-nav');
+    var targetHash = '#' + route;
+    var isHomeBtn = nav.classList.contains('btn-pill');
+    if (isTouchDevice() && isHomeBtn) {
+      $$('.hero-actions .btn-pill').forEach(function (b) {
+        if (b !== nav) b.classList.remove('is-tapped');
       });
-    });
-    viewGrid.addEventListener('click', function (e) {
-      if (e.target === viewGrid || e.target.classList.contains('view-header') || e.target.classList.contains('view-title')) {
-        closeGrid();
+      nav.classList.add('is-tapped');
+      setTimeout(function () {
+        history.pushState({ page: route }, '', targetHash);
+        navigate();
+      }, TAP_ANIM_MS);
+      return;
+    }
+    history.pushState({ page: route }, '', targetHash);
+    navigate();
+  }
+  function initViewportFix() {
+    if (!window.visualViewport) return;
+    var root = document.documentElement;
+    var lastOffset = -1;
+    var rafPending = false;
+    function update() {
+      rafPending = false;
+      var vv = window.visualViewport;
+      var offset = window.innerHeight - (vv.offsetTop + vv.height);
+      if (offset < 0) offset = 0;
+      offset = Math.round(offset);
+      if (offset === lastOffset) return;
+      lastOffset = offset;
+      root.style.setProperty('--vv-bottom', offset + 'px');
+    }
+    function schedule() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(update);
+    }
+    window.visualViewport.addEventListener('resize', schedule);
+    window.visualViewport.addEventListener('scroll', schedule);
+    update();
+  }
+  function bindEvents() {
+    window.addEventListener('popstate', function (e) {
+      if (e.state && e.state.page) {
+        setView(e.state.page);
+        return;
+      }
+      var h = parseHash();
+      var name = ROUTES[h];
+      if (name) {
+        setView(name);
+      } else if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.close) {
+        window.Telegram.WebApp.close();
       }
     });
+    window.addEventListener('resize', debounce(function () {
+      applyPatterns();
+    }, 120));
+    window.addEventListener('orientationchange', debounce(function () {
+      applyPatterns();
+    }, 150));
+    var langBtn = document.getElementById('lang-btn');
+    var langMenu = document.getElementById('lang-menu');
+    if (langBtn && langMenu) {
+      langBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        langMenu.classList.toggle('is-open');
+      });
+      langMenu.addEventListener('click', function (e) {
+        var item = e.target.closest ? e.target.closest('.lang-item') : null;
+        if (!item) return;
+        setLang(item.getAttribute('data-lang'));
+        closeLangMenu();
+      });
+    }
+    document.addEventListener('click', function (e) {
+      if (!langMenu || !langMenu.classList.contains('is-open')) return;
+      if (e.target.closest && e.target.closest('#lang-menu, #lang-btn')) return;
+      closeLangMenu();
+    });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && viewGrid.classList.contains('is-active')) closeGrid();
+      if (e.key !== 'Escape' && e.key !== 'Esc') return;
+      if (langMenu && langMenu.classList.contains('is-open')) {
+        closeLangMenu();
+        return;
+      }
+      if (!document.body.classList.contains('overlay-active')) return;
+      e.preventDefault();
+      goHome();
     });
-    if (location.hash === '#grid') setTimeout(openGrid, 50);
-    window.addEventListener('hashchange', function () {
-      if (location.hash === '#grid') openGrid();
-      else closeGrid();
-    });
+    document.addEventListener('touchstart', function (e) {
+      if (!isTouchDevice()) return;
+      var btn = e.target.closest && e.target.closest('.hero-actions .btn-pill');
+      if (!btn) return;
+      $$('.hero-actions .btn-pill').forEach(function (b) {
+        if (b !== btn) b.classList.remove('is-tapped');
+      });
+      btn.classList.add('is-tapped');
+    }, { passive: true });
+    document.addEventListener('touchcancel', function () {
+      if (!isTouchDevice()) return;
+      $$('.hero-actions .btn-pill').forEach(function (b) {
+        b.classList.remove('is-tapped');
+      });
+    }, { passive: true });
+    document.addEventListener('click', handleNavClick);
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.hero-actions .btn-pill') : null;
+      if (btn && btn.blur) btn.blur();
+    }, true);
   }
-  /* ============================================================
-     TAP FEEDBACK
-     ============================================================ */
-  function initTap() {
-    document.querySelectorAll('.btn-pill').forEach(function (b) {
-      b.addEventListener('touchstart', function () {
-        b.classList.add('is-tapped');
-      }, { passive: true });
-      ['touchend', 'touchcancel', 'mouseleave'].forEach(function (ev) {
-        b.addEventListener(ev, function () { b.classList.remove('is-tapped'); }, { passive: true });
+  window.updateBackButton = updateBackButton;
+  window.getCurrentView = function () {
+    return ROUTES[parseHash()] || 'home';
+  };
+  function init() {
+    var yearEl = document.getElementById('copy-year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+    if (isFirefoxMobile()) {
+      document.documentElement.classList.add('is-firefox-mobile');
+    }
+    try {
+      var keys = Object.keys(localStorage);
+      for (var i = 0; i < keys.length; i++) {
+        if (/^hero-tuner-/.test(keys[i])) {
+          localStorage.removeItem(keys[i]);
+        }
+      }
+    } catch (e) { /* ignore */ }
+    initViewportFix();
+    buildGrids();
+    applyPatterns();
+    applyI18n();
+    bindEvents();
+    var initialHash = parseHash();
+    var initialView = ROUTES[initialHash] || 'home';
+    try {
+      history.replaceState({ page: initialView }, '', '#' + (initialView === 'home' ? '/' : '/' + initialView));
+    } catch (e) { /* ignore */ }
+    preloadHeroPhoto().then(function () {
+      revealBody();
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { navigate(); });
       });
     });
   }
-  /* ============================================================
-     TUNER
-     ============================================================ */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+<!-- ============================================================
+     LAYOUT TUNER · открой с ?tuner=1
+     ============================================================ -->
+<script>
+(function () {
+  'use strict';
+  var STORAGE_KEY = 'kravvi-tuner-v28';
+  var params = null;
+  try { params = new URLSearchParams(location.search); } catch (e) {}
+  var tunerParam = params ? params.get('tuner') : null;
+  if (tunerParam === '0') {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    return;
+  }
+  var savedState = null;
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) savedState = JSON.parse(raw);
+  } catch (e) { savedState = null; }
+  var shouldActivate = (tunerParam === '1') || (savedState !== null);
+  if (!shouldActivate) return;
+
   var GROUPS_DESKTOP = [
     { id: 'photo', title: 'Photo', props: [
       { key: '--photo-h', label: 'Height', unit: 'vh', step: 1 },
       { key: '--photo-h-max', label: 'Max', unit: 'vw', step: 5 }
     ]},
     { id: 'hero', title: 'Hero Layout', props: [
-      { key: '--hero-top', label: 'Top', unit: 'vh', step: 0.5 },
-      { key: '--hero-gap', label: 'Gap', unit: 'vh', step: 0.2 },
-      { key: '--hero-stack-gap', label: 'Stack', unit: 'px', step: 2 }
+      { key: '--hero-top', label: 'Top', unit: 'vh', step: 0.1 },
+      { key: '--hero-gap', label: 'Gap', unit: 'vh', step: 0.1 },
+      { key: '--hero-stack-gap', label: 'Stack', unit: 'px', step: 1 }
     ]},
     { id: 'name', title: 'KRAVVI', props: [
-      { key: '--name-x', label: 'X', unit: 'vw', step: 0.5 },
-      { key: '--name-y', label: 'Y', unit: 'vh', step: 0.5 },
-      { key: '--name-size', label: 'Size', unit: 'vw', step: 0.3 },
+      { key: '--name-x', label: 'X', unit: 'vw', step: 0.1 },
+      { key: '--name-y', label: 'Y', unit: 'vh', step: 0.1 },
+      { key: '--name-size', label: 'Size', unit: 'vw', step: 0.1 },
       { key: '--name-opsz', label: 'opsz', unit: '', step: 1 },
       { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
     ]},
     { id: 'author', title: 'Author', props: [
+      { key: '--author-size-v', label: 'Size', unit: '', step: 0.5 },
       { key: '--author-x', label: 'X', unit: 'vw', step: 0.5 },
-      { key: '--author-y', label: 'Y', unit: 'vh', step: 0.3 }
+      { key: '--author-y', label: 'Y', unit: 'vh', step: 0.1 }
     ]},
     { id: 'tagline', title: 'Tagline', props: [
+      { key: '--desc-size-v', label: 'Size', unit: '', step: 0.5 },
+      { key: '--desc-width-v', label: 'Width', unit: '', step: 4 },
       { key: '--desc-x', label: 'X', unit: 'vw', step: 0.5 },
-      { key: '--desc-y', label: 'Y', unit: 'vh', step: 0.3 },
-      { key: '--desc-width-v', label: 'Width', unit: '', step: 10 },
-      { key: '--desc-size-v', label: 'Size', unit: '', step: 1 }
+      { key: '--desc-y', label: 'Y', unit: 'vh', step: 0.1 }
     ]},
     { id: 'buttons', title: 'Buttons', props: [
-      { key: '--btn-x', label: 'X', unit: 'vw', step: 0.2 },
-      { key: '--btn-y', label: 'Y', unit: 'vh', step: 0.2 },
-      { key: '--btn-gap-v', label: 'Gap', unit: 'px', step: 1 },
-      { key: '--btn-size-v', label: 'Size', unit: 'px', step: 0.5 },
+      { key: '--btn-size-v', label: 'Size', unit: '', step: 0.5 },
+      { key: '--btn-gap-v', label: 'Gap', unit: '', step: 1 },
       { key: '--btn-pad-x', label: 'Pad X', unit: 'em', step: 0.05 },
-      { key: '--btn-pad-y', label: 'Pad Y', unit: 'em', step: 0.05 }
+      { key: '--btn-pad-y', label: 'Pad Y', unit: 'em', step: 0.05 },
+      { key: '--btn-x', label: 'X', unit: 'vw', step: 0.5 },
+      { key: '--btn-y', label: 'Y', unit: 'vh', step: 0.1 }
     ]}
   ];
+
   var GROUPS_MOBILE = [
     { id: 'photo', title: 'Photo', props: [
       { key: '--photo-h', label: 'Height', unit: 'vh', step: 1 },
@@ -1714,6 +2052,7 @@ html.tuner-on #tuner.is-open { display: block; }
       { key: '--btn-pad-y', label: 'Pad Y', unit: 'em', step: 0.05 }
     ]}
   ];
+
   var DEFAULTS = {
     desktop: {
       '--photo-h': '104',
@@ -1726,18 +2065,19 @@ html.tuner-on #tuner.is-open { display: block; }
       '--name-size': '21.3',
       '--name-opsz': '96',
       '--name-stroke': '0',
+      '--author-size-v': '22',
       '--author-x': '-31',
       '--author-y': '0',
-      '--desc-x': '-31',
-      '--desc-y': '0.5',
       '--desc-size-v': '16',
       '--desc-width-v': '478',
-      '--btn-x': '-31.2',
-      '--btn-y': '-0.3',
+      '--desc-x': '-31',
+      '--desc-y': '0.5',
       '--btn-size-v': '13',
       '--btn-gap-v': '15',
       '--btn-pad-x': '2.2',
-      '--btn-pad-y': '1'
+      '--btn-pad-y': '1',
+      '--btn-x': '-31.2',
+      '--btn-y': '-0.3'
     },
     tablet: {
       '--photo-h': '104',
@@ -1784,16 +2124,7 @@ html.tuner-on #tuner.is-open { display: block; }
       '--btn-pad-y': '0.85'
     }
   };
-  function unionKeys() {
-    var set = {};
-    [GROUPS_DESKTOP, GROUPS_MOBILE].forEach(function (groups) {
-      groups.forEach(function (g) {
-        g.props.forEach(function (p) { set[p.key] = true; });
-      });
-    });
-    return Object.keys(set);
-  }
-  var ALL_KEYS = unionKeys();
+
   function groupsFor(ctx) {
     return ctx === 'desktop' ? GROUPS_DESKTOP : GROUPS_MOBILE;
   }
@@ -1806,250 +2137,415 @@ html.tuner-on #tuner.is-open { display: block; }
     }
     return '';
   }
-  /* Unit appended when writing to CSS.
-     For % / cqw in tablet/phone — unitless number (CSS multiplies by 1% / 1cqw). */
+  function propOf(key, ctx) {
+    var groups = groupsFor(ctx);
+    for (var i = 0; i < groups.length; i++) {
+      for (var j = 0; j < groups[i].props.length; j++) {
+        if (groups[i].props[j].key === key) return groups[i].props[j];
+      }
+    }
+    return null;
+  }
   function cssUnit(key, ctx) {
     var u = unitOf(key, ctx);
     if (ctx !== 'desktop' && (u === '%' || u === 'cqw')) return '';
     return u;
   }
-  var STORAGE_KEY = 'kravvi-tuner-v28';
-  var state = {
-    currentContext: 'desktop',
-    values: {
-      desktop: {},
-      tablet: {},
-      phone: {}
-    }
-  };
-  function loadState() {
-    try {
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      var parsed = JSON.parse(raw);
-      if (parsed && parsed.values) {
-        state.values.desktop = parsed.values.desktop || {};
-        state.values.tablet = parsed.values.tablet || {};
-        state.values.phone = parsed.values.phone || {};
-      }
-    } catch (e) {}
+
+  var state = { desktop: {}, tablet: {}, phone: {} };
+  if (savedState && savedState.values) {
+    state.desktop = savedState.values.desktop || {};
+    state.tablet = savedState.values.tablet || {};
+    state.phone = savedState.values.phone || {};
+  } else if (savedState && (savedState.desktop || savedState.tablet || savedState.phone)) {
+    state.desktop = savedState.desktop || {};
+    state.tablet = savedState.tablet || {};
+    state.phone = savedState.phone || {};
   }
-  function saveState() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        values: state.values
-      }));
-    } catch (e) {}
+
+  function isTouchContext() {
+    return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   }
-  function getValue(key, ctx) {
-    if (state.values[ctx] && Object.prototype.hasOwnProperty.call(state.values[ctx], key)) {
-      return state.values[ctx][key];
+  function detectContext() {
+    var w = window.innerWidth;
+    var isTouch = isTouchContext();
+    if (isTouch && w > 1024 && w <= 1366) return 'tablet';
+    if (w > 1024) return 'desktop';
+    if (w > 700)  return 'tablet';
+    return 'phone';
+  }
+  var currentContext = detectContext();
+  var appliedVars = [];
+
+  function getValue(ctx, key) {
+    if (state[ctx] && Object.prototype.hasOwnProperty.call(state[ctx], key)) {
+      return state[ctx][key];
     }
     if (DEFAULTS[ctx] && Object.prototype.hasOwnProperty.call(DEFAULTS[ctx], key)) {
       return DEFAULTS[ctx][key];
     }
     return null;
   }
-  function setValue(key, ctx, value) {
-    if (!state.values[ctx]) state.values[ctx] = {};
-    state.values[ctx][key] = value;
+  function setValue(ctx, key, value) {
+    if (!state[ctx]) state[ctx] = {};
+    state[ctx][key] = String(value);
     saveState();
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ values: state })); } catch (e) {}
   }
   function clearContext(ctx) {
-    state.values[ctx] = {};
+    state[ctx] = {};
     saveState();
   }
-  var appliedVars = [];
+  function clearAll() {
+    state = { desktop: {}, tablet: {}, phone: {} };
+    saveState();
+  }
   function applyContextValues() {
-    /* Remove previously applied (so context switch drops stale keys) */
     appliedVars.forEach(function (k) {
       document.documentElement.style.removeProperty(k);
     });
     appliedVars = [];
-    var ctx = state.currentContext;
-    ALL_KEYS.forEach(function (key) {
-      var v = getValue(key, ctx);
-      if (v == null || v === '') return;
-      document.documentElement.style.setProperty(key, v + cssUnit(key, ctx));
-      appliedVars.push(key);
+    var groups = groupsFor(currentContext);
+    groups.forEach(function (g) {
+      g.props.forEach(function (p) {
+        var v = getValue(currentContext, p.key);
+        if (v == null || v === '') return;
+        document.documentElement.style.setProperty(p.key, String(v) + cssUnit(p.key, currentContext));
+        appliedVars.push(p.key);
+      });
     });
   }
-  var tunerBody = document.getElementById('tuner-body');
-  function renderTuner() {
-    var ctx = state.currentContext;
-    var groups = groupsFor(ctx);
-    tunerBody.innerHTML = '';
-    groups.forEach(function (g) {
+  function fmt(n) {
+    var s = Number(n);
+    if (!isFinite(s)) return '0';
+    return String(parseFloat(s.toFixed(4)));
+  }
+
+  var styles = document.createElement('style');
+  styles.textContent = ''
+    + '.tuner-fab{position:fixed;right:20px;bottom:20px;z-index:2147483000;'
+    + 'width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.14);'
+    + 'background:rgba(20,20,22,.88);backdrop-filter:blur(16px) saturate(1.3);'
+    + '-webkit-backdrop-filter:blur(16px) saturate(1.3);color:#fff;'
+    + 'display:flex;align-items:center;justify-content:center;cursor:pointer;'
+    + 'box-shadow:0 10px 30px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.03) inset;'
+    + 'padding:0;transition:transform .2s cubic-bezier(.22,1,.36,1),background .2s ease}'
+    + '.tuner-fab:hover{background:rgba(35,35,38,.95);transform:scale(1.06)}'
+    + '.tuner-fab:active{transform:scale(.94)}'
+    + '.tuner-fab svg{width:20px;height:20px;display:block;stroke:currentColor;fill:none;'
+    + 'stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}'
+    + '.tuner-panel{position:fixed;right:20px;bottom:84px;width:360px;'
+    + 'max-width:calc(100vw - 40px);max-height:calc(100dvh - 120px);z-index:2147483001;'
+    + 'background:rgba(16,16,18,.95);backdrop-filter:blur(24px) saturate(1.4);'
+    + '-webkit-backdrop-filter:blur(24px) saturate(1.4);'
+    + 'border:1px solid rgba(255,255,255,.09);border-radius:18px;color:#fff;'
+    + 'font:13px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;'
+    + 'display:flex;flex-direction:column;overflow:hidden;'
+    + 'box-shadow:0 24px 72px rgba(0,0,0,.62),0 0 0 1px rgba(255,255,255,.03) inset;'
+    + 'opacity:0;transform:translateY(10px) scale(.97);transform-origin:bottom right;'
+    + 'pointer-events:none;'
+    + 'transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1)}'
+    + '.tuner-panel.is-open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}'
+    + '.tuner-head{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;'
+    + 'border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}'
+    + '.tuner-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;letter-spacing:.01em}'
+    + '.tuner-dot{width:6px;height:6px;border-radius:50%;background:#A8895C;box-shadow:0 0 10px rgba(168,137,92,.8)}'
+    + '.tuner-close{width:26px;height:26px;display:flex;align-items:center;justify-content:center;'
+    + 'background:transparent;border:0;color:rgba(255,255,255,.55);cursor:pointer;border-radius:8px;'
+    + 'font-size:18px;line-height:1;padding:0;font-family:inherit;transition:background .15s,color .15s}'
+    + '.tuner-close:hover{background:rgba(255,255,255,.08);color:#fff}'
+    + '.tuner-body{flex:1;overflow-y:auto;padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px;'
+    + 'scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}'
+    + '.tuner-body::-webkit-scrollbar{width:6px}'
+    + '.tuner-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}'
+    + '.tuner-group{display:flex;flex-direction:column;gap:7px}'
+    + '.tuner-group-title{font-size:10px;font-weight:600;opacity:.55;text-transform:uppercase;letter-spacing:.14em}'
+    + '.tuner-tabs{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
+    + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
+    + '.tuner-tabs button{flex:1;padding:7px 6px;background:transparent;border:0;border-radius:8px;'
+    + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;font-family:inherit;font-weight:500;'
+    + 'transition:background .15s,color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '.tuner-tabs button:hover{color:#fff;background:rgba(255,255,255,.05)}'
+    + '.tuner-tabs button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
+    + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
+    + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
+    + '.tuner-prop{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;padding:2px 0}'
+    + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
+    + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+    + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 26px 28px;gap:4px;align-items:center}'
+    + '.tuner-prop-controls button{background:rgba(255,255,255,.05);border:0;color:rgba(255,255,255,.75);'
+    + 'border-radius:7px;padding:0;height:28px;cursor:pointer;font-size:16px;font-family:inherit;font-weight:400;'
+    + 'display:flex;align-items:center;justify-content:center;'
+    + 'transition:background .12s,color .12s,transform .12s}'
+    + '.tuner-prop-controls button:hover{background:rgba(255,255,255,.11);color:#fff}'
+    + '.tuner-prop-controls button:active{background:rgba(255,255,255,.18);transform:scale(.92)}'
+    + '.tuner-prop-controls input{width:100%;background:rgba(255,255,255,.04);'
+    + 'border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#fff;padding:5px 6px;'
+    + 'font-size:12.5px;font-family:inherit;text-align:center;font-weight:500;font-variant-numeric:tabular-nums;'
+    + 'transition:border-color .15s,background .15s}'
+    + '.tuner-prop-controls input:focus{outline:none;border-color:rgba(168,137,92,.6);background:rgba(255,255,255,.07)}'
+    + '.tuner-prop-controls input::-webkit-outer-spin-button,'
+    + '.tuner-prop-controls input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}'
+    + '.tuner-prop-controls input[type=number]{-moz-appearance:textfield}'
+    + '.tuner-unit{font-size:10px;color:rgba(255,255,255,.35);text-align:center;pointer-events:none;'
+    + 'font-variant-numeric:tabular-nums}'
+    + '.tuner-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:12px;margin-top:2px;'
+    + 'border-top:1px solid rgba(255,255,255,.06)}'
+    + '.tuner-actions button{padding:8px 10px;background:rgba(255,255,255,.05);border:0;'
+    + 'color:rgba(255,255,255,.8);border-radius:9px;cursor:pointer;font-size:11.5px;font-family:inherit;'
+    + 'font-weight:500;letter-spacing:.01em;transition:background .15s,color .15s}'
+    + '.tuner-actions button:hover{background:rgba(255,255,255,.1);color:#fff}'
+    + '.tuner-actions button:active{transform:scale(.97)}'
+    + '.tuner-actions button.wide{grid-column:1/-1;background:rgba(168,137,92,.18);color:#E8C89A;'
+    + 'border:1px solid rgba(168,137,92,.3)}'
+    + '.tuner-actions button.wide:hover{background:rgba(168,137,92,.28);color:#fff}'
+    + '.tuner-actions button.danger{color:rgba(255,140,140,.85)}'
+    + '.tuner-actions button.danger:hover{background:rgba(255,80,80,.14);color:#ffb0b0}'
+    + '.tuner-json{width:100%;min-height:110px;background:rgba(0,0,0,.55);'
+    + 'border:1px solid rgba(255,255,255,.08);color:#e0e0e0;'
+    + 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;'
+    + 'padding:8px 10px;border-radius:9px;resize:vertical;box-sizing:border-box;line-height:1.5}'
+    + '.tuner-json:focus{outline:none;border-color:rgba(168,137,92,.5)}'
+    + '@media (max-width:700px){'
+    + '.tuner-fab{right:14px;bottom:14px;width:52px;height:52px}'
+    + '.tuner-panel{right:8px;left:8px;bottom:76px;width:auto;max-width:none;'
+    + 'max-height:calc(100dvh - 100px);border-radius:16px}'
+    + '}';
+  document.head.appendChild(styles);
+
+  var fab = document.createElement('button');
+  fab.type = 'button';
+  fab.className = 'tuner-fab';
+  fab.title = 'Layout tuner';
+  fab.setAttribute('aria-label', 'Open layout tuner');
+  fab.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
+    + '<path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/>'
+    + '<path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/>'
+    + '<path d="M4 18h12"/><path d="M20 18h0"/><circle cx="18" cy="18" r="2"/>'
+    + '</svg>';
+
+  var panel = document.createElement('div');
+  panel.className = 'tuner-panel';
+  panel.innerHTML = ''
+    + '<div class="tuner-head">'
+    +   '<span class="tuner-title"><span class="tuner-dot"></span>Layout Tuner</span>'
+    +   '<button class="tuner-close" type="button" aria-label="Close">×</button>'
+    + '</div>'
+    + '<div class="tuner-body">'
+    +   '<div class="tuner-group">'
+    +     '<div class="tuner-group-title">Context</div>'
+    +     '<div class="tuner-tabs" data-role="contexts">'
+    +       '<button type="button" data-ctx="desktop">Desktop</button>'
+    +       '<button type="button" data-ctx="tablet">Tablet</button>'
+    +       '<button type="button" data-ctx="phone">Phone</button>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div data-role="groups"></div>'
+    +   '<div class="tuner-actions">'
+    +     '<button type="button" class="wide" data-action="copy">Copy JSON</button>'
+    +     '<button type="button" data-action="reset-ctx">Reset context</button>'
+    +     '<button type="button" class="danger" data-action="reset-all">Reset all</button>'
+    +   '</div>'
+    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy JSON → результат появится здесь"></textarea>'
+    + '</div>';
+  document.body.appendChild(fab);
+  document.body.appendChild(panel);
+
+  function renderContexts() {
+    panel.querySelectorAll('[data-role="contexts"] button').forEach(function (b) {
+      b.classList.toggle('is-active', b.getAttribute('data-ctx') === currentContext);
+    });
+  }
+  function renderGroups() {
+    var box = panel.querySelector('[data-role="groups"]');
+    box.innerHTML = '';
+    groupsFor(currentContext).forEach(function (g) {
       var groupEl = document.createElement('div');
       groupEl.className = 'tuner-group';
-      var titleEl = document.createElement('div');
-      titleEl.className = 'tuner-group-title';
-      titleEl.textContent = g.title;
-      groupEl.appendChild(titleEl);
+      var title = document.createElement('div');
+      title.className = 'tuner-group-title';
+      title.textContent = g.title;
+      groupEl.appendChild(title);
+      var propsEl = document.createElement('div');
+      propsEl.className = 'tuner-props';
       g.props.forEach(function (p) {
         var row = document.createElement('div');
-        row.className = 'tuner-row';
-        var label = document.createElement('span');
-        label.className = 'tuner-row-label';
+        row.className = 'tuner-prop';
+        var label = document.createElement('div');
+        label.className = 'tuner-prop-label';
         label.textContent = p.label;
-        var ctrl = document.createElement('div');
-        ctrl.className = 'tuner-row-ctrl';
+        var ctrls = document.createElement('div');
+        ctrls.className = 'tuner-prop-controls';
         var minus = document.createElement('button');
         minus.type = 'button';
-        minus.className = 'tuner-btn';
         minus.textContent = '−';
+        minus.setAttribute('data-dir', '-1');
+        minus.setAttribute('data-key', p.key);
         var input = document.createElement('input');
-        input.className = 'tuner-input';
         input.type = 'number';
         input.step = String(p.step);
-        input.value = getValue(p.key, ctx) != null ? getValue(p.key, ctx) : '';
-        var plus = document.createElement('button');
-        plus.type = 'button';
-        plus.className = 'tuner-btn';
-        plus.textContent = '+';
-        ctrl.appendChild(minus);
-        ctrl.appendChild(input);
-        ctrl.appendChild(plus);
+        input.value = getValue(currentContext, p.key) != null ? getValue(currentContext, p.key) : '';
+        input.setAttribute('data-key', p.key);
         var unitEl = document.createElement('span');
         unitEl.className = 'tuner-unit';
-        unitEl.textContent = p.unit || '';
+        unitEl.textContent = p.unit || '—';
+        var plus = document.createElement('button');
+        plus.type = 'button';
+        plus.textContent = '+';
+        plus.setAttribute('data-dir', '1');
+        plus.setAttribute('data-key', p.key);
+        ctrls.appendChild(minus);
+        ctrls.appendChild(input);
+        ctrls.appendChild(unitEl);
+        ctrls.appendChild(plus);
         row.appendChild(label);
-        row.appendChild(ctrl);
-        row.appendChild(unitEl);
-        groupEl.appendChild(row);
-        function commit(raw) {
-          var num = parseFloat(raw);
-          if (isNaN(num)) return;
-          setValue(p.key, ctx, String(num));
-          applyContextValues();
-        }
-        input.addEventListener('input', function () {
-          commit(input.value);
-        });
-        minus.addEventListener('click', function () {
-          var cur = parseFloat(getValue(p.key, ctx));
-          if (isNaN(cur)) cur = 0;
-          var next = cur - p.step;
-          input.value = String(Math.round(next * 1000) / 1000);
-          commit(input.value);
-        });
-        plus.addEventListener('click', function () {
-          var cur = parseFloat(getValue(p.key, ctx));
-          if (isNaN(cur)) cur = 0;
-          var next = cur + p.step;
-          input.value = String(Math.round(next * 1000) / 1000);
-          commit(input.value);
-        });
+        row.appendChild(ctrls);
+        propsEl.appendChild(row);
       });
-      tunerBody.appendChild(groupEl);
-    });
-    document.querySelectorAll('.tuner-ctx-btn').forEach(function (b) {
-      b.classList.toggle('is-active', b.getAttribute('data-ctx') === ctx);
+      groupEl.appendChild(propsEl);
+      box.appendChild(groupEl);
     });
   }
-  function exportJSON() {
-    var ctx = state.currentContext;
-    var lines = [];
-    lines.push('/* context: ' + ctx + ' */');
-    groupsFor(ctx).forEach(function (g) {
-      g.props.forEach(function (p) {
-        var v = getValue(p.key, ctx);
-        if (v == null) return;
-        var u = unitOf(p.key, ctx);
-        /* For % / cqw in mobile — show unitless value as-is */
-        var outVal;
-        if (ctx !== 'desktop' && (u === '%' || u === 'cqw')) {
-          outVal = v;
-        } else {
-          outVal = v + u;
-        }
-        lines.push(p.key + ': ' + outVal + ';');
-      });
-    });
-    var text = lines.join('\n');
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () {
-        var btn = document.getElementById('tuner-copy');
-        var prev = btn.textContent;
-        btn.textContent = 'Copied';
-        setTimeout(function () { btn.textContent = prev; }, 1200);
-      });
-    } else {
-      console.log(text);
-    }
+  function renderAll() {
+    renderContexts();
+    renderGroups();
   }
-  function initTuner() {
-    var toggle = document.getElementById('tuner-toggle');
-    var tuner = document.getElementById('tuner');
-    toggle.addEventListener('click', function () {
-      tuner.classList.toggle('is-open');
-    });
-    document.querySelectorAll('.tuner-ctx-btn').forEach(function (b) {
-      b.addEventListener('click', function () {
-        state.currentContext = b.getAttribute('data-ctx');
-        applyContextValues();
-        renderTuner();
-      });
-    });
-    document.getElementById('tuner-reset').addEventListener('click', function () {
-      clearContext(state.currentContext);
-      applyContextValues();
-      renderTuner();
-    });
-    document.getElementById('tuner-copy').addEventListener('click', exportJSON);
-    renderTuner();
-  }
-  /* ============================================================
-     DEV MODE (tuner visibility)
-     ============================================================ */
-  function initDevMode() {
-    var params = new URLSearchParams(location.search);
-    var dev = params.get('dev') === '1' || params.get('tuner') === '1';
-    if (dev) document.documentElement.classList.add('tuner-on');
-  }
-  /* ============================================================
-     TELEGRAM
-     ============================================================ */
-  function initTelegram() {
-    if (window.Telegram && Telegram.WebApp) {
-      document.documentElement.classList.add('is-telegram');
-      try {
-        Telegram.WebApp.ready();
-        Telegram.WebApp.expand();
-        if (Telegram.WebApp.setHeaderColor) {
-          Telegram.WebApp.setHeaderColor('#0A0A0A');
-        }
-      } catch (e) {}
-    }
-  }
-  /* ============================================================
-     FIREFOX MOBILE DETECT
-     ============================================================ */
-  function initFirefoxMobile() {
-    var ua = navigator.userAgent || '';
-    if (/FxiOS|Firefox/.test(ua) && /Mobile|Android/.test(ua)) {
-      document.documentElement.classList.add('is-firefox-mobile');
-    }
-  }
-  /* ============================================================
-     BOOT
-     ============================================================ */
-  function boot() {
-    initFirefoxMobile();
-    initTelegram();
-    initDevMode();
-    loadState();
+
+  fab.addEventListener('click', function () { panel.classList.toggle('is-open'); });
+  panel.querySelector('.tuner-close').addEventListener('click', function () {
+    panel.classList.remove('is-open');
+  });
+  panel.querySelector('[data-role="contexts"]').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-ctx]');
+    if (!b) return;
+    currentContext = b.getAttribute('data-ctx');
     applyContextValues();
-    initTuner();
-    initLang();
-    initNav();
-    initTap();
-    preloadHeroPhoto();
+    renderAll();
+  });
+  panel.querySelector('[data-role="groups"]').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-dir]');
+    if (!b) return;
+    var key = b.getAttribute('data-key');
+    var dir = parseFloat(b.getAttribute('data-dir'));
+    var prop = propOf(key, currentContext);
+    var step = prop ? prop.step : 1;
+    var cur = parseFloat(getValue(currentContext, key));
+    if (!isFinite(cur)) cur = 0;
+    var next = cur + dir * step;
+    setValue(currentContext, key, fmt(next));
+    applyContextValues();
+    renderGroups();
+  });
+  panel.querySelector('[data-role="groups"]').addEventListener('input', function (e) {
+    var input = e.target.closest('input[data-key]');
+    if (!input) return;
+    var key = input.getAttribute('data-key');
+    var v = parseFloat(input.value);
+    if (!isFinite(v)) return;
+    setValue(currentContext, key, fmt(v));
+    applyContextValues();
+  });
+  panel.querySelector('.tuner-actions').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-action]');
+    if (!b) return;
+    var action = b.getAttribute('data-action');
+    if (action === 'copy') {
+      var json = exportJSON();
+      var ta = panel.querySelector('[data-role="json"]');
+      ta.value = json;
+      try { ta.select(); document.execCommand('copy'); } catch (err) {}
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(json).catch(function () {});
+      }
+      var old = b.textContent;
+      b.textContent = 'Copied!';
+      setTimeout(function () { b.textContent = old; }, 1200);
+    }
+    if (action === 'reset-ctx') {
+      if (!confirm('Сбросить контекст «' + currentContext + '»?')) return;
+      clearContext(currentContext);
+      applyContextValues();
+      renderAll();
+    }
+    if (action === 'reset-all') {
+      if (!confirm('Сбросить ВСЕ значения во всех контекстах?')) return;
+      clearAll();
+      applyContextValues();
+      renderAll();
+    }
+  });
+  function exportJSON() {
+    var out = {};
+    ['desktop', 'tablet', 'phone'].forEach(function (ctx) {
+      out[ctx] = {};
+      groupsFor(ctx).forEach(function (g) {
+        g.props.forEach(function (p) {
+          var v = getValue(ctx, p.key);
+          if (v == null || v === '') return;
+          out[ctx][p.key] = String(v) + cssUnit(p.key, ctx);
+        });
+      });
+    });
+    return JSON.stringify(out, null, 2);
   }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
+  function onResize() {
+    var next = detectContext();
+    if (next === currentContext) return;
+    currentContext = next;
+    applyContextValues();
+    renderAll();
+  }
+  var rT;
+  window.addEventListener('resize', function () {
+    clearTimeout(rT);
+    rT = setTimeout(onResize, 80);
+  });
+  window.addEventListener('orientationchange', function () {
+    clearTimeout(rT);
+    rT = setTimeout(onResize, 150);
+  });
+
+  applyContextValues();
+  renderAll();
+})();
+</script>
+<script>
+(function initTelegram() {
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if (!tg) return;
+  var isMiniApp = false;
+  if (tg.initData && tg.initData.length > 0) {
+    isMiniApp = true;
+  } else if (location.hash.indexOf('tgWebAppVersion') !== -1) {
+    isMiniApp = true;
+  }
+  if (isMiniApp) {
+    document.body.classList.add('telegram-mini-app');
+    tg.ready();
+    if (tg.expand) tg.expand();
+    if (tg.requestFullscreen) tg.requestFullscreen();
+    function updateSafeArea() {
+      var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
+                (tg.safeAreaInset && tg.safeAreaInset.top) ||
+                0;
+      document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
+    }
+    updateSafeArea();
+    if (tg.onEvent) {
+      tg.onEvent('viewportChanged', updateSafeArea);
+    }
+    if (tg.BackButton) {
+      tg.BackButton.onClick(function () {
+        window.history.back();
+      });
+      if (window.updateBackButton && window.getCurrentView) {
+        window.updateBackButton(window.getCurrentView());
+      }
+    }
   } else {
-    boot();
+    tg.ready();
   }
 })();
 </script>
