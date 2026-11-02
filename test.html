@@ -74,12 +74,14 @@
    --kravvi-x: 50%;
    --kravvi-y: 13.75%;
    --kravvi-size: 24.27cqw;
-   --name-size: 21.3vw;
-   --name-x: 0cqw;
-   --name-y: 0%;
+   --kravvi-shift-x: 0cqw;
+   --kravvi-shift-y: 0%;
    --stack-shift-x: 0vw;
    --stack-shift-y: 0vh;
    --stack-width: 640px;
+   --name-size: 21.3vw;
+   --name-x: 0vw;
+   --name-y: 0vh;
    --name-opsz: 96;
    --name-stroke: 0px;
    --author-size-v: 22;
@@ -136,9 +138,17 @@
      --hero-gap: 3vh;
      --photo-h: 104vh;
      --photo-h-max: 150vw;
+     --photo-ar: 3 / 2;
      --kravvi-x: 50%;
-     --name-x: 0cqw;
-     --name-y: 0%;
+     --kravvi-y: 18%;
+     --kravvi-size: 12cqw;
+     --kravvi-shift-x: 0cqw;
+     --kravvi-shift-y: 0%;
+     --stack-shift-x: 0vw;
+     --stack-shift-y: 0vh;
+     --stack-width: 640px;
+     --name-x: 0vw;
+     --name-y: 0vh;
      --author-x: 0vw;
      --author-y: 0vh;
      --desc-x: 0vw;
@@ -147,17 +157,55 @@
      --btn-y: 0vh;
      --actions-max-w: 2000px;
    }
+   .hero-artboard {
+     display: block;
+     position: relative;
+     flex: 0 0 auto;
+     width: auto;
+     height: min(var(--photo-h), var(--photo-h-max));
+     aspect-ratio: var(--photo-ar);
+     container-type: inline-size;
+     container-name: photo;
+     overflow: visible;
+     pointer-events: none;
+   }
+   .hero-artboard picture {
+     position: absolute;
+     inset: 0;
+     display: block;
+     width: 100%;
+     height: 100%;
+     z-index: 2;
+     pointer-events: none;
+   }
+   .hero-photo {
+     position: relative;
+     width: 100%;
+     height: 100%;
+     object-fit: cover;
+     object-position: center;
+     max-width: none;
+     z-index: 2;
+   }
+   .hero-name {
+     top: var(--kravvi-y);
+     left: var(--kravvi-x);
+     font-size: var(--kravvi-size);
+     transform: translateX(-50%) translate(var(--kravvi-shift-x), calc(var(--kravvi-shift-y) + 20px));
+   }
+   #view-home.is-active .hero-name {
+     transform: translateX(-50%) translate(var(--kravvi-shift-x), var(--kravvi-shift-y));
+   }
    .hero-stack {
-     position: absolute !important;
-     top: calc(var(--kravvi-y) + (var(--kravvi-size) * 0.9) + var(--hero-gap)) !important;
-     left: 50% !important;
-     right: auto !important;
-     width: min(var(--stack-width), calc(100vw - 40px)) !important;
-     max-width: none !important;
-     transform: translateX(-50%) translate(var(--stack-shift-x), var(--stack-shift-y)) !important;
-     display: flex !important;
-     flex-direction: column !important;
-     align-items: center !important;
+     top: calc(var(--kravvi-y) + (var(--kravvi-size) * 0.9) + var(--hero-gap));
+     left: 50%;
+     right: auto;
+     width: max-content;
+     max-width: min(var(--stack-width), calc(100vw - 40px));
+     transform: translateX(-50%) translate(var(--stack-shift-x), var(--stack-shift-y));
+     display: flex;
+     flex-direction: column;
+     align-items: center;
      gap: var(--hero-stack-gap);
      padding-left: max(20px, var(--safe-left));
      padding-right: max(20px, var(--safe-right));
@@ -165,17 +213,17 @@
    }
    .hero-stack > * { pointer-events: auto; }
    .hero-text {
-     align-items: center !important;
-     text-align: center !important;
+     align-items: center;
+     text-align: center;
    }
-   .hero-actions { justify-content: center !important; }
+   .hero-actions { justify-content: center; }
    .hero-author {
      width: var(--desc-width);
      box-sizing: border-box;
-     text-align: center !important;
+     text-align: center;
    }
    .hero-tagline {
-     text-align: center !important;
+     text-align: center;
    }
    .view-grid {
      padding:
@@ -212,10 +260,11 @@
      --kravvi-y: 18%;
      --kravvi-size: 12cqw;
      --name-size: 22vw;
-     --name-x: 0cqw;
-     --name-y: 0%;
      --name-opsz: 96;
      --name-stroke: 0px;
+     --name-x: 0vw;
+     --name-y: 0vh;
+     --stack-width: 640px;
      --author-size-v: 22;
      --author-x: 0vw;
      --author-y: 0vh;
@@ -246,8 +295,8 @@
      --kravvi-y: 8.1%;
      --kravvi-size: 7.6cqw;
      --name-size: 22.9vw;
-     --name-x: 0cqw;
-     --name-y: 0%;
+     --name-x: 0vw;
+     --name-y: 3.1vh;
      --name-opsz: 30;
      --name-stroke: 0.33px;
      --stack-width: 360px;
@@ -513,16 +562,19 @@
    height: 100%;
    overflow: hidden;
  }
+ .hero-artboard {
+   display: contents;
+ }
  .hero-name {
    position: absolute;
-   left: var(--kravvi-x);
-   top: var(--kravvi-y);
+   top: var(--hero-top);
+   left: 50%;
    margin: 0;
    font-family: var(--font-hero);
    font-weight: 600;
    font-optical-sizing: none;
    font-variation-settings: "opsz" var(--name-opsz, 96), "wght" 600;
-   font-size: var(--kravvi-size);
+   font-size: var(--name-size);
    line-height: 0.92;
    letter-spacing: 0.02em;
    color: #ffffff;
@@ -561,31 +613,12 @@
    align-items: flex-end;
    pointer-events: none;
  }
- .hero-artboard {
-   position: relative;
-   flex: 0 0 auto;
-   width: auto;
-   height: min(var(--photo-h), var(--photo-h-max));
-   aspect-ratio: var(--photo-ar);
-   container-type: inline-size;
-   overflow: visible;
-   pointer-events: none;
- }
- .hero-artboard picture {
-   position: absolute;
-   inset: 0;
-   display: block;
-   width: 100%;
-   height: 100%;
-   z-index: 2;
-   pointer-events: none;
- }
+ .hero-photo-wrap picture { display: contents; }
  .hero-photo {
    position: relative;
-   width: 100%;
-   height: 100%;
-   object-fit: cover;
-   object-position: center;
+   z-index: 2;
+   height: min(var(--photo-h), var(--photo-h-max));
+   width: auto;
    max-width: none;
    pointer-events: none;
    user-select: none;
@@ -609,9 +642,9 @@
  }
  .hero-stack {
    position: absolute;
-   top: calc(var(--kravvi-y) + (var(--kravvi-size) * 0.9) + var(--hero-gap));
+   top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap));
    left: 50%;
-   transform: translateX(-50%) translate(var(--stack-shift-x), var(--stack-shift-y));
+   transform: translateX(-50%);
    z-index: 3;
    display: flex;
    flex-direction: column;
@@ -619,7 +652,6 @@
    gap: var(--hero-stack-gap);
    width: max-content;
    max-width: calc(100vw - 40px);
-   max-width: min(90cqw, calc(100vw - 40px));
    pointer-events: none;
  }
  .hero-stack > * { pointer-events: auto; }
@@ -1855,10 +1887,11 @@
  <script>
  (function () {
    'use strict';
-   var STORAGE_KEY = 'kravvi-tuner-v5';
+   var STORAGE_KEY = 'kravvi-tuner-v6';
    var params = null;
    try { params = new URLSearchParams(location.search); } catch (e) {}
    var tunerParam = params ? params.get('tuner') : null;
+   try { localStorage.removeItem('kravvi-tuner-v5'); } catch (e) {}
    if (tunerParam === '0') {
      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
      return;
@@ -1873,13 +1906,17 @@
    var GROUPS = [
      {
        id: 'kravvi',
-       title: 'KRAVVI (photo)',
+       title: 'KRAVVI',
        props: [
-         { key: '--kravvi-x', label: 'X', unit: '%', step: 0.5 },
-         { key: '--kravvi-y', label: 'Y', unit: '%', step: 0.5 },
-         { key: '--kravvi-size', label: 'Size', unit: 'cqw', step: 0.5 },
-         { key: '--name-x', label: 'Fine X', unit: 'cqw', step: 0.5 },
-         { key: '--name-y', label: 'Fine Y', unit: '%', step: 0.5 },
+         { key: '--hero-top', label: 'Top VP', unit: 'vh', step: 0.1 },
+         { key: '--name-size', label: 'Size VP', unit: 'vw', step: 0.1 },
+         { key: '--name-x', label: 'X VP', unit: 'vw', step: 0.1 },
+         { key: '--name-y', label: 'Y VP', unit: 'vh', step: 0.1 },
+         { key: '--kravvi-x', label: 'X Photo', unit: '%', step: 0.5 },
+         { key: '--kravvi-y', label: 'Y Photo', unit: '%', step: 0.5 },
+         { key: '--kravvi-size', label: 'Size Photo', unit: 'cqw', step: 0.5 },
+         { key: '--kravvi-shift-x', label: 'Fine X', unit: 'cqw', step: 0.5 },
+         { key: '--kravvi-shift-y', label: 'Fine Y', unit: '%', step: 0.5 },
          { key: '--name-opsz', label: 'opsz', unit: '', step: 1 },
          { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
        ]
@@ -1937,8 +1974,10 @@
    ];
    var DEFAULTS = {
      desktop: {
+       '--hero-top': '10.3', '--name-size': '21.3', '--name-x': '0', '--name-y': '0',
        '--kravvi-x': '50', '--kravvi-y': '13.75', '--kravvi-size': '24.27',
-       '--name-x': '0', '--name-y': '0', '--name-opsz': '96', '--name-stroke': '0',
+       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
+       '--name-opsz': '96', '--name-stroke': '0',
        '--photo-h': '104', '--photo-h-max': '175',
        '--hero-gap': '4.1', '--hero-stack-gap': '28',
        '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '640',
@@ -1948,8 +1987,10 @@
        '--btn-x': '-31.2', '--btn-y': '-0.3'
      },
      tablet: {
+       '--hero-top': '16', '--name-size': '22', '--name-x': '0', '--name-y': '0',
        '--kravvi-x': '50', '--kravvi-y': '18', '--kravvi-size': '12',
-       '--name-x': '0', '--name-y': '0', '--name-opsz': '96', '--name-stroke': '0',
+       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
+       '--name-opsz': '96', '--name-stroke': '0',
        '--photo-h': '104', '--photo-h-max': '150',
        '--hero-gap': '3', '--hero-stack-gap': '28',
        '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '640',
@@ -1959,8 +2000,10 @@
        '--btn-x': '0', '--btn-y': '0.2'
      },
      phone: {
+       '--hero-top': '15', '--name-size': '22.9', '--name-x': '0', '--name-y': '3.1',
        '--kravvi-x': '50', '--kravvi-y': '8.1', '--kravvi-size': '7.6',
-       '--name-x': '0', '--name-y': '0', '--name-opsz': '30', '--name-stroke': '0.33',
+       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
+       '--name-opsz': '30', '--name-stroke': '0.33',
        '--photo-h': '92.5', '--photo-h-max': '213',
        '--hero-gap': '7.8', '--hero-stack-gap': '35',
        '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '360',
