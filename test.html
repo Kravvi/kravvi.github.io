@@ -119,22 +119,34 @@ svg { display: block; }
   --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
   --vvh: 100dvh;
   --vvw: 100vw;
-  /* --- mobile photo frame / KRAVVI (используются только в мобильном блоке) --- */
+  --vis-top: 0px;
+  --vis-bottom: 0px;
+  --vis-h: 100dvh;
+  --vis-w: 100vw;
   --photo-ratio: 1.5;
   --photo-h-scale: 104;
   --photo-h-max-scale: 150;
+  --photo-frame-h: min(
+    calc(var(--vis-h) * var(--photo-h-scale) / 100),
+    calc(var(--vis-w) * var(--photo-h-max-scale) / 100)
+  );
+  --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
   --kravvi-x-v: 50;
   --kravvi-y-v: 21;
   --kravvi-size: 8;
   --kravvi-shift-x: 0cqw;
   --kravvi-shift-y: 0cqw;
+  --kravvi-font-px: calc(var(--photo-frame-w) * var(--kravvi-size) / 100);
   --stack-shift-x-v: 0;
   --stack-shift-y-v: 0;
   --stack-collision-gap: 16px;
   --stack-width: 640px;
-  --ma-x: 0; --ma-y: 0;
-  --md-x: 0; --md-y: 0;
-  --mb-x: 0; --mb-y: 0;
+  --ma-x: 0;
+  --ma-y: 0;
+  --md-x: 0;
+  --md-y: 0;
+  --mb-x: 0;
+  --mb-y: 0;
 }
 /* ============================================================
    3. BASE
@@ -961,7 +973,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     --gap: 14px;
     --glass-radius: 22px;
     --glass-blur: 22px;
-    --photo-h-scale: 104;
+    --photo-h-scale: 100;
     --photo-h-max-scale: 150;
     --kravvi-x-v: 50;
     --kravvi-y-v: 26;
@@ -973,13 +985,12 @@ body.overlay-active #view-home.is-active .hero-actions {
     --stack-collision-gap: 16px;
     --stack-width: 640px;
     --actions-max-w: 2000px;
-    /* мобильные смещения — % от видимой области */
-    --author-x: calc(var(--ma-x) * var(--vvw) / 100);
-    --author-y: calc(var(--ma-y) * var(--vvh) / 100);
-    --desc-x:   calc(var(--md-x) * var(--vvw) / 100);
-    --desc-y:   calc(var(--md-y) * var(--vvh) / 100);
-    --btn-x:    calc(var(--mb-x) * var(--vvw) / 100);
-    --btn-y:    calc(var(--mb-y) * var(--vvh) / 100);
+    --author-x: calc(var(--ma-x) * var(--vis-w) / 100);
+    --author-y: calc(var(--ma-y) * var(--vis-h) / 100);
+    --desc-x:   calc(var(--md-x) * var(--vis-w) / 100);
+    --desc-y:   calc(var(--md-y) * var(--vis-h) / 100);
+    --btn-x:    calc(var(--mb-x) * var(--vis-w) / 100);
+    --btn-y:    calc(var(--mb-y) * var(--vis-h) / 100);
     --author-size: max(14px, calc(var(--author-size-v) * var(--vvw) / var(--ref-w)));
     --desc-size:   max(13px, calc(var(--desc-size-v)   * var(--vvw) / var(--ref-w)));
     --desc-width:  max(240px, calc(var(--desc-width-v) * var(--vvw) / var(--ref-w)));
@@ -988,27 +999,23 @@ body.overlay-active #view-home.is-active .hero-actions {
   }
 
   .home-stage {
-    position: absolute;
-    top: var(--vv-top);
+    position: fixed;
+    top: var(--vis-top, 0px);
     left: 0;
     right: 0;
-    height: var(--vvh);
+    height: var(--vis-h, 100dvh);
+    bottom: auto;
     overflow: hidden;
   }
 
-  /* Фото-рамка: высота от ВИДИМОЙ области, ширина = высота × пропорция.
-     Никакого ограничение по ширине экрана → обрезки нет, съезда нет. */
   .hero-artboard {
     display: block;
     position: absolute;
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);
-    height: min(
-      calc(var(--vvh) * var(--photo-h-scale) / 100),
-      calc(var(--vvw) * var(--photo-h-max-scale) / 100)
-    );
-    aspect-ratio: var(--photo-ratio);
+    width: var(--photo-frame-w);
+    height: var(--photo-frame-h);
     container-type: inline-size;
     overflow: visible;
     pointer-events: none;
@@ -1022,47 +1029,55 @@ body.overlay-active #view-home.is-active .hero-actions {
     z-index: 2;
     pointer-events: none;
   }
+
   .hero-photo-wrap picture {
     display: block;
     width: 100%;
     height: 100%;
   }
+
   .hero-photo {
     position: relative;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
     object-position: center;
     max-width: none;
+    transform: none;
   }
 
-  /* KRAVVI: координаты и размер — только от фото */
+  #view-home.is-active .hero-photo {
+    transform: none;
+  }
+
   .hero-name {
     top: calc(var(--kravvi-y-v) * 1%);
     left: calc(var(--kravvi-x-v) * 1%);
     z-index: 1;
     font-size: calc(var(--kravvi-size) * 1vw);
     font-size: calc(var(--kravvi-size) * 1cqw);
+    font-size: var(--kravvi-font-px);
     transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), calc(var(--kravvi-shift-y) + 20px));
   }
+
   #view-home.is-active .hero-name {
     transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), var(--kravvi-shift-y));
   }
 
-  /* Стек: центрируется по видимой области, JS лишь опускает его ниже KRAVVI */
   .hero-stack {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 3;
     width: max-content;
-    max-width: min(var(--stack-width), calc(var(--vvw) - 40px));
+    max-width: min(var(--stack-width), calc(var(--vis-w) - 40px));
     align-items: center;
     gap: var(--hero-stack-gap);
     padding-left: max(20px, var(--safe-left));
     padding-right: max(20px, var(--safe-right));
     pointer-events: none;
   }
+
   .hero-stack > * { pointer-events: auto; }
   .hero-text { align-items: center; text-align: center; }
   .hero-actions { justify-content: center; }
@@ -1071,7 +1086,9 @@ body.overlay-active #view-home.is-active .hero-actions {
     box-sizing: border-box;
     text-align: center;
   }
-  .hero-tagline { text-align: center; }
+  .hero-tagline {
+    text-align: center;
+  }
 
   .view-grid {
     padding:
@@ -1105,7 +1122,7 @@ body.overlay-active #view-home.is-active .hero-actions {
     --hero-gap: 3vh;
     --photo-h: 104vh;
     --photo-h-max: 150vw;
-    --photo-h-scale: 104;
+    --photo-h-scale: 100;
     --photo-h-max-scale: 150;
     --kravvi-y-v: 26;
     --kravvi-size: 12;
@@ -1114,13 +1131,16 @@ body.overlay-active #view-home.is-active .hero-actions {
     --name-stroke: 0px;
     --stack-width: 640px;
     --author-size-v: 22;
-    --ma-x: 0; --ma-y: 0;
+    --ma-x: 0;
+    --ma-y: 0;
     --desc-size-v: 16;
     --desc-width-v: 478;
-    --md-x: 0; --md-y: 0;
+    --md-x: 0;
+    --md-y: 0;
     --btn-size-v: 13;
     --btn-gap-v: 15;
-    --mb-x: 0; --mb-y: 0;
+    --mb-x: 0;
+    --mb-y: 0;
   }
 }
 /* ============================================================
@@ -1146,16 +1166,19 @@ body.overlay-active #view-home.is-active .hero-actions {
     --name-stroke: 0.33px;
     --stack-width: 360px;
     --author-size-v: 19;
-    --ma-x: 0; --ma-y: 0;
+    --ma-x: 0;
+    --ma-y: 0;
     --desc-size-v: 14;
     --desc-width-v: 292;
-    --md-x: 0; --md-y: 0;
+    --md-x: 0;
+    --md-y: 0;
     --btn-size-v: 11.3;
     --btn-gap-v: 14;
     --btn-pad-y: 0.85em;
     --btn-pad-x: 1.75em;
     --btn-scale: 0.95;
-    --mb-x: 0; --mb-y: 0;
+    --mb-x: 0;
+    --mb-y: 0;
     --actions-max-w: 250px;
     --hero-stack-gap: 35px;
   }
@@ -1554,7 +1577,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
     var photo = document.getElementById('hero-photo');
     if (photo) {
-      var altMap = { ru: 'Александр Кравви', en: 'Alexandr Kravvi', de: 'Alexandr Kravvi' };
+      var altMap = {
+        ru: 'Александр Кравви',
+        en: 'Alexandr Kravvi',
+        de: 'Alexandr Kravvi'
+      };
       photo.setAttribute('alt', altMap[lang] || 'Alexandr Kravvi');
     }
     scheduleLayout();
@@ -1667,7 +1694,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function updateBackButton(viewName) {
     var tg = window.Telegram && window.Telegram.WebApp;
     if (!tg || !tg.BackButton) return;
-    if (viewName === 'home') { tg.BackButton.hide(); } else { tg.BackButton.show(); }
+    if (viewName === 'home') {
+      tg.BackButton.hide();
+    } else {
+      tg.BackButton.show();
+    }
   }
   function setView(name) {
     var home      = document.getElementById('view-home');
@@ -1757,19 +1788,17 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     history.pushState({ page: route }, '', targetHash);
     navigate();
   }
-  /* ==========================================================
-     МОБИЛЬНЫЙ ЛЕЙАУТ
-     KRAVVI позиционируется CSS-ом (cqw + % от фото).
-     JS только центрирует стек по видимой области и опускает
-     его ниже KRAVVI при пересечении.
-     ========================================================== */
   var mobileMQ = window.matchMedia('(max-width: 1024px), ((hover: none) and (pointer: coarse) and (max-width: 1366px))');
   var layoutRAF = 0;
-  function cssNum(name, fb) {
+  function cssNum(name, fallback) {
     var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
-    return isFinite(v) ? v : fb;
+    return isFinite(v) ? v : fallback;
   }
-  function layoutStack() {
+  function setPx(name, value) {
+    document.documentElement.style.setProperty(name, (Math.round(value * 100) / 100) + 'px');
+  }
+  function layoutMobile() {
+    var root = document.documentElement;
     var stack = document.querySelector('.hero-stack');
     if (!stack) return;
     if (!mobileMQ.matches) {
@@ -1778,82 +1807,107 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       return;
     }
     var stage = document.querySelector('.home-stage');
-    var art   = document.querySelector('.hero-artboard');
-    if (!stage || !art) return;
-    var sr = stage.getBoundingClientRect();
-    var ar = art.getBoundingClientRect();
-    if (!sr.height || !ar.width) return;
+    var art = document.querySelector('.hero-artboard');
+    var img = document.getElementById('hero-photo');
+    if (!stage || !art || !img) return;
 
-    var cx = sr.width / 2 + sr.width  * cssNum('--stack-shift-x-v', 0) / 100;
-    var cy = sr.height / 2 + sr.height * cssNum('--stack-shift-y-v', 0) / 100;
+    var stageRect = stage.getBoundingClientRect();
+    var stageW = Math.max(1, stageRect.width || cssNum('--vis-w', window.innerWidth || 360));
+    var stageH = Math.max(1, stageRect.height || cssNum('--vis-h', window.innerHeight || 640));
 
-    var artTop   = ar.top - sr.top;
-    var fontSize = ar.width * cssNum('--kravvi-size', 10) / 100;
-    var boxH     = fontSize * 0.92;
-    var shiftY   = cssNum('--kravvi-shift-y', 0) * ar.width / 100;
-    var kCenterY = artTop + ar.height * cssNum('--kravvi-y-v', 20) / 100 + shiftY;
-    var kBottom  = kCenterY + boxH / 2;
+    var natW = img.naturalWidth || 0;
+    var natH = img.naturalHeight || 0;
+    var ratio = (natW > 0 && natH > 0) ? (natW / natH) : cssNum('--photo-ratio', 1.5);
+    root.style.setProperty('--photo-ratio', String(ratio));
 
-    var minCy = kBottom + cssNum('--stack-collision-gap', 16) + stack.offsetHeight / 2;
+    var hScale = cssNum('--photo-h-scale', 100);
+    var maxHScale = cssNum('--photo-h-max-scale', 150);
+    var frameH = stageH * hScale / 100;
+    var maxH = stageW * maxHScale / 100;
+    frameH = Math.min(frameH, maxH, stageH);
+    if (!isFinite(frameH) || frameH < 1) frameH = stageH;
+    var frameW = frameH * ratio;
+
+    setPx('--photo-frame-h', frameH);
+    setPx('--photo-frame-w', frameW);
+
+    var kravviSize = cssNum('--kravvi-size', 10);
+    var fontSize = frameW * kravviSize / 100;
+    setPx('--kravvi-font-px', fontSize);
+
+    var kravviY = cssNum('--kravvi-y-v', 20);
+    var kravviShiftY = cssNum('--kravvi-shift-y', 0);
+    var shiftYpx = frameW * kravviShiftY / 100;
+    var artTop = stageH - frameH;
+    var nameCenterY = artTop + frameH * kravviY / 100 + shiftYpx;
+    var nameBoxH = fontSize * 0.92;
+    var nameBottom = nameCenterY + nameBoxH / 2;
+
+    var stackRect = stack.getBoundingClientRect();
+    var stackH = Math.max(1, stackRect.height || stack.offsetHeight || 1);
+    var collisionGap = cssNum('--stack-collision-gap', 16);
+    var stackShiftX = cssNum('--stack-shift-x-v', 0);
+    var stackShiftY = cssNum('--stack-shift-y-v', 0);
+
+    var cx = stageW / 2 + stageW * stackShiftX / 100;
+    var cy = stageH / 2 + stageH * stackShiftY / 100;
+    var minCy = nameBottom + collisionGap + stackH / 2;
     if (cy < minCy) cy = minCy;
 
-    stack.style.top  = cy + 'px';
+    var maxCy = stageH - stackH / 2 - 8;
+    if (maxCy > stackH / 2 && cy > maxCy) cy = maxCy;
+
+    setPx('temp-stack-cx', cx);
+    setPx('temp-stack-cy', cy);
     stack.style.left = cx + 'px';
+    stack.style.top = cy + 'px';
   }
   function scheduleLayout() {
     if (layoutRAF) cancelAnimationFrame(layoutRAF);
     layoutRAF = requestAnimationFrame(function () {
       layoutRAF = 0;
-      layoutStack();
+      layoutMobile();
     });
   }
   window.kravviRelayout = scheduleLayout;
-  function initViewportFix() {
-    if (!window.visualViewport) return;
+  function initViewportVars() {
     var root = document.documentElement;
-    var lastOffset = -1;
     var rafPending = false;
     function update() {
       rafPending = false;
       var vv = window.visualViewport;
-      var offset = window.innerHeight - (vv.offsetTop + vv.height);
-      if (offset < 0) offset = 0;
-      offset = Math.round(offset);
-      if (offset === lastOffset) return;
-      lastOffset = offset;
-      root.style.setProperty('--vv-bottom', offset + 'px');
-    }
-    function schedule() {
-      if (rafPending) return;
-      rafPending = true;
-      requestAnimationFrame(update);
-    }
-    window.visualViewport.addEventListener('resize', schedule);
-    window.visualViewport.addEventListener('scroll', schedule);
-    update();
-  }
-  function initVisibleViewportVars() {
-    var root = document.documentElement;
-    var rafPending = false;
-    function update() {
-      rafPending = false;
-      if (!mobileMQ.matches) {
-        root.style.removeProperty('--vvh');
-        root.style.removeProperty('--vvw');
-        root.style.removeProperty('--vv-top');
-        scheduleLayout();
-        return;
+      var layoutW = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 360);
+      var layoutH = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 640);
+      var top = 0;
+      var h = layoutH;
+      var w = layoutW;
+      var bottom = 0;
+
+      if (vv) {
+        top = Math.max(0, Math.round(vv.offsetTop || 0));
+        h = Math.max(1, Math.round(vv.height || layoutH));
+        w = Math.max(1, Math.round(vv.width || layoutW));
+        bottom = layoutH - (top + h);
+        if (bottom < 0) {
+          bottom = 0;
+          layoutH = top + h;
+        }
       }
-      var vv = window.visualViewport;
-      var h = vv ? vv.height : window.innerHeight;
-      var w = vv ? vv.width  : window.innerWidth;
-      var top = vv ? vv.offsetTop : 0;
+
+      top = Math.max(0, Math.round(top));
+      bottom = Math.max(0, Math.round(bottom));
       h = Math.max(1, Math.round(h));
       w = Math.max(1, Math.round(w));
-      top = Math.max(0, Math.round(top));
+
+      root.style.setProperty('--vv-top', top + 'px');
+      root.style.setProperty('--vv-bottom', bottom + 'px');
       root.style.setProperty('--vvh', h + 'px');
       root.style.setProperty('--vvw', w + 'px');
-      root.style.setProperty('--vv-top', top + 'px');
+      root.style.setProperty('--vis-top', top + 'px');
+      root.style.setProperty('--vis-bottom', bottom + 'px');
+      root.style.setProperty('--vis-h', h + 'px');
+      root.style.setProperty('--vis-w', w + 'px');
+
       scheduleLayout();
     }
     function schedule() {
@@ -1867,13 +1921,21 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       window.visualViewport.addEventListener('scroll', schedule);
     }
     window.addEventListener('resize', schedule);
-    window.addEventListener('orientationchange', function () { setTimeout(schedule, 120); });
-    if (mobileMQ.addEventListener) { mobileMQ.addEventListener('change', schedule); }
-    else if (mobileMQ.addListener) { mobileMQ.addListener(schedule); }
+    window.addEventListener('orientationchange', function () {
+      setTimeout(schedule, 120);
+    });
+    if (mobileMQ.addEventListener) {
+      mobileMQ.addEventListener('change', schedule);
+    } else if (mobileMQ.addListener) {
+      mobileMQ.addListener(schedule);
+    }
   }
   function bindEvents() {
     window.addEventListener('popstate', function (e) {
-      if (e.state && e.state.page) { setView(e.state.page); return; }
+      if (e.state && e.state.page) {
+        setView(e.state.page);
+        return;
+      }
       var h = parseHash();
       var name = ROUTES[h];
       if (name) {
@@ -1911,7 +1973,10 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape' && e.key !== 'Esc') return;
-      if (langMenu && langMenu.classList.contains('is-open')) { closeLangMenu(); return; }
+      if (langMenu && langMenu.classList.contains('is-open')) {
+        closeLangMenu();
+        return;
+      }
       if (!document.body.classList.contains('overlay-active')) return;
       e.preventDefault();
       goHome();
@@ -1927,7 +1992,9 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }, { passive: true });
     document.addEventListener('touchcancel', function () {
       if (!isTouchDevice()) return;
-      $$('.hero-actions .btn-pill').forEach(function (b) { b.classList.remove('is-tapped'); });
+      $$('.hero-actions .btn-pill').forEach(function (b) {
+        b.classList.remove('is-tapped');
+      });
     }, { passive: true });
     document.addEventListener('click', handleNavClick);
     document.addEventListener('click', function (e) {
@@ -1936,19 +2003,24 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }, true);
   }
   window.updateBackButton = updateBackButton;
-  window.getCurrentView = function () { return ROUTES[parseHash()] || 'home'; };
+  window.getCurrentView = function () {
+    return ROUTES[parseHash()] || 'home';
+  };
   function init() {
     var yearEl = document.getElementById('copy-year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-    if (isFirefoxMobile()) document.documentElement.classList.add('is-firefox-mobile');
+    if (isFirefoxMobile()) {
+      document.documentElement.classList.add('is-firefox-mobile');
+    }
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
-        if (/^hero-tuner-/.test(keys[i])) localStorage.removeItem(keys[i]);
+        if (/^hero-tuner-/.test(keys[i])) {
+          localStorage.removeItem(keys[i]);
+        }
       }
-    } catch (e) {}
-    initViewportFix();
-    initVisibleViewportVars();
+    } catch (e) { /* ignore */ }
+    initViewportVars();
     buildGrids();
     applyPatterns();
     applyI18n();
@@ -1956,13 +2028,18 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var heroImg = document.getElementById('hero-photo');
     if (heroImg) {
       heroImg.addEventListener('load', scheduleLayout);
+      if (heroImg.complete && heroImg.naturalWidth > 0) {
+        scheduleLayout();
+      }
     }
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleLayout);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleLayout);
+    }
     var initialHash = parseHash();
     var initialView = ROUTES[initialHash] || 'home';
     try {
       history.replaceState({ page: initialView }, '', '#' + (initialView === 'home' ? '/' : '/' + initialView));
-    } catch (e) {}
+    } catch (e) { /* ignore */ }
     preloadHeroPhoto().then(function () {
       revealBody();
       requestAnimationFrame(function () {
@@ -1986,11 +2063,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v13';
+  var STORAGE_KEY = 'kravvi-tuner-v14';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2003,73 +2080,82 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (raw) savedState = JSON.parse(raw);
   } catch (e) { savedState = null; }
   if (!((tunerParam === '1') || (savedState !== null))) return;
-
-  /* only: 'd' = только десктоп, 'm' = только планшет/телефон, '' = все */
   var GROUPS = [
     {
-      id: 'kravvi', title: 'KRAVVI', props: [
-        { key: '--hero-top',    label: 'Top VP',       unit: 'vh',  step: 0.1, only: 'd' },
-        { key: '--name-size',   label: 'Size VP',      unit: 'vw',  step: 0.1, only: 'd' },
-        { key: '--name-x',      label: 'X VP',         unit: 'vw',  step: 0.1, only: 'd' },
-        { key: '--name-y',      label: 'Y VP',         unit: 'vh',  step: 0.1, only: 'd' },
-        { key: '--kravvi-x-v',  label: 'X Photo',      unit: '',    step: 0.1, only: 'm' },
-        { key: '--kravvi-y-v',  label: 'Y Photo',      unit: '',    step: 0.1, only: 'm' },
-        { key: '--kravvi-size', label: 'Size Photo %', unit: '',    step: 0.1, only: 'm' },
-        { key: '--kravvi-shift-x', label: 'Fine X cqw',unit: 'cqw', step: 0.1, only: 'm' },
-        { key: '--kravvi-shift-y', label: 'Fine Y cqw',unit: 'cqw', step: 0.1, only: 'm' },
-        { key: '--name-opsz',   label: 'opsz',         unit: '',    step: 1 },
-        { key: '--name-stroke', label: 'Stroke',       unit: 'px',  step: 0.05 }
+      id: 'kravvi',
+      title: 'KRAVVI',
+      props: [
+        { key: '--hero-top', label: 'Top VP', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--name-size', label: 'Size VP', unit: 'vw', step: 0.1, only: 'd' },
+        { key: '--name-x', label: 'X VP', unit: 'vw', step: 0.1, only: 'd' },
+        { key: '--name-y', label: 'Y VP', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--kravvi-x-v', label: 'X Photo %', unit: '', step: 0.1, only: 'm' },
+        { key: '--kravvi-y-v', label: 'Y Photo %', unit: '', step: 0.1, only: 'm' },
+        { key: '--kravvi-size', label: 'Size Photo %', unit: '', step: 0.1, only: 'm' },
+        { key: '--kravvi-shift-x', label: 'Fine X cqw', unit: 'cqw', step: 0.1, only: 'm' },
+        { key: '--kravvi-shift-y', label: 'Fine Y cqw', unit: 'cqw', step: 0.1, only: 'm' },
+        { key: '--name-opsz', label: 'opsz', unit: '', step: 1 },
+        { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
       ]
     },
     {
-      id: 'photo', title: 'Photo', props: [
-        { key: '--photo-h',            label: 'Height VP',   unit: 'vh', step: 1, only: 'd' },
-        { key: '--photo-h-max',        label: 'Max VP',      unit: 'vw', step: 5, only: 'd' },
-        { key: '--photo-h-scale',      label: 'Height M %',  unit: '',   step: 1, only: 'm' },
-        { key: '--photo-h-max-scale',  label: 'Max M %',     unit: '',   step: 5, only: 'm' },
-        { key: '--photo-ratio',        label: 'Ratio w/h',   unit: '',   step: 0.01, only: 'm' }
+      id: 'photo',
+      title: 'Photo',
+      props: [
+        { key: '--photo-h', label: 'Height desktop', unit: 'vh', step: 1, only: 'd' },
+        { key: '--photo-h-max', label: 'Max desktop', unit: 'vw', step: 5, only: 'd' },
+        { key: '--photo-h-scale', label: 'Height M %', unit: '', step: 1, only: 'm' },
+        { key: '--photo-h-max-scale', label: 'Max M %', unit: '', step: 5, only: 'm' }
       ]
     },
     {
-      id: 'stack', title: 'Stack', props: [
-        { key: '--hero-gap',            label: 'Gap VP',        unit: 'vh', step: 0.1, only: 'd' },
-        { key: '--stack-shift-x-v',     label: 'Center X %',    unit: '',   step: 0.5, only: 'm' },
-        { key: '--stack-shift-y-v',     label: 'Center Y %',    unit: '',   step: 0.5, only: 'm' },
-        { key: '--stack-collision-gap', label: 'Kravvi gap',    unit: 'px', step: 1,   only: 'm' },
-        { key: '--hero-text-gap',       label: 'Text gap',      unit: 'px', step: 1 },
-        { key: '--hero-stack-gap',      label: 'Block gap',     unit: 'px', step: 1 },
-        { key: '--stack-width',         label: 'Width',         unit: 'px', step: 10 }
+      id: 'stack',
+      title: 'Stack',
+      props: [
+        { key: '--hero-gap', label: 'KRAVVI gap desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--stack-shift-x-v', label: 'Center X %', unit: '', step: 0.5, only: 'm' },
+        { key: '--stack-shift-y-v', label: 'Center Y %', unit: '', step: 0.5, only: 'm' },
+        { key: '--stack-collision-gap', label: 'Kravvi gap', unit: 'px', step: 1, only: 'm' },
+        { key: '--hero-text-gap', label: 'Text gap', unit: 'px', step: 1 },
+        { key: '--hero-stack-gap', label: 'Block gap', unit: 'px', step: 1 },
+        { key: '--stack-width', label: 'Width', unit: 'px', step: 10 }
       ]
     },
     {
-      id: 'author', title: 'Author', props: [
-        { key: '--author-size-v', label: 'Size',      unit: '',   step: 0.5 },
-        { key: '--author-x',      label: 'X',         unit: 'vw', step: 0.5, only: 'd' },
-        { key: '--author-y',      label: 'Y',         unit: 'vh', step: 0.1, only: 'd' },
-        { key: '--ma-x',          label: 'X M %',     unit: '',   step: 0.5, only: 'm' },
-        { key: '--ma-y',          label: 'Y M %',     unit: '',   step: 0.5, only: 'm' }
+      id: 'author',
+      title: 'Author',
+      props: [
+        { key: '--author-size-v', label: 'Size', unit: '', step: 0.5 },
+        { key: '--author-x', label: 'X desktop', unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--author-y', label: 'Y desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--ma-x', label: 'X M %', unit: '', step: 0.5, only: 'm' },
+        { key: '--ma-y', label: 'Y M %', unit: '', step: 0.5, only: 'm' }
       ]
     },
     {
-      id: 'tagline', title: 'Tagline', props: [
-        { key: '--desc-size-v',   label: 'Size',      unit: '',   step: 0.5 },
-        { key: '--desc-width-v',  label: 'Width',     unit: '',   step: 4 },
-        { key: '--desc-x',        label: 'X',         unit: 'vw', step: 0.5, only: 'd' },
-        { key: '--desc-y',        label: 'Y',         unit: 'vh', step: 0.1, only: 'd' },
-        { key: '--md-x',          label: 'X M %',     unit: '',   step: 0.5, only: 'm' },
-        { key: '--md-y',          label: 'Y M %',     unit: '',   step: 0.5, only: 'm' }
+      id: 'tagline',
+      title: 'Tagline',
+      props: [
+        { key: '--desc-size-v', label: 'Size', unit: '', step: 0.5 },
+        { key: '--desc-width-v', label: 'Width', unit: '', step: 4 },
+        { key: '--desc-x', label: 'X desktop', unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--desc-y', label: 'Y desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--md-x', label: 'X M %', unit: '', step: 0.5, only: 'm' },
+        { key: '--md-y', label: 'Y M %', unit: '', step: 0.5, only: 'm' }
       ]
     },
     {
-      id: 'buttons', title: 'Buttons', props: [
-        { key: '--btn-size-v', label: 'Size',  unit: '',   step: 0.5 },
-        { key: '--btn-gap-v',  label: 'Gap',   unit: '',   step: 1 },
-        { key: '--btn-pad-x',  label: 'Pad X', unit: 'em', step: 0.05 },
-        { key: '--btn-pad-y',  label: 'Pad Y', unit: 'em', step: 0.05 },
-        { key: '--btn-x',      label: 'X',     unit: 'vw', step: 0.5, only: 'd' },
-        { key: '--btn-y',      label: 'Y',     unit: 'vh', step: 0.1, only: 'd' },
-        { key: '--mb-x',       label: 'X M %', unit: '',   step: 0.5, only: 'm' },
-        { key: '--mb-y',       label: 'Y M %', unit: '',   step: 0.5, only: 'm' }
+      id: 'buttons',
+      title: 'Buttons',
+      props: [
+        { key: '--btn-size-v', label: 'Size', unit: '', step: 0.5 },
+        { key: '--btn-gap-v', label: 'Gap', unit: '', step: 1 },
+        { key: '--btn-pad-x', label: 'Pad X', unit: 'em', step: 0.05 },
+        { key: '--btn-pad-y', label: 'Pad Y', unit: 'em', step: 0.05 },
+        { key: '--btn-x', label: 'X desktop', unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--btn-y', label: 'Y desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--mb-x', label: 'X M %', unit: '', step: 0.5, only: 'm' },
+        { key: '--mb-y', label: 'Y M %', unit: '', step: 0.5, only: 'm' }
       ]
     }
   ];
@@ -2088,7 +2174,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--name-opsz': '96', '--name-stroke': '0',
       '--kravvi-x-v': '50', '--kravvi-y-v': '26', '--kravvi-size': '12',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
-      '--photo-h-scale': '104', '--photo-h-max-scale': '150', '--photo-ratio': '1.5',
+      '--photo-h-scale': '100', '--photo-h-max-scale': '150',
       '--stack-shift-x-v': '0', '--stack-shift-y-v': '0', '--stack-collision-gap': '16',
       '--hero-text-gap': '8', '--hero-stack-gap': '28', '--stack-width': '640',
       '--author-size-v': '22', '--ma-x': '0', '--ma-y': '0',
@@ -2100,7 +2186,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--name-opsz': '30', '--name-stroke': '0.33',
       '--kravvi-x-v': '50', '--kravvi-y-v': '21', '--kravvi-size': '8',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
-      '--photo-h-scale': '96', '--photo-h-max-scale': '213', '--photo-ratio': '1.5',
+      '--photo-h-scale': '96', '--photo-h-max-scale': '213',
       '--stack-shift-x-v': '0', '--stack-shift-y-v': '0', '--stack-collision-gap': '16',
       '--hero-text-gap': '8', '--hero-stack-gap': '35', '--stack-width': '360',
       '--author-size-v': '19', '--ma-x': '0', '--ma-y': '0',
@@ -2111,12 +2197,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   };
   var ALL_KEYS = [];
   GROUPS.forEach(function (g) {
-    g.props.forEach(function (p) { if (ALL_KEYS.indexOf(p.key) === -1) ALL_KEYS.push(p.key); });
+    g.props.forEach(function (p) {
+      if (ALL_KEYS.indexOf(p.key) === -1) ALL_KEYS.push(p.key);
+    });
   });
   function unitOf(key) {
-    for (var i = 0; i < GROUPS.length; i++)
-      for (var j = 0; j < GROUPS[i].props.length; j++)
+    for (var i = 0; i < GROUPS.length; i++) {
+      for (var j = 0; j < GROUPS[i].props.length; j++) {
         if (GROUPS[i].props[j].key === key) return GROUPS[i].props[j].unit;
+      }
+    }
     return '';
   }
   var state = savedState || {};
@@ -2130,12 +2220,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var isTouch = isTouchContext();
     if (isTouch && w > 1024 && w <= 1366) return 'tablet';
     if (w > 1024) return 'desktop';
-    if (w > 700)  return 'tablet';
+    if (w > 700) return 'tablet';
     return 'phone';
   }
   function getValues(ctx) {
-    var out = {}, d = DEFAULTS[ctx] || {}, s = state[ctx] || {};
-    ALL_KEYS.forEach(function (k) { out[k] = (s[k] != null) ? s[k] : d[k]; });
+    var out = {};
+    var d = DEFAULTS[ctx] || {};
+    var s = state[ctx] || {};
+    ALL_KEYS.forEach(function (k) {
+      out[k] = (s[k] != null) ? s[k] : d[k];
+    });
     return out;
   }
   function setValue(ctx, key, value) {
@@ -2147,7 +2241,9 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
   }
   function applyContextValues() {
-    appliedVars.forEach(function (k) { document.documentElement.style.removeProperty(k); });
+    appliedVars.forEach(function (k) {
+      document.documentElement.style.removeProperty(k);
+    });
     appliedVars = [];
     var vals = getValues(currentContext);
     ALL_KEYS.forEach(function (k) {
@@ -2221,7 +2317,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '.tuner-step button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
     + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
     + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
-    + '.tuner-prop{display:grid;grid-template-columns:126px 1fr;gap:10px;align-items:center;padding:2px 0}'
+    + '.tuner-prop{display:grid;grid-template-columns:132px 1fr;gap:10px;align-items:center;padding:2px 0}'
     + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
     + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
     + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 30px 28px;gap:4px;align-items:center}'
@@ -2376,9 +2472,15 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       box.appendChild(groupEl);
     });
   }
-  function renderAll() { renderContexts(); renderStep(); renderGroups(); }
+  function renderAll() {
+    renderContexts();
+    renderStep();
+    renderGroups();
+  }
   fab.addEventListener('click', function () { panel.classList.toggle('is-open'); });
-  panel.querySelector('.tuner-close').addEventListener('click', function () { panel.classList.remove('is-open'); });
+  panel.querySelector('.tuner-close').addEventListener('click', function () {
+    panel.classList.remove('is-open');
+  });
   panel.querySelector('[data-role="contexts"]').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-ctx]');
     if (!b) return;
@@ -2406,9 +2508,10 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   panel.querySelector('[data-role="groups"]').addEventListener('input', function (e) {
     var input = e.target.closest('input[data-key]');
     if (!input) return;
+    var key = input.getAttribute('data-key');
     var v = parseFloat(input.value);
     if (!isFinite(v)) return;
-    setValue(currentContext, input.getAttribute('data-key'), fmt(v));
+    setValue(currentContext, key, fmt(v));
     applyContextValues();
   });
   panel.querySelector('.tuner-actions').addEventListener('click', function (e) {
@@ -2420,7 +2523,9 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       var ta = panel.querySelector('[data-role="json"]');
       ta.value = json;
       try { ta.select(); document.execCommand('copy'); } catch (err) {}
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).catch(function () {});
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(json).catch(function () {});
+      }
       var old = b.textContent;
       b.textContent = 'Copied!';
       setTimeout(function () { b.textContent = old; }, 1200);
@@ -2443,7 +2548,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function exportJSON() {
     var out = {};
     ['desktop', 'tablet', 'phone'].forEach(function (ctx) {
-      var vals = getValues(ctx), o = {};
+      var vals = getValues(ctx);
+      var o = {};
       ALL_KEYS.forEach(function (k) {
         var v = vals[k];
         if (v == null || v === '') return;
@@ -2461,8 +2567,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     applyContextValues();
     renderAll();
   }
-  window.addEventListener('resize', function () { clearTimeout(rT); rT = setTimeout(onResize, 80); });
-  window.addEventListener('orientationchange', function () { clearTimeout(rT); rT = setTimeout(onResize, 150); });
+  window.addEventListener('resize', function () {
+    clearTimeout(rT);
+    rT = setTimeout(onResize, 80);
+  });
+  window.addEventListener('orientationchange', function () {
+    clearTimeout(rT);
+    rT = setTimeout(onResize, 150);
+  });
   applyContextValues();
   renderAll();
 })();
@@ -2472,8 +2584,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   var tg = window.Telegram && window.Telegram.WebApp;
   if (!tg) return;
   var isMiniApp = false;
-  if (tg.initData && tg.initData.length > 0) isMiniApp = true;
-  else if (location.hash.indexOf('tgWebAppVersion') !== -1) isMiniApp = true;
+  if (tg.initData && tg.initData.length > 0) {
+    isMiniApp = true;
+  } else if (location.hash.indexOf('tgWebAppVersion') !== -1) {
+    isMiniApp = true;
+  }
   if (isMiniApp) {
     document.body.classList.add('telegram-mini-app');
     tg.ready();
@@ -2481,13 +2596,18 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (tg.requestFullscreen) tg.requestFullscreen();
     function updateSafeArea() {
       var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
-                (tg.safeAreaInset && tg.safeAreaInset.top) || 0;
+                (tg.safeAreaInset && tg.safeAreaInset.top) ||
+                0;
       document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
     }
     updateSafeArea();
-    if (tg.onEvent) tg.onEvent('viewportChanged', updateSafeArea);
+    if (tg.onEvent) {
+      tg.onEvent('viewportChanged', updateSafeArea);
+    }
     if (tg.BackButton) {
-      tg.BackButton.onClick(function () { window.history.back(); });
+      tg.BackButton.onClick(function () {
+        window.history.back();
+      });
       if (window.updateBackButton && window.getCurrentView) {
         window.updateBackButton(window.getCurrentView());
       }
