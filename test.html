@@ -119,26 +119,22 @@ svg { display: block; }
   --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
   --vvh: 100dvh;
   --vvw: 100vw;
+  /* --- mobile photo frame / KRAVVI (используются только в мобильном блоке) --- */
   --photo-ratio: 1.5;
   --photo-h-scale: 104;
-  --photo-h-max-scale: 175;
-  --photo-frame-h: min(
-    calc(var(--vvh) * var(--photo-h-scale) / 100),
-    calc(var(--vvw) * var(--photo-h-max-scale) / 100)
-  );
-  --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
-  --kravvi-x: 50%;
-  --kravvi-y: 18%;
-  --kravvi-size: 12;
-  --kravvi-shift-x: 0px;
-  --kravvi-shift-y: 0px;
-  --kravvi-font-px: 16px;
-  --stack-shift-x: 0px;
-  --stack-shift-y: 0px;
+  --photo-h-max-scale: 150;
+  --kravvi-x-v: 50;
+  --kravvi-y-v: 21;
+  --kravvi-size: 8;
+  --kravvi-shift-x: 0cqw;
+  --kravvi-shift-y: 0cqw;
+  --stack-shift-x-v: 0;
+  --stack-shift-y-v: 0;
   --stack-collision-gap: 16px;
-  --stack-top: 50%;
-  --stack-transform-y: -50%;
   --stack-width: 640px;
+  --ma-x: 0; --ma-y: 0;
+  --md-x: 0; --md-y: 0;
+  --mb-x: 0; --mb-y: 0;
 }
 /* ============================================================
    3. BASE
@@ -965,27 +961,25 @@ body.overlay-active #view-home.is-active .hero-actions {
     --gap: 14px;
     --glass-radius: 22px;
     --glass-blur: 22px;
-    --hero-gap: 3vh;
     --photo-h-scale: 104;
     --photo-h-max-scale: 150;
-    --kravvi-x: 50%;
-    --kravvi-y: 19.2%;
+    --kravvi-x-v: 50;
+    --kravvi-y-v: 26;
     --kravvi-size: 12;
-    --kravvi-shift-x: 0px;
-    --kravvi-shift-y: 0px;
-    --stack-shift-x: 0px;
-    --stack-shift-y: 0px;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
     --stack-collision-gap: 16px;
     --stack-width: 640px;
-    --name-x: 0vw;
-    --name-y: 0vh;
-    --author-x: 0vw;
-    --author-y: 0vh;
-    --desc-x: 0vw;
-    --desc-y: 0vh;
-    --btn-x: 0vw;
-    --btn-y: 0vh;
     --actions-max-w: 2000px;
+    /* мобильные смещения — % от видимой области */
+    --author-x: calc(var(--ma-x) * var(--vvw) / 100);
+    --author-y: calc(var(--ma-y) * var(--vvh) / 100);
+    --desc-x:   calc(var(--md-x) * var(--vvw) / 100);
+    --desc-y:   calc(var(--md-y) * var(--vvh) / 100);
+    --btn-x:    calc(var(--mb-x) * var(--vvw) / 100);
+    --btn-y:    calc(var(--mb-y) * var(--vvh) / 100);
     --author-size: max(14px, calc(var(--author-size-v) * var(--vvw) / var(--ref-w)));
     --desc-size:   max(13px, calc(var(--desc-size-v)   * var(--vvw) / var(--ref-w)));
     --desc-width:  max(240px, calc(var(--desc-width-v) * var(--vvw) / var(--ref-w)));
@@ -998,19 +992,23 @@ body.overlay-active #view-home.is-active .hero-actions {
     top: var(--vv-top);
     left: 0;
     right: 0;
-    bottom: auto;
     height: var(--vvh);
     overflow: hidden;
   }
 
+  /* Фото-рамка: высота от ВИДИМОЙ области, ширина = высота × пропорция.
+     Никакого ограничение по ширине экрана → обрезки нет, съезда нет. */
   .hero-artboard {
     display: block;
     position: absolute;
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);
-    width: var(--photo-frame-w);
-    height: var(--photo-frame-h);
+    height: min(
+      calc(var(--vvh) * var(--photo-h-scale) / 100),
+      calc(var(--vvw) * var(--photo-h-max-scale) / 100)
+    );
+    aspect-ratio: var(--photo-ratio);
     container-type: inline-size;
     overflow: visible;
     pointer-events: none;
@@ -1024,13 +1022,11 @@ body.overlay-active #view-home.is-active .hero-actions {
     z-index: 2;
     pointer-events: none;
   }
-
   .hero-photo-wrap picture {
     display: block;
     width: 100%;
     height: 100%;
   }
-
   .hero-photo {
     position: relative;
     width: 100%;
@@ -1040,22 +1036,24 @@ body.overlay-active #view-home.is-active .hero-actions {
     max-width: none;
   }
 
+  /* KRAVVI: координаты и размер — только от фото */
   .hero-name {
-    top: calc(var(--kravvi-y) + var(--kravvi-shift-y));
-    left: calc(var(--kravvi-x) + var(--kravvi-shift-x));
+    top: calc(var(--kravvi-y-v) * 1%);
+    left: calc(var(--kravvi-x-v) * 1%);
     z-index: 1;
-    font-size: var(--kravvi-font-px);
-    transform: translate(-50%, -50%) translateY(20px);
+    font-size: calc(var(--kravvi-size) * 1vw);
+    font-size: calc(var(--kravvi-size) * 1cqw);
+    transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), calc(var(--kravvi-shift-y) + 20px));
   }
-
   #view-home.is-active .hero-name {
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), var(--kravvi-shift-y));
   }
 
+  /* Стек: центрируется по видимой области, JS лишь опускает его ниже KRAVVI */
   .hero-stack {
-    top: var(--stack-top);
-    left: calc(50% + var(--stack-shift-x));
-    transform: translateX(-50%) translateY(var(--stack-transform-y));
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 3;
     width: max-content;
     max-width: min(var(--stack-width), calc(var(--vvw) - 40px));
@@ -1065,45 +1063,15 @@ body.overlay-active #view-home.is-active .hero-actions {
     padding-right: max(20px, var(--safe-right));
     pointer-events: none;
   }
-
   .hero-stack > * { pointer-events: auto; }
   .hero-text { align-items: center; text-align: center; }
   .hero-actions { justify-content: center; }
-
   .hero-author {
     width: var(--desc-width);
     box-sizing: border-box;
     text-align: center;
-    transform: translateY(14px);
   }
-  #view-home.is-active .hero-author {
-    transform: none;
-  }
-
-  .hero-tagline {
-    text-align: center;
-    transform: translateY(18px);
-  }
-  #view-home.is-active .hero-tagline {
-    transform: none;
-  }
-
-  .hero-actions {
-    transform: translateY(18px);
-  }
-  #view-home.is-active .hero-actions {
-    transform: none;
-  }
-
-  body.overlay-active #view-home.is-active .hero-author {
-    transform: translateY(20px);
-  }
-  body.overlay-active #view-home.is-active .hero-tagline {
-    transform: translateY(20px);
-  }
-  body.overlay-active #view-home.is-active .hero-actions {
-    transform: translateY(24px);
-  }
+  .hero-tagline { text-align: center; }
 
   .view-grid {
     padding:
@@ -1139,25 +1107,20 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h-max: 150vw;
     --photo-h-scale: 104;
     --photo-h-max-scale: 150;
-    --kravvi-y: 19.2%;
+    --kravvi-y-v: 26;
     --kravvi-size: 12;
     --name-size: 22vw;
     --name-opsz: 96;
     --name-stroke: 0px;
-    --name-x: 0vw;
-    --name-y: 0vh;
     --stack-width: 640px;
     --author-size-v: 22;
-    --author-x: 0vw;
-    --author-y: 0vh;
+    --ma-x: 0; --ma-y: 0;
     --desc-size-v: 16;
     --desc-width-v: 478;
-    --desc-x: 0vw;
-    --desc-y: 1vh;
+    --md-x: 0; --md-y: 0;
     --btn-size-v: 13;
     --btn-gap-v: 15;
-    --btn-x: 0vw;
-    --btn-y: 0.2vh;
+    --mb-x: 0; --mb-y: 0;
   }
 }
 /* ============================================================
@@ -1174,30 +1137,25 @@ body.overlay-active #view-home.is-active .hero-actions {
     --hero-gap: 7.8vh;
     --photo-h: 92.5vh;
     --photo-h-max: 213vw;
-    --photo-h-scale: 92.5;
+    --photo-h-scale: 96;
     --photo-h-max-scale: 213;
-    --kravvi-y: 12.4%;
-    --kravvi-size: 7.6;
+    --kravvi-y-v: 21;
+    --kravvi-size: 8;
     --name-size: 22.9vw;
-    --name-x: 0vw;
-    --name-y: 3.1vh;
     --name-opsz: 30;
     --name-stroke: 0.33px;
     --stack-width: 360px;
     --author-size-v: 19;
-    --author-x: 0vw;
-    --author-y: 4.9vh;
+    --ma-x: 0; --ma-y: 0;
     --desc-size-v: 14;
     --desc-width-v: 292;
-    --desc-x: 0vw;
-    --desc-y: 5.6vh;
+    --md-x: 0; --md-y: 0;
     --btn-size-v: 11.3;
     --btn-gap-v: 14;
     --btn-pad-y: 0.85em;
     --btn-pad-x: 1.75em;
     --btn-scale: 0.95;
-    --btn-x: 0vw;
-    --btn-y: 3.5vh;
+    --mb-x: 0; --mb-y: 0;
     --actions-max-w: 250px;
     --hero-stack-gap: 35px;
   }
@@ -1282,7 +1240,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   }
   body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
   body.telegram-mini-app .view-grid {
-    padding: 0 !important; 
+    padding: 0 !important;
   }
   body.telegram-mini-app .view-header {
     padding-top: var(--tg-pad) !important;
@@ -1314,7 +1272,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
               srcset="images/VV%201600x1067.webp 1600w,
                       images/VV%201920x1280.webp 1920w,
                       images/VV%202356x1571.webp 2356w"
-              sizes="(max-width: 700px) 130vw, (max-width: 1024px) 100vw, 60vw">
+              sizes="(max-width: 700px) 290vw, (max-width: 1024px) 160vw, 60vw">
             <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async">
           </picture>
         </div>
@@ -1596,11 +1554,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
     var photo = document.getElementById('hero-photo');
     if (photo) {
-      var altMap = {
-        ru: 'Александр Кравви',
-        en: 'Alexandr Kravvi',
-        de: 'Alexandr Kravvi'
-      };
+      var altMap = { ru: 'Александр Кравви', en: 'Alexandr Kravvi', de: 'Alexandr Kravvi' };
       photo.setAttribute('alt', altMap[lang] || 'Alexandr Kravvi');
     }
     scheduleLayout();
@@ -1713,11 +1667,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function updateBackButton(viewName) {
     var tg = window.Telegram && window.Telegram.WebApp;
     if (!tg || !tg.BackButton) return;
-    if (viewName === 'home') {
-      tg.BackButton.hide();
-    } else {
-      tg.BackButton.show();
-    }
+    if (viewName === 'home') { tg.BackButton.hide(); } else { tg.BackButton.show(); }
   }
   function setView(name) {
     var home      = document.getElementById('view-home');
@@ -1807,64 +1757,57 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     history.pushState({ page: route }, '', targetHash);
     navigate();
   }
+  /* ==========================================================
+     МОБИЛЬНЫЙ ЛЕЙАУТ
+     KRAVVI позиционируется CSS-ом (cqw + % от фото).
+     JS только центрирует стек по видимой области и опускает
+     его ниже KRAVVI при пересечении.
+     ========================================================== */
   var mobileMQ = window.matchMedia('(max-width: 1024px), ((hover: none) and (pointer: coarse) and (max-width: 1366px))');
   var layoutRAF = 0;
-  function getCssNumber(name, fallback) {
+  function cssNum(name, fb) {
     var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
-    return isFinite(v) ? v : fallback;
+    return isFinite(v) ? v : fb;
   }
-  function updatePhotoRatio() {
-    var img = document.getElementById('hero-photo');
-    var root = document.documentElement;
-    if (!img || !img.naturalWidth || !img.naturalHeight) return;
-    root.style.setProperty('--photo-ratio', String(img.naturalWidth / img.naturalHeight));
-  }
-  function layoutMobile() {
-    if (!mobileMQ.matches) return;
-    var root = document.documentElement;
-    var stage = document.querySelector('.home-stage');
-    var art = document.querySelector('.hero-artboard');
-    var name = document.querySelector('.hero-name');
+  function layoutStack() {
     var stack = document.querySelector('.hero-stack');
-    if (!stage || !art || !name || !stack) return;
-
-    updatePhotoRatio();
-
-    var artRect = art.getBoundingClientRect();
-    var artWidth = artRect.width;
-    if (!artWidth) {
-      var stageH = stage.clientHeight || window.innerHeight;
-      var hScale = getCssNumber('--photo-h-scale', 100);
-      var ratio = getCssNumber('--photo-ratio', 1.5);
-      artWidth = stageH * hScale / 100 * ratio;
+    if (!stack) return;
+    if (!mobileMQ.matches) {
+      stack.style.top = '';
+      stack.style.left = '';
+      return;
     }
+    var stage = document.querySelector('.home-stage');
+    var art   = document.querySelector('.hero-artboard');
+    if (!stage || !art) return;
+    var sr = stage.getBoundingClientRect();
+    var ar = art.getBoundingClientRect();
+    if (!sr.height || !ar.width) return;
 
-    var sizePercent = getCssNumber('--kravvi-size', 12);
-    var fontPx = Math.max(1, artWidth * sizePercent / 100);
-    root.style.setProperty('--kravvi-font-px', fontPx + 'px');
+    var cx = sr.width / 2 + sr.width  * cssNum('--stack-shift-x-v', 0) / 100;
+    var cy = sr.height / 2 + sr.height * cssNum('--stack-shift-y-v', 0) / 100;
 
-    var stageRect = stage.getBoundingClientRect();
-    var nameRect = name.getBoundingClientRect();
-    var stackH = stack.offsetHeight;
-    var shiftY = getCssNumber('--stack-shift-y', 0);
-    var gap = getCssNumber('--stack-collision-gap', 16);
-    var kravviBottom = nameRect.bottom - stageRect.top;
-    var centerTop = (stageRect.height - stackH) / 2 + shiftY;
-    var collisionTop = kravviBottom + gap;
-    var finalTop = Math.max(centerTop, collisionTop);
-    if (finalTop < 0) finalTop = 0;
+    var artTop   = ar.top - sr.top;
+    var fontSize = ar.width * cssNum('--kravvi-size', 10) / 100;
+    var boxH     = fontSize * 0.92;
+    var shiftY   = cssNum('--kravvi-shift-y', 0) * ar.width / 100;
+    var kCenterY = artTop + ar.height * cssNum('--kravvi-y-v', 20) / 100 + shiftY;
+    var kBottom  = kCenterY + boxH / 2;
 
-    root.style.setProperty('--stack-top', finalTop + 'px');
-    root.style.setProperty('--stack-transform-y', '0px');
+    var minCy = kBottom + cssNum('--stack-collision-gap', 16) + stack.offsetHeight / 2;
+    if (cy < minCy) cy = minCy;
+
+    stack.style.top  = cy + 'px';
+    stack.style.left = cx + 'px';
   }
   function scheduleLayout() {
     if (layoutRAF) cancelAnimationFrame(layoutRAF);
     layoutRAF = requestAnimationFrame(function () {
       layoutRAF = 0;
-      layoutMobile();
+      layoutStack();
     });
   }
-  window.kravviScheduleLayout = scheduleLayout;
+  window.kravviRelayout = scheduleLayout;
   function initViewportFix() {
     if (!window.visualViewport) return;
     var root = document.documentElement;
@@ -1894,9 +1837,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var rafPending = false;
     function update() {
       rafPending = false;
+      if (!mobileMQ.matches) {
+        root.style.removeProperty('--vvh');
+        root.style.removeProperty('--vvw');
+        root.style.removeProperty('--vv-top');
+        scheduleLayout();
+        return;
+      }
       var vv = window.visualViewport;
       var h = vv ? vv.height : window.innerHeight;
-      var w = vv ? vv.width : window.innerWidth;
+      var w = vv ? vv.width  : window.innerWidth;
       var top = vv ? vv.offsetTop : 0;
       h = Math.max(1, Math.round(h));
       w = Math.max(1, Math.round(w));
@@ -1917,16 +1867,13 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       window.visualViewport.addEventListener('scroll', schedule);
     }
     window.addEventListener('resize', schedule);
-    window.addEventListener('orientationchange', function () {
-      setTimeout(schedule, 120);
-    });
+    window.addEventListener('orientationchange', function () { setTimeout(schedule, 120); });
+    if (mobileMQ.addEventListener) { mobileMQ.addEventListener('change', schedule); }
+    else if (mobileMQ.addListener) { mobileMQ.addListener(schedule); }
   }
   function bindEvents() {
     window.addEventListener('popstate', function (e) {
-      if (e.state && e.state.page) {
-        setView(e.state.page);
-        return;
-      }
+      if (e.state && e.state.page) { setView(e.state.page); return; }
       var h = parseHash();
       var name = ROUTES[h];
       if (name) {
@@ -1964,10 +1911,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape' && e.key !== 'Esc') return;
-      if (langMenu && langMenu.classList.contains('is-open')) {
-        closeLangMenu();
-        return;
-      }
+      if (langMenu && langMenu.classList.contains('is-open')) { closeLangMenu(); return; }
       if (!document.body.classList.contains('overlay-active')) return;
       e.preventDefault();
       goHome();
@@ -1983,9 +1927,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }, { passive: true });
     document.addEventListener('touchcancel', function () {
       if (!isTouchDevice()) return;
-      $$('.hero-actions .btn-pill').forEach(function (b) {
-        b.classList.remove('is-tapped');
-      });
+      $$('.hero-actions .btn-pill').forEach(function (b) { b.classList.remove('is-tapped'); });
     }, { passive: true });
     document.addEventListener('click', handleNavClick);
     document.addEventListener('click', function (e) {
@@ -1994,23 +1936,17 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }, true);
   }
   window.updateBackButton = updateBackButton;
-  window.getCurrentView = function () {
-    return ROUTES[parseHash()] || 'home';
-  };
+  window.getCurrentView = function () { return ROUTES[parseHash()] || 'home'; };
   function init() {
     var yearEl = document.getElementById('copy-year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-    if (isFirefoxMobile()) {
-      document.documentElement.classList.add('is-firefox-mobile');
-    }
+    if (isFirefoxMobile()) document.documentElement.classList.add('is-firefox-mobile');
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
-        if (/^hero-tuner-/.test(keys[i])) {
-          localStorage.removeItem(keys[i]);
-        }
+        if (/^hero-tuner-/.test(keys[i])) localStorage.removeItem(keys[i]);
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) {}
     initViewportFix();
     initVisibleViewportVars();
     buildGrids();
@@ -2019,22 +1955,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     bindEvents();
     var heroImg = document.getElementById('hero-photo');
     if (heroImg) {
-      heroImg.addEventListener('load', function () {
-        updatePhotoRatio();
-        scheduleLayout();
-      });
-      if (heroImg.complete && heroImg.naturalWidth > 0) {
-        updatePhotoRatio();
-      }
+      heroImg.addEventListener('load', scheduleLayout);
     }
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(scheduleLayout);
-    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(scheduleLayout);
     var initialHash = parseHash();
     var initialView = ROUTES[initialHash] || 'home';
     try {
       history.replaceState({ page: initialView }, '', '#' + (initialView === 'home' ? '/' : '/' + initialView));
-    } catch (e) { /* ignore */ }
+    } catch (e) {}
     preloadHeroPhoto().then(function () {
       revealBody();
       requestAnimationFrame(function () {
@@ -2058,19 +1986,13 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v12';
+  var STORAGE_KEY = 'kravvi-tuner-v13';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  try {
-    localStorage.removeItem('kravvi-tuner-v5');
-    localStorage.removeItem('kravvi-tuner-v6');
-    localStorage.removeItem('kravvi-tuner-v7');
-    localStorage.removeItem('kravvi-tuner-v8');
-    localStorage.removeItem('kravvi-tuner-v9');
-    localStorage.removeItem('kravvi-tuner-v10');
-    localStorage.removeItem('kravvi-tuner-v11');
-  } catch (e) {}
+  ['v5','v6','v7','v8','v9','v10','v11','v12'].forEach(function (old) {
+    try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
+  });
   if (tunerParam === '0') {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     return;
@@ -2080,134 +2002,117 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var raw = localStorage.getItem(STORAGE_KEY);
     if (raw) savedState = JSON.parse(raw);
   } catch (e) { savedState = null; }
-  var shouldActivate = (tunerParam === '1') || (savedState !== null);
-  if (!shouldActivate) return;
+  if (!((tunerParam === '1') || (savedState !== null))) return;
+
+  /* only: 'd' = только десктоп, 'm' = только планшет/телефон, '' = все */
   var GROUPS = [
     {
-      id: 'kravvi',
-      title: 'KRAVVI',
-      props: [
-        { key: '--hero-top', label: 'Top VP', unit: 'vh', step: 0.1 },
-        { key: '--name-size', label: 'Size VP', unit: 'vw', step: 0.1 },
-        { key: '--name-x', label: 'X VP', unit: 'vw', step: 0.1 },
-        { key: '--name-y', label: 'Y VP', unit: 'vh', step: 0.1 },
-        { key: '--kravvi-x', label: 'X Photo %', unit: '%', step: 0.1 },
-        { key: '--kravvi-y', label: 'Y Photo %', unit: '%', step: 0.1 },
-        { key: '--kravvi-size', label: 'Size Photo %', unit: '', step: 0.1 },
-        { key: '--kravvi-shift-x', label: 'Fine X', unit: 'px', step: 1 },
-        { key: '--kravvi-shift-y', label: 'Fine Y', unit: 'px', step: 1 },
-        { key: '--name-opsz', label: 'opsz', unit: '', step: 1 },
-        { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
+      id: 'kravvi', title: 'KRAVVI', props: [
+        { key: '--hero-top',    label: 'Top VP',       unit: 'vh',  step: 0.1, only: 'd' },
+        { key: '--name-size',   label: 'Size VP',      unit: 'vw',  step: 0.1, only: 'd' },
+        { key: '--name-x',      label: 'X VP',         unit: 'vw',  step: 0.1, only: 'd' },
+        { key: '--name-y',      label: 'Y VP',         unit: 'vh',  step: 0.1, only: 'd' },
+        { key: '--kravvi-x-v',  label: 'X Photo',      unit: '',    step: 0.1, only: 'm' },
+        { key: '--kravvi-y-v',  label: 'Y Photo',      unit: '',    step: 0.1, only: 'm' },
+        { key: '--kravvi-size', label: 'Size Photo %', unit: '',    step: 0.1, only: 'm' },
+        { key: '--kravvi-shift-x', label: 'Fine X cqw',unit: 'cqw', step: 0.1, only: 'm' },
+        { key: '--kravvi-shift-y', label: 'Fine Y cqw',unit: 'cqw', step: 0.1, only: 'm' },
+        { key: '--name-opsz',   label: 'opsz',         unit: '',    step: 1 },
+        { key: '--name-stroke', label: 'Stroke',       unit: 'px',  step: 0.05 }
       ]
     },
     {
-      id: 'photo',
-      title: 'Photo',
-      props: [
-        { key: '--photo-h', label: 'Height desktop', unit: 'vh', step: 1 },
-        { key: '--photo-h-max', label: 'Max desktop', unit: 'vw', step: 5 },
-        { key: '--photo-h-scale', label: 'Height M %', unit: '', step: 1 },
-        { key: '--photo-h-max-scale', label: 'Max height M %', unit: '', step: 5 }
+      id: 'photo', title: 'Photo', props: [
+        { key: '--photo-h',            label: 'Height VP',   unit: 'vh', step: 1, only: 'd' },
+        { key: '--photo-h-max',        label: 'Max VP',      unit: 'vw', step: 5, only: 'd' },
+        { key: '--photo-h-scale',      label: 'Height M %',  unit: '',   step: 1, only: 'm' },
+        { key: '--photo-h-max-scale',  label: 'Max M %',     unit: '',   step: 5, only: 'm' },
+        { key: '--photo-ratio',        label: 'Ratio w/h',   unit: '',   step: 0.01, only: 'm' }
       ]
     },
     {
-      id: 'stack',
-      title: 'Stack',
-      props: [
-        { key: '--hero-gap', label: 'KRAVVI gap desktop', unit: 'vh', step: 0.1 },
-        { key: '--hero-text-gap', label: 'Text gap', unit: 'px', step: 1 },
-        { key: '--hero-stack-gap', label: 'Block gap', unit: 'px', step: 1 },
-        { key: '--stack-shift-x', label: 'Shift X', unit: 'px', step: 1 },
-        { key: '--stack-shift-y', label: 'Shift Y', unit: 'px', step: 1 },
-        { key: '--stack-collision-gap', label: 'Collision gap', unit: 'px', step: 1 },
-        { key: '--stack-width', label: 'Width', unit: 'px', step: 10 }
+      id: 'stack', title: 'Stack', props: [
+        { key: '--hero-gap',            label: 'Gap VP',        unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--stack-shift-x-v',     label: 'Center X %',    unit: '',   step: 0.5, only: 'm' },
+        { key: '--stack-shift-y-v',     label: 'Center Y %',    unit: '',   step: 0.5, only: 'm' },
+        { key: '--stack-collision-gap', label: 'Kravvi gap',    unit: 'px', step: 1,   only: 'm' },
+        { key: '--hero-text-gap',       label: 'Text gap',      unit: 'px', step: 1 },
+        { key: '--hero-stack-gap',      label: 'Block gap',     unit: 'px', step: 1 },
+        { key: '--stack-width',         label: 'Width',         unit: 'px', step: 10 }
       ]
     },
     {
-      id: 'author',
-      title: 'Author',
-      props: [
-        { key: '--author-size-v', label: 'Size', unit: '', step: 0.5 },
-        { key: '--author-x', label: 'X desktop', unit: 'vw', step: 0.5 },
-        { key: '--author-y', label: 'Y desktop', unit: 'vh', step: 0.1 }
+      id: 'author', title: 'Author', props: [
+        { key: '--author-size-v', label: 'Size',      unit: '',   step: 0.5 },
+        { key: '--author-x',      label: 'X',         unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--author-y',      label: 'Y',         unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--ma-x',          label: 'X M %',     unit: '',   step: 0.5, only: 'm' },
+        { key: '--ma-y',          label: 'Y M %',     unit: '',   step: 0.5, only: 'm' }
       ]
     },
     {
-      id: 'tagline',
-      title: 'Tagline',
-      props: [
-        { key: '--desc-size-v', label: 'Size', unit: '', step: 0.5 },
-        { key: '--desc-width-v', label: 'Width', unit: '', step: 4 },
-        { key: '--desc-x', label: 'X desktop', unit: 'vw', step: 0.5 },
-        { key: '--desc-y', label: 'Y desktop', unit: 'vh', step: 0.1 }
+      id: 'tagline', title: 'Tagline', props: [
+        { key: '--desc-size-v',   label: 'Size',      unit: '',   step: 0.5 },
+        { key: '--desc-width-v',  label: 'Width',     unit: '',   step: 4 },
+        { key: '--desc-x',        label: 'X',         unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--desc-y',        label: 'Y',         unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--md-x',          label: 'X M %',     unit: '',   step: 0.5, only: 'm' },
+        { key: '--md-y',          label: 'Y M %',     unit: '',   step: 0.5, only: 'm' }
       ]
     },
     {
-      id: 'buttons',
-      title: 'Buttons',
-      props: [
-        { key: '--btn-size-v', label: 'Size', unit: '', step: 0.5 },
-        { key: '--btn-gap-v', label: 'Gap', unit: '', step: 1 },
-        { key: '--btn-pad-x', label: 'Pad X', unit: 'em', step: 0.05 },
-        { key: '--btn-pad-y', label: 'Pad Y', unit: 'em', step: 0.05 },
-        { key: '--btn-x', label: 'X desktop', unit: 'vw', step: 0.5 },
-        { key: '--btn-y', label: 'Y desktop', unit: 'vh', step: 0.1 }
+      id: 'buttons', title: 'Buttons', props: [
+        { key: '--btn-size-v', label: 'Size',  unit: '',   step: 0.5 },
+        { key: '--btn-gap-v',  label: 'Gap',   unit: '',   step: 1 },
+        { key: '--btn-pad-x',  label: 'Pad X', unit: 'em', step: 0.05 },
+        { key: '--btn-pad-y',  label: 'Pad Y', unit: 'em', step: 0.05 },
+        { key: '--btn-x',      label: 'X',     unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--btn-y',      label: 'Y',     unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--mb-x',       label: 'X M %', unit: '',   step: 0.5, only: 'm' },
+        { key: '--mb-y',       label: 'Y M %', unit: '',   step: 0.5, only: 'm' }
       ]
     }
   ];
   var DEFAULTS = {
     desktop: {
       '--hero-top': '10.3', '--name-size': '21.3', '--name-x': '0', '--name-y': '0',
-      '--kravvi-x': '50', '--kravvi-y': '13.75', '--kravvi-size': '24.27',
-      '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '96', '--name-stroke': '0',
       '--photo-h': '104', '--photo-h-max': '175',
-      '--photo-h-scale': '104', '--photo-h-max-scale': '175',
-      '--hero-gap': '4.1', '--hero-text-gap': '8', '--hero-stack-gap': '28',
-      '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-collision-gap': '16', '--stack-width': '640',
+      '--hero-gap': '4.1', '--hero-text-gap': '8', '--hero-stack-gap': '28', '--stack-width': '640',
       '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
       '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '-31', '--desc-y': '0.5',
       '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
       '--btn-x': '-31.2', '--btn-y': '-0.3'
     },
     tablet: {
-      '--hero-top': '16', '--name-size': '22', '--name-x': '0', '--name-y': '0',
-      '--kravvi-x': '50', '--kravvi-y': '19.2', '--kravvi-size': '12',
-      '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '150',
-      '--photo-h-scale': '104', '--photo-h-max-scale': '150',
-      '--hero-gap': '3', '--hero-text-gap': '8', '--hero-stack-gap': '28',
-      '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-collision-gap': '16', '--stack-width': '640',
-      '--author-size-v': '22', '--author-x': '0', '--author-y': '0',
-      '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '0', '--desc-y': '1',
+      '--kravvi-x-v': '50', '--kravvi-y-v': '26', '--kravvi-size': '12',
+      '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
+      '--photo-h-scale': '104', '--photo-h-max-scale': '150', '--photo-ratio': '1.5',
+      '--stack-shift-x-v': '0', '--stack-shift-y-v': '0', '--stack-collision-gap': '16',
+      '--hero-text-gap': '8', '--hero-stack-gap': '28', '--stack-width': '640',
+      '--author-size-v': '22', '--ma-x': '0', '--ma-y': '0',
+      '--desc-size-v': '16', '--desc-width-v': '478', '--md-x': '0', '--md-y': '0',
       '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
-      '--btn-x': '0', '--btn-y': '0.2'
+      '--mb-x': '0', '--mb-y': '0'
     },
     phone: {
-      '--hero-top': '19', '--name-size': '22.9', '--name-x': '0', '--name-y': '3.1',
-      '--kravvi-x': '50', '--kravvi-y': '12.4', '--kravvi-size': '7.6',
-      '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '30', '--name-stroke': '0.33',
-      '--photo-h': '92.5', '--photo-h-max': '213',
-      '--photo-h-scale': '92.5', '--photo-h-max-scale': '213',
-      '--hero-gap': '7.8', '--hero-text-gap': '8', '--hero-stack-gap': '35',
-      '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-collision-gap': '16', '--stack-width': '360',
-      '--author-size-v': '19', '--author-x': '0', '--author-y': '4.9',
-      '--desc-size-v': '14', '--desc-width-v': '292', '--desc-x': '0', '--desc-y': '5.6',
+      '--kravvi-x-v': '50', '--kravvi-y-v': '21', '--kravvi-size': '8',
+      '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
+      '--photo-h-scale': '96', '--photo-h-max-scale': '213', '--photo-ratio': '1.5',
+      '--stack-shift-x-v': '0', '--stack-shift-y-v': '0', '--stack-collision-gap': '16',
+      '--hero-text-gap': '8', '--hero-stack-gap': '35', '--stack-width': '360',
+      '--author-size-v': '19', '--ma-x': '0', '--ma-y': '0',
+      '--desc-size-v': '14', '--desc-width-v': '292', '--md-x': '0', '--md-y': '0',
       '--btn-size-v': '11.3', '--btn-gap-v': '14', '--btn-pad-x': '1.75', '--btn-pad-y': '0.85',
-      '--btn-x': '0', '--btn-y': '3.5'
+      '--mb-x': '0', '--mb-y': '0'
     }
   };
-  var ALL_KEYS = (function () {
-    var out = [];
-    GROUPS.forEach(function (g) {
-      g.props.forEach(function (p) {
-        if (out.indexOf(p.key) === -1) out.push(p.key);
-      });
-    });
-    return out;
-  })();
+  var ALL_KEYS = [];
+  GROUPS.forEach(function (g) {
+    g.props.forEach(function (p) { if (ALL_KEYS.indexOf(p.key) === -1) ALL_KEYS.push(p.key); });
+  });
   function unitOf(key) {
     for (var i = 0; i < GROUPS.length; i++)
       for (var j = 0; j < GROUPS[i].props.length; j++)
@@ -2229,12 +2134,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     return 'phone';
   }
   function getValues(ctx) {
-    var out = {};
-    var d = DEFAULTS[ctx] || {};
-    var s = state[ctx] || {};
-    ALL_KEYS.forEach(function (k) {
-      out[k] = (s[k] != null) ? s[k] : d[k];
-    });
+    var out = {}, d = DEFAULTS[ctx] || {}, s = state[ctx] || {};
+    ALL_KEYS.forEach(function (k) { out[k] = (s[k] != null) ? s[k] : d[k]; });
     return out;
   }
   function setValue(ctx, key, value) {
@@ -2246,9 +2147,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
   }
   function applyContextValues() {
-    appliedVars.forEach(function (k) {
-      document.documentElement.style.removeProperty(k);
-    });
+    appliedVars.forEach(function (k) { document.documentElement.style.removeProperty(k); });
     appliedVars = [];
     var vals = getValues(currentContext);
     ALL_KEYS.forEach(function (k) {
@@ -2257,7 +2156,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       document.documentElement.style.setProperty(k, v + unitOf(k));
       appliedVars.push(k);
     });
-    if (window.kravviScheduleLayout) window.kravviScheduleLayout();
+    if (window.kravviRelayout) window.kravviRelayout();
   }
   function fmt(n) {
     var s = Number(n);
@@ -2291,8 +2190,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '.tuner-panel.is-open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}'
     + '.tuner-head{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;'
     + 'border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}'
-    + '.tuner-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;letter-spacing:.01em}'
+    + '.tuner-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px}'
     + '.tuner-dot{width:6px;height:6px;border-radius:50%;background:#A8895C;box-shadow:0 0 10px rgba(168,137,92,.8)}'
+    + '.tuner-ctx-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;'
+    + 'color:#E8C89A;background:rgba(168,137,92,.16);border:1px solid rgba(168,137,92,.3);'
+    + 'padding:3px 8px;border-radius:999px;margin-left:6px}'
     + '.tuner-close{width:26px;height:26px;display:flex;align-items:center;justify-content:center;'
     + 'background:transparent;border:0;color:rgba(255,255,255,.55);cursor:pointer;border-radius:8px;'
     + 'font-size:18px;line-height:1;padding:0;font-family:inherit;transition:background .15s,color .15s}'
@@ -2319,10 +2221,10 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '.tuner-step button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
     + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
     + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
-    + '.tuner-prop{display:grid;grid-template-columns:132px 1fr;gap:10px;align-items:center;padding:2px 0}'
+    + '.tuner-prop{display:grid;grid-template-columns:126px 1fr;gap:10px;align-items:center;padding:2px 0}'
     + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
     + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
-    + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 26px 28px;gap:4px;align-items:center}'
+    + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 30px 28px;gap:4px;align-items:center}'
     + '.tuner-prop-controls button{background:rgba(255,255,255,.05);border:0;color:rgba(255,255,255,.75);'
     + 'border-radius:7px;padding:0;height:28px;cursor:pointer;font-size:16px;font-family:inherit;font-weight:400;'
     + 'display:flex;align-items:center;justify-content:center;'
@@ -2337,15 +2239,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '.tuner-prop-controls input::-webkit-outer-spin-button,'
     + '.tuner-prop-controls input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}'
     + '.tuner-prop-controls input[type=number]{-moz-appearance:textfield}'
-    + '.tuner-unit{font-size:10px;color:rgba(255,255,255,.35);text-align:center;pointer-events:none;'
-    + 'font-variant-numeric:tabular-nums}'
+    + '.tuner-unit{font-size:9.5px;color:rgba(255,255,255,.35);text-align:center;pointer-events:none;'
+    + 'font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
     + '.tuner-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:12px;margin-top:2px;'
     + 'border-top:1px solid rgba(255,255,255,.06)}'
     + '.tuner-actions button{padding:8px 10px;background:rgba(255,255,255,.05);border:0;'
     + 'color:rgba(255,255,255,.8);border-radius:9px;cursor:pointer;font-size:11.5px;font-family:inherit;'
-    + 'font-weight:500;letter-spacing:.01em;transition:background .15s,color .15s}'
+    + 'font-weight:500;transition:background .15s,color .15s}'
     + '.tuner-actions button:hover{background:rgba(255,255,255,.1);color:#fff}'
-    + '.tuner-actions button:active{transform:scale(.97)}'
     + '.tuner-actions button.wide{grid-column:1/-1;background:rgba(168,137,92,.18);color:#E8C89A;'
     + 'border:1px solid rgba(168,137,92,.3)}'
     + '.tuner-actions button.wide:hover{background:rgba(168,137,92,.28);color:#fff}'
@@ -2376,7 +2277,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   panel.className = 'tuner-panel';
   panel.innerHTML = ''
     + '<div class="tuner-head">'
-    +   '<span class="tuner-title"><span class="tuner-dot"></span>Layout Tuner</span>'
+    +   '<span class="tuner-title"><span class="tuner-dot"></span>Tuner<span class="tuner-ctx-badge" data-role="badge">—</span></span>'
     +   '<button class="tuner-close" type="button" aria-label="Close">×</button>'
     + '</div>'
     + '<div class="tuner-body">'
@@ -2391,6 +2292,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     +   '<div class="tuner-group">'
     +     '<div class="tuner-group-title">Step</div>'
     +     '<div class="tuner-step" data-role="step">'
+    +       '<button type="button" data-step="0.05">0.05</button>'
     +       '<button type="button" data-step="0.1">0.1</button>'
     +       '<button type="button" data-step="0.5" class="is-active">0.5</button>'
     +       '<button type="button" data-step="1">1</button>'
@@ -2403,27 +2305,31 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     +     '<button type="button" data-action="reset-ctx">Reset context</button>'
     +     '<button type="button" class="danger" data-action="reset-all">Reset all</button>'
     +   '</div>'
-    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy JSON → результат появится здесь"></textarea>'
+    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy JSON → значения появятся здесь"></textarea>'
     + '</div>';
   document.body.appendChild(fab);
   document.body.appendChild(panel);
   var currentStep = 0.5;
+  function ctxMode(ctx) { return ctx === 'desktop' ? 'd' : 'm'; }
   function renderContexts() {
+    panel.querySelector('[data-role="badge"]').textContent = currentContext;
     panel.querySelectorAll('[data-role="contexts"] button').forEach(function (b) {
       b.classList.toggle('is-active', b.getAttribute('data-ctx') === currentContext);
     });
   }
   function renderStep() {
     panel.querySelectorAll('[data-role="step"] button').forEach(function (b) {
-      var v = parseFloat(b.getAttribute('data-step'));
-      b.classList.toggle('is-active', Math.abs(v - currentStep) < 0.0001);
+      b.classList.toggle('is-active', Math.abs(parseFloat(b.getAttribute('data-step')) - currentStep) < 0.0001);
     });
   }
   function renderGroups() {
     var box = panel.querySelector('[data-role="groups"]');
     box.innerHTML = '';
     var vals = getValues(currentContext);
+    var mode = ctxMode(currentContext);
     GROUPS.forEach(function (g) {
+      var props = g.props.filter(function (p) { return !p.only || p.only === mode; });
+      if (!props.length) return;
       var groupEl = document.createElement('div');
       groupEl.className = 'tuner-group';
       var title = document.createElement('div');
@@ -2432,7 +2338,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       groupEl.appendChild(title);
       var propsEl = document.createElement('div');
       propsEl.className = 'tuner-props';
-      g.props.forEach(function (p) {
+      props.forEach(function (p) {
         var row = document.createElement('div');
         row.className = 'tuner-prop';
         var label = document.createElement('div');
@@ -2470,15 +2376,9 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       box.appendChild(groupEl);
     });
   }
-  function renderAll() {
-    renderContexts();
-    renderStep();
-    renderGroups();
-  }
+  function renderAll() { renderContexts(); renderStep(); renderGroups(); }
   fab.addEventListener('click', function () { panel.classList.toggle('is-open'); });
-  panel.querySelector('.tuner-close').addEventListener('click', function () {
-    panel.classList.remove('is-open');
-  });
+  panel.querySelector('.tuner-close').addEventListener('click', function () { panel.classList.remove('is-open'); });
   panel.querySelector('[data-role="contexts"]').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-ctx]');
     if (!b) return;
@@ -2499,18 +2399,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var dir = parseFloat(b.getAttribute('data-dir'));
     var cur = parseFloat(getValues(currentContext)[key]);
     if (!isFinite(cur)) cur = 0;
-    var next = cur + dir * currentStep;
-    setValue(currentContext, key, fmt(next));
+    setValue(currentContext, key, fmt(cur + dir * currentStep));
     applyContextValues();
     renderGroups();
   });
   panel.querySelector('[data-role="groups"]').addEventListener('input', function (e) {
     var input = e.target.closest('input[data-key]');
     if (!input) return;
-    var key = input.getAttribute('data-key');
     var v = parseFloat(input.value);
     if (!isFinite(v)) return;
-    setValue(currentContext, key, fmt(v));
+    setValue(currentContext, input.getAttribute('data-key'), fmt(v));
     applyContextValues();
   });
   panel.querySelector('.tuner-actions').addEventListener('click', function (e) {
@@ -2522,9 +2420,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       var ta = panel.querySelector('[data-role="json"]');
       ta.value = json;
       try { ta.select(); document.execCommand('copy'); } catch (err) {}
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(json).catch(function () {});
-      }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(json).catch(function () {});
       var old = b.textContent;
       b.textContent = 'Copied!';
       setTimeout(function () { b.textContent = old; }, 1200);
@@ -2537,7 +2433,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       renderAll();
     }
     if (action === 'reset-all') {
-      if (!confirm('Сбросить ВСЕ значения во всех контекстах?')) return;
+      if (!confirm('Сбросить ВСЕ значения?')) return;
       state = {};
       saveState();
       applyContextValues();
@@ -2547,8 +2443,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function exportJSON() {
     var out = {};
     ['desktop', 'tablet', 'phone'].forEach(function (ctx) {
-      var vals = getValues(ctx);
-      var o = {};
+      var vals = getValues(ctx), o = {};
       ALL_KEYS.forEach(function (k) {
         var v = vals[k];
         if (v == null || v === '') return;
@@ -2558,6 +2453,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
     return JSON.stringify(out, null, 2);
   }
+  var rT;
   function onResize() {
     var next = detectContext();
     if (next === currentContext) return;
@@ -2565,15 +2461,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     applyContextValues();
     renderAll();
   }
-  var rT;
-  window.addEventListener('resize', function () {
-    clearTimeout(rT);
-    rT = setTimeout(onResize, 80);
-  });
-  window.addEventListener('orientationchange', function () {
-    clearTimeout(rT);
-    rT = setTimeout(onResize, 150);
-  });
+  window.addEventListener('resize', function () { clearTimeout(rT); rT = setTimeout(onResize, 80); });
+  window.addEventListener('orientationchange', function () { clearTimeout(rT); rT = setTimeout(onResize, 150); });
   applyContextValues();
   renderAll();
 })();
@@ -2583,11 +2472,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   var tg = window.Telegram && window.Telegram.WebApp;
   if (!tg) return;
   var isMiniApp = false;
-  if (tg.initData && tg.initData.length > 0) {
-    isMiniApp = true;
-  } else if (location.hash.indexOf('tgWebAppVersion') !== -1) {
-    isMiniApp = true;
-  }
+  if (tg.initData && tg.initData.length > 0) isMiniApp = true;
+  else if (location.hash.indexOf('tgWebAppVersion') !== -1) isMiniApp = true;
   if (isMiniApp) {
     document.body.classList.add('telegram-mini-app');
     tg.ready();
@@ -2595,18 +2481,13 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (tg.requestFullscreen) tg.requestFullscreen();
     function updateSafeArea() {
       var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
-                (tg.safeAreaInset && tg.safeAreaInset.top) ||
-                0;
+                (tg.safeAreaInset && tg.safeAreaInset.top) || 0;
       document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
     }
     updateSafeArea();
-    if (tg.onEvent) {
-      tg.onEvent('viewportChanged', updateSafeArea);
-    }
+    if (tg.onEvent) tg.onEvent('viewportChanged', updateSafeArea);
     if (tg.BackButton) {
-      tg.BackButton.onClick(function () {
-        window.history.back();
-      });
+      tg.BackButton.onClick(function () { window.history.back(); });
       if (window.updateBackButton && window.getCurrentView) {
         window.updateBackButton(window.getCurrentView());
       }
