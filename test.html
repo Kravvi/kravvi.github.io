@@ -133,7 +133,7 @@ svg { display: block; }
   --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
   --kravvi-x-v: 50;
   --kravvi-y-v: 21;
-  --kravvi-size: 8;
+  --kravvi-size: 18.5;
   --kravvi-shift-x: 0cqw;
   --kravvi-shift-y: 0cqw;
   --kravvi-font-px: calc(var(--photo-frame-w) * var(--kravvi-size) / 100);
@@ -142,11 +142,11 @@ svg { display: block; }
   --stack-collision-gap: 16px;
   --stack-width: 640px;
   --ma-x: 0;
-  --ma-y: 0;
+  --ma-y: 5;
   --md-x: 0;
-  --md-y: 0;
+  --md-y: 5.5;
   --mb-x: 0;
-  --mb-y: 0;
+  --mb-y: 3;
 }
 /* ============================================================
    3. BASE
@@ -1124,11 +1124,16 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h-max: 150vw;
     --photo-h-scale: 100;
     --photo-h-max-scale: 150;
+    --kravvi-x-v: 50;
     --kravvi-y-v: 26;
     --kravvi-size: 12;
-    --name-size: 22vw;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
     --name-opsz: 96;
     --name-stroke: 0px;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
+    --stack-collision-gap: 16px;
     --stack-width: 640px;
     --author-size-v: 22;
     --ma-x: 0;
@@ -1139,6 +1144,8 @@ body.overlay-active #view-home.is-active .hero-actions {
     --md-y: 0;
     --btn-size-v: 13;
     --btn-gap-v: 15;
+    --btn-pad-x: 2.2em;
+    --btn-pad-y: 1em;
     --mb-x: 0;
     --mb-y: 0;
   }
@@ -1159,26 +1166,32 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h-max: 213vw;
     --photo-h-scale: 96;
     --photo-h-max-scale: 213;
+    --kravvi-x-v: 50;
     --kravvi-y-v: 21;
-    --kravvi-size: 8;
+    --kravvi-size: 18.5;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
     --name-size: 22.9vw;
     --name-opsz: 30;
     --name-stroke: 0.33px;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
+    --stack-collision-gap: 16px;
     --stack-width: 360px;
     --author-size-v: 19;
     --ma-x: 0;
-    --ma-y: 0;
+    --ma-y: 5;
     --desc-size-v: 14;
     --desc-width-v: 292;
     --md-x: 0;
-    --md-y: 0;
+    --md-y: 5.5;
     --btn-size-v: 11.3;
     --btn-gap-v: 14;
     --btn-pad-y: 0.85em;
     --btn-pad-x: 1.75em;
     --btn-scale: 0.95;
     --mb-x: 0;
-    --mb-y: 0;
+    --mb-y: 3;
     --actions-max-w: 250px;
     --hero-stack-gap: 35px;
   }
@@ -1800,7 +1813,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function layoutMobile() {
     var root = document.documentElement;
     var stack = document.querySelector('.hero-stack');
-    if (!stack) return;
+    var name = document.querySelector('.hero-name');
+    if (!stack || !name) return;
     if (!mobileMQ.matches) {
       stack.style.top = '';
       stack.style.left = '';
@@ -1832,19 +1846,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     setPx('--photo-frame-w', frameW);
 
     var kravviSize = cssNum('--kravvi-size', 10);
-    var fontSize = frameW * kravviSize / 100;
-    setPx('--kravvi-font-px', fontSize);
+    setPx('--kravvi-font-px', frameW * kravviSize / 100);
 
-    var kravviY = cssNum('--kravvi-y-v', 20);
-    var kravviShiftY = cssNum('--kravvi-shift-y', 0);
-    var shiftYpx = frameW * kravviShiftY / 100;
-    var artTop = stageH - frameH;
-    var nameCenterY = artTop + frameH * kravviY / 100 + shiftYpx;
-    var nameBoxH = fontSize * 0.92;
-    var nameBottom = nameCenterY + nameBoxH / 2;
+    var artRect = art.getBoundingClientRect();
+    var nameRect = name.getBoundingClientRect();
+    var nameBottom = nameRect.bottom - stageRect.top;
+    if (!isFinite(nameBottom) || nameBottom < 0) {
+      nameBottom = (artRect.top - stageRect.top) + artRect.height * cssNum('--kravvi-y-v', 20) / 100;
+    }
 
-    var stackRect = stack.getBoundingClientRect();
-    var stackH = Math.max(1, stackRect.height || stack.offsetHeight || 1);
+    var stackH = Math.max(1, stack.offsetHeight || stack.getBoundingClientRect().height || 1);
     var collisionGap = cssNum('--stack-collision-gap', 16);
     var stackShiftX = cssNum('--stack-shift-x-v', 0);
     var stackShiftY = cssNum('--stack-shift-y-v', 0);
@@ -1855,10 +1866,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (cy < minCy) cy = minCy;
 
     var maxCy = stageH - stackH / 2 - 8;
-    if (maxCy > stackH / 2 && cy > maxCy) cy = maxCy;
+    if (maxCy >= minCy && cy > maxCy) cy = maxCy;
 
-    setPx('temp-stack-cx', cx);
-    setPx('temp-stack-cy', cy);
     stack.style.left = cx + 'px';
     stack.style.top = cy + 'px';
   }
@@ -2063,11 +2072,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v14';
+  var STORAGE_KEY = 'kravvi-tuner-v15';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12','v13'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2161,38 +2170,91 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   ];
   var DEFAULTS = {
     desktop: {
-      '--hero-top': '10.3', '--name-size': '21.3', '--name-x': '0', '--name-y': '0',
-      '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '175',
-      '--hero-gap': '4.1', '--hero-text-gap': '8', '--hero-stack-gap': '28', '--stack-width': '640',
-      '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
-      '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '-31', '--desc-y': '0.5',
-      '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
-      '--btn-x': '-31.2', '--btn-y': '-0.3'
+      '--hero-top': '10.3',
+      '--name-size': '21.3',
+      '--name-x': '0',
+      '--name-y': '0',
+      '--name-opsz': '96',
+      '--name-stroke': '0',
+      '--photo-h': '104',
+      '--photo-h-max': '175',
+      '--hero-gap': '4.1',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '28',
+      '--stack-width': '640',
+      '--author-size-v': '22',
+      '--author-x': '-31',
+      '--author-y': '0',
+      '--desc-size-v': '16',
+      '--desc-width-v': '478',
+      '--desc-x': '-31',
+      '--desc-y': '0.5',
+      '--btn-size-v': '13',
+      '--btn-gap-v': '15',
+      '--btn-pad-x': '2.2',
+      '--btn-pad-y': '1',
+      '--btn-x': '-31.2',
+      '--btn-y': '-0.3'
     },
     tablet: {
-      '--name-opsz': '96', '--name-stroke': '0',
-      '--kravvi-x-v': '50', '--kravvi-y-v': '26', '--kravvi-size': '12',
-      '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
-      '--photo-h-scale': '100', '--photo-h-max-scale': '150',
-      '--stack-shift-x-v': '0', '--stack-shift-y-v': '0', '--stack-collision-gap': '16',
-      '--hero-text-gap': '8', '--hero-stack-gap': '28', '--stack-width': '640',
-      '--author-size-v': '22', '--ma-x': '0', '--ma-y': '0',
-      '--desc-size-v': '16', '--desc-width-v': '478', '--md-x': '0', '--md-y': '0',
-      '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
-      '--mb-x': '0', '--mb-y': '0'
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '26',
+      '--kravvi-size': '12',
+      '--kravvi-shift-x': '0',
+      '--kravvi-shift-y': '0',
+      '--name-opsz': '96',
+      '--name-stroke': '0',
+      '--photo-h-scale': '100',
+      '--photo-h-max-scale': '150',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '28',
+      '--stack-width': '640',
+      '--author-size-v': '22',
+      '--ma-x': '0',
+      '--ma-y': '0',
+      '--desc-size-v': '16',
+      '--desc-width-v': '478',
+      '--md-x': '0',
+      '--md-y': '0',
+      '--btn-size-v': '13',
+      '--btn-gap-v': '15',
+      '--btn-pad-x': '2.2',
+      '--btn-pad-y': '1',
+      '--mb-x': '0',
+      '--mb-y': '0'
     },
     phone: {
-      '--name-opsz': '30', '--name-stroke': '0.33',
-      '--kravvi-x-v': '50', '--kravvi-y-v': '21', '--kravvi-size': '8',
-      '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
-      '--photo-h-scale': '96', '--photo-h-max-scale': '213',
-      '--stack-shift-x-v': '0', '--stack-shift-y-v': '0', '--stack-collision-gap': '16',
-      '--hero-text-gap': '8', '--hero-stack-gap': '35', '--stack-width': '360',
-      '--author-size-v': '19', '--ma-x': '0', '--ma-y': '0',
-      '--desc-size-v': '14', '--desc-width-v': '292', '--md-x': '0', '--md-y': '0',
-      '--btn-size-v': '11.3', '--btn-gap-v': '14', '--btn-pad-x': '1.75', '--btn-pad-y': '0.85',
-      '--mb-x': '0', '--mb-y': '0'
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '21',
+      '--kravvi-size': '18.5',
+      '--kravvi-shift-x': '0',
+      '--kravvi-shift-y': '0',
+      '--name-opsz': '30',
+      '--name-stroke': '0.33',
+      '--photo-h-scale': '96',
+      '--photo-h-max-scale': '213',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '35',
+      '--stack-width': '360',
+      '--author-size-v': '19',
+      '--ma-x': '0',
+      '--ma-y': '5',
+      '--desc-size-v': '14',
+      '--desc-width-v': '292',
+      '--md-x': '0',
+      '--md-y': '5.5',
+      '--btn-size-v': '11.3',
+      '--btn-gap-v': '14',
+      '--btn-pad-x': '1.75',
+      '--btn-pad-y': '0.85',
+      '--mb-x': '0',
+      '--mb-y': '3'
     }
   };
   var ALL_KEYS = [];
