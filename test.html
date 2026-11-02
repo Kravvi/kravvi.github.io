@@ -73,7 +73,6 @@ svg { display: block; }
   --photo-ratio: 1.5;
   --photo-ar: 3 / 2;
   --photo-h-scale: 100;
-  --photo-w-scale: 100;
   --name-size: 21.3vw;
   --name-x: 0vw;
   --name-y: 0vh;
@@ -82,8 +81,8 @@ svg { display: block; }
   --kravvi-x: 50%;
   --kravvi-y: 18%;
   --kravvi-size: 12;
-  --kravvi-shift-x: 0cqw;
-  --kravvi-shift-y: 0%;
+  --kravvi-shift-x: 0;
+  --kravvi-shift-y: 0;
   --stack-shift-x: 0;
   --stack-shift-y: 0;
   --stack-width: 640px;
@@ -131,6 +130,8 @@ svg { display: block; }
   --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
   --vvh: 100dvh;
   --vvw: 100vw;
+  --photo-frame-h: calc(var(--vvh) * var(--photo-h-scale) / 100);
+  --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
 }
 /* ============================================================
    3. BASE
@@ -961,12 +962,15 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h: 104vh;
     --photo-h-max: 150vw;
     --photo-h-scale: 100;
-    --photo-w-scale: 100;
+    --photo-ratio: 1.5;
+    --photo-ar: 3 / 2;
+    --photo-frame-h: calc(var(--vvh) * var(--photo-h-scale) / 100);
+    --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
     --kravvi-x: 50%;
     --kravvi-y: 18%;
     --kravvi-size: 12;
-    --kravvi-shift-x: 0cqw;
-    --kravvi-shift-y: 0%;
+    --kravvi-shift-x: 0;
+    --kravvi-shift-y: 0;
     --stack-shift-x: 0;
     --stack-shift-y: 0;
     --stack-width: 640px;
@@ -1002,54 +1006,48 @@ body.overlay-active #view-home.is-active .hero-actions {
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);
-    width: min(
-      calc(var(--vvh) * var(--photo-h-scale) / 100 * var(--photo-ratio)),
-      calc(var(--vvw) * var(--photo-w-scale) / 100),
-      var(--vvw),
-      calc(var(--vvh) * var(--photo-ratio))
-    );
-    height: auto;
-    aspect-ratio: var(--photo-ar);
+    height: var(--photo-frame-h);
+    width: auto;
     container-type: inline-size;
-    overflow: hidden;
+    overflow: visible;
     pointer-events: none;
     z-index: 2;
   }
 
   .hero-photo-wrap {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    inset: auto;
     display: block;
+    width: auto;
+    height: 100%;
     z-index: 2;
     pointer-events: none;
   }
 
   .hero-photo-wrap picture {
     display: block;
-    width: 100%;
+    width: auto;
     height: 100%;
   }
 
   .hero-photo {
     position: relative;
-    width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: center;
+    width: auto;
     max-width: none;
   }
 
   .hero-name {
-    top: var(--kravvi-y);
-    left: var(--kravvi-x);
+    top: calc(var(--kravvi-y) + var(--kravvi-shift-y) * 1%);
+    left: calc(var(--kravvi-x) + var(--kravvi-shift-x) * 1%);
     z-index: 1;
-    font-size: calc(var(--kravvi-size) * 1vw);
+    font-size: calc(var(--photo-frame-w) * var(--kravvi-size) / 100);
     font-size: calc(var(--kravvi-size) * 1cqw);
-    transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), calc(var(--kravvi-shift-y) + 20px));
+    transform: translate(-50%, -50%) translateY(20px);
   }
 
   #view-home.is-active .hero-name {
-    transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), var(--kravvi-shift-y));
+    transform: translate(-50%, -50%);
   }
 
   .hero-stack {
@@ -1134,7 +1132,8 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h: 104vh;
     --photo-h-max: 150vw;
     --photo-h-scale: 100;
-    --photo-w-scale: 100;
+    --photo-frame-h: calc(var(--vvh) * var(--photo-h-scale) / 100);
+    --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
     --kravvi-y: 18%;
     --kravvi-size: 12;
     --name-size: 22vw;
@@ -1171,7 +1170,8 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h: 92.5vh;
     --photo-h-max: 213vw;
     --photo-h-scale: 100;
-    --photo-w-scale: 100;
+    --photo-frame-h: calc(var(--vvh) * var(--photo-h-scale) / 100);
+    --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
     --kravvi-y: 8.1%;
     --kravvi-size: 7.6;
     --name-size: 22.9vw;
@@ -1987,7 +1987,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v10';
+  var STORAGE_KEY = 'kravvi-tuner-v11';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
@@ -1997,6 +1997,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     localStorage.removeItem('kravvi-tuner-v7');
     localStorage.removeItem('kravvi-tuner-v8');
     localStorage.removeItem('kravvi-tuner-v9');
+    localStorage.removeItem('kravvi-tuner-v10');
   } catch (e) {}
   if (tunerParam === '0') {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
@@ -2018,11 +2019,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
         { key: '--name-size', label: 'Size VP', unit: 'vw', step: 0.1 },
         { key: '--name-x', label: 'X VP', unit: 'vw', step: 0.1 },
         { key: '--name-y', label: 'Y VP', unit: 'vh', step: 0.1 },
-        { key: '--kravvi-x', label: 'X Photo', unit: '%', step: 0.1 },
-        { key: '--kravvi-y', label: 'Y Photo', unit: '%', step: 0.1 },
-        { key: '--kravvi-size', label: 'Size Photo cqw', unit: '', step: 0.1 },
-        { key: '--kravvi-shift-x', label: 'Fine X', unit: 'cqw', step: 0.1 },
-        { key: '--kravvi-shift-y', label: 'Fine Y', unit: '%', step: 0.1 },
+        { key: '--kravvi-x', label: 'X Photo %', unit: '%', step: 0.1 },
+        { key: '--kravvi-y', label: 'Y Photo %', unit: '%', step: 0.1 },
+        { key: '--kravvi-size', label: 'Size Photo %', unit: '', step: 0.1 },
+        { key: '--kravvi-shift-x', label: 'Fine X %', unit: '', step: 0.1 },
+        { key: '--kravvi-shift-y', label: 'Fine Y %', unit: '', step: 0.1 },
         { key: '--name-opsz', label: 'opsz', unit: '', step: 1 },
         { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
       ]
@@ -2033,8 +2034,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       props: [
         { key: '--photo-h', label: 'Height desktop', unit: 'vh', step: 1 },
         { key: '--photo-h-max', label: 'Max desktop', unit: 'vw', step: 5 },
-        { key: '--photo-h-scale', label: 'Height M %', unit: '', step: 1 },
-        { key: '--photo-w-scale', label: 'Width M %', unit: '', step: 1 }
+        { key: '--photo-h-scale', label: 'Height M %', unit: '', step: 1 }
       ]
     },
     {
@@ -2087,8 +2087,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--kravvi-x': '50', '--kravvi-y': '13.75', '--kravvi-size': '24.27',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '175',
-      '--photo-h-scale': '100', '--photo-w-scale': '100',
+      '--photo-h': '104', '--photo-h-max': '175', '--photo-h-scale': '100',
       '--hero-gap': '4.1', '--hero-text-gap': '8', '--hero-stack-gap': '28',
       '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '640',
       '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
@@ -2101,8 +2100,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--kravvi-x': '50', '--kravvi-y': '18', '--kravvi-size': '12',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '150',
-      '--photo-h-scale': '100', '--photo-w-scale': '100',
+      '--photo-h': '104', '--photo-h-max': '150', '--photo-h-scale': '100',
       '--hero-gap': '3', '--hero-text-gap': '8', '--hero-stack-gap': '28',
       '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '640',
       '--author-size-v': '22', '--author-x': '0', '--author-y': '0',
@@ -2115,8 +2113,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--kravvi-x': '50', '--kravvi-y': '8.1', '--kravvi-size': '7.6',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '30', '--name-stroke': '0.33',
-      '--photo-h': '92.5', '--photo-h-max': '213',
-      '--photo-h-scale': '100', '--photo-w-scale': '100',
+      '--photo-h': '92.5', '--photo-h-max': '213', '--photo-h-scale': '100',
       '--hero-gap': '7.8', '--hero-text-gap': '8', '--hero-stack-gap': '35',
       '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '360',
       '--author-size-v': '19', '--author-x': '0', '--author-y': '4.9',
