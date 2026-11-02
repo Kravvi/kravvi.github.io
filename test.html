@@ -70,7 +70,8 @@ svg { display: block; }
   --hero-stack-gap: 28px;
   --photo-h: 104vh;
   --photo-h-max: 175vw;
-  --photo-ar: 3 / 2;
+  --photo-scale: 1;
+  --photo-ratio: 1.5;
   --name-size: 21.3vw;
   --name-x: 0vw;
   --name-y: 0vh;
@@ -78,8 +79,8 @@ svg { display: block; }
   --name-stroke: 0px;
   --kravvi-x: 50%;
   --kravvi-y: 13.75%;
-  --kravvi-size: 24.27cqw;
-  --kravvi-shift-x: 0cqw;
+  --kravvi-size: 24.27;
+  --kravvi-shift-x: 0%;
   --kravvi-shift-y: 0%;
   --stack-shift-x: 0vw;
   --stack-shift-y: 0vh;
@@ -138,11 +139,13 @@ svg { display: block; }
     --hero-gap: 3vh;
     --photo-h: 104vh;
     --photo-h-max: 150vw;
-    --photo-ar: 3 / 2;
+    --photo-scale: 1;
+    --photo-ratio: 1.5;
+    --photo-size: calc(var(--photo-h) * var(--photo-scale));
     --kravvi-x: 50%;
     --kravvi-y: 18%;
-    --kravvi-size: 12cqw;
-    --kravvi-shift-x: 0cqw;
+    --kravvi-size: 12;
+    --kravvi-shift-x: 0%;
     --kravvi-shift-y: 0%;
     --stack-shift-x: 0vw;
     --stack-shift-y: 0vh;
@@ -159,12 +162,13 @@ svg { display: block; }
   }
 
   .hero-artboard {
+    display: block;
     position: absolute;
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);
-    height: min(var(--photo-h), var(--photo-h-max));
-    aspect-ratio: var(--photo-ar);
+    height: var(--photo-size);
+    width: calc(var(--photo-size) * var(--photo-ratio));
     container-type: inline-size;
     overflow: visible;
     pointer-events: none;
@@ -172,20 +176,17 @@ svg { display: block; }
   }
 
   .hero-photo-wrap {
-    position: static;
-    inset: auto;
-    display: contents;
+    position: absolute;
+    inset: 0;
+    display: block;
+    z-index: 2;
     pointer-events: none;
   }
 
   .hero-photo-wrap picture {
     display: block;
-    position: absolute;
-    inset: 0;
     width: 100%;
     height: 100%;
-    z-index: 2;
-    pointer-events: none;
   }
 
   .hero-photo {
@@ -200,7 +201,9 @@ svg { display: block; }
   .hero-name {
     top: var(--kravvi-y);
     left: var(--kravvi-x);
-    font-size: var(--kravvi-size);
+    z-index: 3;
+    font-size: calc(var(--photo-size) * var(--photo-ratio) * var(--kravvi-size) / 100);
+    font-size: calc(var(--kravvi-size) * 1cqw);
     transform: translateX(-50%) translate(var(--kravvi-shift-x), calc(var(--kravvi-shift-y) + 20px));
   }
 
@@ -209,9 +212,10 @@ svg { display: block; }
   }
 
   .hero-stack {
-    top: calc(var(--kravvi-y) + (var(--kravvi-size) * 0.9) + var(--hero-gap));
+    top: calc(var(--kravvi-y) + (var(--kravvi-size) * var(--photo-ratio) * 0.92 * 1%) + var(--hero-gap));
     left: 50%;
     transform: translateX(-50%) translate(var(--stack-shift-x), var(--stack-shift-y));
+    z-index: 4;
     width: max-content;
     max-width: min(var(--stack-width), calc(100vw - 40px));
     align-items: center;
@@ -261,8 +265,9 @@ svg { display: block; }
     --hero-gap: 3vh;
     --photo-h: 104vh;
     --photo-h-max: 150vw;
+    --photo-scale: 1;
     --kravvi-y: 18%;
-    --kravvi-size: 12cqw;
+    --kravvi-size: 12;
     --name-size: 22vw;
     --name-opsz: 96;
     --name-stroke: 0px;
@@ -296,8 +301,9 @@ svg { display: block; }
     --hero-gap: 7.8vh;
     --photo-h: 92.5vh;
     --photo-h-max: 213vw;
+    --photo-scale: 1;
     --kravvi-y: 8.1%;
-    --kravvi-size: 7.6cqw;
+    --kravvi-size: 7.6;
     --name-size: 22.9vw;
     --name-x: 0vw;
     --name-y: 3.1vh;
@@ -1890,13 +1896,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v7';
+  var STORAGE_KEY = 'kravvi-tuner-v8';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
   try {
     localStorage.removeItem('kravvi-tuner-v5');
     localStorage.removeItem('kravvi-tuner-v6');
+    localStorage.removeItem('kravvi-tuner-v7');
   } catch (e) {}
   if (tunerParam === '0') {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
@@ -1920,8 +1927,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
         { key: '--name-y', label: 'Y VP', unit: 'vh', step: 0.1 },
         { key: '--kravvi-x', label: 'X Photo', unit: '%', step: 0.1 },
         { key: '--kravvi-y', label: 'Y Photo', unit: '%', step: 0.1 },
-        { key: '--kravvi-size', label: 'Size Photo', unit: 'cqw', step: 0.1 },
-        { key: '--kravvi-shift-x', label: 'Fine X', unit: 'cqw', step: 0.1 },
+        { key: '--kravvi-size', label: 'Size Photo %', unit: '', step: 0.1 },
+        { key: '--kravvi-shift-x', label: 'Fine X', unit: '%', step: 0.1 },
         { key: '--kravvi-shift-y', label: 'Fine Y', unit: '%', step: 0.1 },
         { key: '--name-opsz', label: 'opsz', unit: '', step: 1 },
         { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
@@ -1932,7 +1939,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       title: 'Photo',
       props: [
         { key: '--photo-h', label: 'Height', unit: 'vh', step: 1 },
-        { key: '--photo-h-max', label: 'Max-height', unit: 'vw', step: 5 }
+        { key: '--photo-scale', label: 'Scale', unit: '', step: 0.05 }
       ]
     },
     {
@@ -1984,7 +1991,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--kravvi-x': '50', '--kravvi-y': '13.75', '--kravvi-size': '24.27',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '175',
+      '--photo-h': '104', '--photo-scale': '1',
       '--hero-gap': '4.1', '--hero-stack-gap': '28',
       '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '640',
       '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
@@ -1997,7 +2004,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--kravvi-x': '50', '--kravvi-y': '18', '--kravvi-size': '12',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '150',
+      '--photo-h': '104', '--photo-scale': '1',
       '--hero-gap': '3', '--hero-stack-gap': '28',
       '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '640',
       '--author-size-v': '22', '--author-x': '0', '--author-y': '0',
@@ -2010,7 +2017,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--kravvi-x': '50', '--kravvi-y': '8.1', '--kravvi-size': '7.6',
       '--kravvi-shift-x': '0', '--kravvi-shift-y': '0',
       '--name-opsz': '30', '--name-stroke': '0.33',
-      '--photo-h': '92.5', '--photo-h-max': '213',
+      '--photo-h': '92.5', '--photo-scale': '1',
       '--hero-gap': '7.8', '--hero-stack-gap': '35',
       '--stack-shift-x': '0', '--stack-shift-y': '0', '--stack-width': '360',
       '--author-size-v': '19', '--author-x': '0', '--author-y': '4.9',
