@@ -1263,15 +1263,15 @@ body.overlay-active #view-home.is-active .hero-actions {
     --stack-width: 360px;
     --hero-text-gap: 8px;
     --hero-stack-gap: 35px;
-    --author-size-v: 15;
+    --author-size-v: 14;
     --ma-x: 0;
     --ma-y: 5;
-    --desc-size-v: 11;
+    --desc-size-v: 10;
     --desc-width-v: 292;
     --md-x: 0;
     --md-y: 5.5;
-    --btn-size-v: 9.8;
-    --btn-gap-v: 11;
+    --btn-size-v: 8.8;
+    --btn-gap-v: 10;
     --btn-pad-y: 0.85em;
     --btn-pad-x: 1.75em;
     --btn-scale: 0.95;
@@ -2152,11 +2152,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v21';
+  var STORAGE_KEY = 'kravvi-tuner-v22';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18','v19','v20'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18','v19','v20','v21'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2330,15 +2330,15 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--hero-text-gap': '8',
       '--hero-stack-gap': '35',
       '--stack-width': '360',
-      '--author-size-v': '15',
+      '--author-size-v': '14',
       '--ma-x': '0',
       '--ma-y': '5',
-      '--desc-size-v': '11',
+      '--desc-size-v': '10',
       '--desc-width-v': '292',
       '--md-x': '0',
       '--md-y': '5.5',
-      '--btn-size-v': '9.8',
-      '--btn-gap-v': '11',
+      '--btn-size-v': '8.8',
+      '--btn-gap-v': '10',
       '--btn-pad-x': '1.75',
       '--btn-pad-y': '0.85',
       '--mb-x': '0',
