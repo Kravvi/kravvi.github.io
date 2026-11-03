@@ -1222,6 +1222,105 @@ body.overlay-active #view-home.is-active .hero-actions {
     text-align: right;
   }
 }
+@media (max-width: 1024px) and (min-aspect-ratio: 1.5 / 1) {
+  :root {
+    --gap: 10px;
+    --cols: 2;
+    --glass-radius: 20px;
+    --glass-blur: 20px;
+    --ref-w: 402;
+    --hero-top: 15vh;
+    --hero-gap: 7.8vh;
+    --photo-h: 92.5vh;
+    --photo-h-max: 213vw;
+    --photo-h-scale: 93;
+    --photo-h-max-scale: 213;
+    --kravvi-x-v: 50;
+    --kravvi-y-v: 21;
+    --kravvi-size: 29;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
+    --name-size: 22.9vw;
+    --name-opsz: 30;
+    --name-stroke: 0.33px;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
+    --stack-collision-gap: 16px;
+    --stack-width: 360px;
+    --author-size-v: 15;
+    --ma-x: 0;
+    --ma-y: 5;
+    --desc-size-v: 11.5;
+    --desc-width-v: 292;
+    --md-x: 0;
+    --md-y: 5.5;
+    --btn-size-v: 9.3;
+    --btn-gap-v: 10;
+    --btn-pad-y: 0.85em;
+    --btn-pad-x: 1.75em;
+    --btn-scale: 0.95;
+    --mb-x: 0;
+    --mb-y: 3;
+    --actions-max-w: 250px;
+    --hero-stack-gap: 35px;
+  }
+  .hero-name {
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
+    font-weight: 400;
+  }
+  .hero-tagline {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .view-title {
+    font-size: 1.15rem;
+  }
+  .view-grid {
+    padding: 0 !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+  .view-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding:
+      calc(10px + var(--safe-top))
+      max(10px, var(--safe-right))
+      6px
+      max(10px, var(--safe-left)) !important;
+  }
+  .grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    align-self: stretch !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding:
+      0
+      max(10px, var(--safe-right))
+      max(10px, var(--bottom-safe))
+      max(10px, var(--safe-left)) !important;
+    gap: 10px !important;
+  }
+  [data-tile-id="photo-archive"] .tile-content,
+  [data-tile-id="mail"] .tile-content {
+    flex-direction: column-reverse;
+  }
+  [data-tile-id="photo-archive"] .tile-bottom,
+  [data-tile-id="mail"] .tile-bottom {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
 body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
   --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
@@ -1640,7 +1739,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
   }
   function applyPatterns() {
-    var isMobile = window.matchMedia('(max-width: 700px)').matches;
+    var isMobile = window.matchMedia('(max-width: 700px), (max-width: 1024px) and (min-aspect-ratio: 1.5 / 1)').matches;
     var mode = isMobile ? 'mobile' : 'desktop';
     ['portfolio', 'contacts'].forEach(function (kind) {
       var table = PATTERNS[kind] && PATTERNS[kind][mode];
@@ -1673,7 +1772,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function updateBackButton(viewName) {
     var tg = window.Telegram && window.Telegram.WebApp;
     if (!tg || !tg.BackButton) return;
-    if (viewName === 'home') {
+    if (viewName === 'home' || document.body.classList.contains('tg-mobile')) {
       tg.BackButton.hide();
     } else {
       tg.BackButton.show();
@@ -2037,11 +2136,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v16';
+  var STORAGE_KEY = 'kravvi-tuner-v17';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2220,6 +2319,36 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--btn-pad-y': '0.85',
       '--mb-x': '0',
       '--mb-y': '3'
+    },
+    wide: {
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '21',
+      '--kravvi-size': '29',
+      '--kravvi-shift-x': '0',
+      '--kravvi-shift-y': '0',
+      '--name-opsz': '30',
+      '--name-stroke': '0.33',
+      '--photo-h-scale': '93',
+      '--photo-h-max-scale': '213',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '35',
+      '--stack-width': '360',
+      '--author-size-v': '15',
+      '--ma-x': '0',
+      '--ma-y': '5',
+      '--desc-size-v': '11.5',
+      '--desc-width-v': '292',
+      '--md-x': '0',
+      '--md-y': '5.5',
+      '--btn-size-v': '9.3',
+      '--btn-gap-v': '10',
+      '--btn-pad-x': '1.75',
+      '--btn-pad-y': '0.85',
+      '--mb-x': '0',
+      '--mb-y': '3'
     }
   };
   var ALL_KEYS = [];
@@ -2244,7 +2373,10 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   }
   function detectContext() {
     var w = window.innerWidth;
+    var h = window.innerHeight;
+    var aspect = h > 0 ? (w / h) : 0;
     var isTouch = isTouchContext();
+    if (w <= 1024 && aspect >= 1.5) return 'wide';
     if (isTouch && w > 1024 && w <= 1366) return 'tablet';
     if (w > 1024) return 'desktop';
     if (w > 700) return 'tablet';
@@ -2330,8 +2462,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '.tuner-group-title{font-size:10px;font-weight:600;opacity:.55;text-transform:uppercase;letter-spacing:.14em}'
     + '.tuner-tabs{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
     + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
-    + '.tuner-tabs button{flex:1;padding:7px 6px;background:transparent;border:0;border-radius:8px;'
-    + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;font-family:inherit;font-weight:500;'
+    + '.tuner-tabs button{flex:1;padding:7px 4px;background:transparent;border:0;border-radius:8px;'
+    + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:10.5px;font-family:inherit;font-weight:500;'
     + 'transition:background .15s,color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
     + '.tuner-tabs button:hover{color:#fff;background:rgba(255,255,255,.05)}'
     + '.tuner-tabs button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
@@ -2409,6 +2541,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     +     '<div class="tuner-tabs" data-role="contexts">'
     +       '<button type="button" data-ctx="desktop">Desktop</button>'
     +       '<button type="button" data-ctx="tablet">Tablet</button>'
+    +       '<button type="button" data-ctx="wide">Wide</button>'
     +       '<button type="button" data-ctx="phone">Phone</button>'
     +     '</div>'
     +   '</div>'
@@ -2574,7 +2707,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   });
   function exportJSON() {
     var out = {};
-    ['desktop', 'tablet', 'phone'].forEach(function (ctx) {
+    ['desktop', 'tablet', 'wide', 'phone'].forEach(function (ctx) {
       var vals = getValues(ctx);
       var o = {};
       ALL_KEYS.forEach(function (k) {
