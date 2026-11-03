@@ -2138,11 +2138,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v18';
+  var STORAGE_KEY = 'kravvi-tuner-v19';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2353,6 +2353,99 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--mb-y': '3'
     }
   };
+  var EXPORT_EXTRA = {
+    desktop: {
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '21',
+      '--kravvi-size': '17.5',
+      '--kravvi-shift-x': '0cqw',
+      '--kravvi-shift-y': '0cqw',
+      '--photo-h-scale': '104',
+      '--photo-h-max-scale': '150',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16px',
+      '--ma-x': '0',
+      '--ma-y': '5',
+      '--md-x': '0',
+      '--md-y': '5.5',
+      '--mb-x': '0',
+      '--mb-y': '3',
+      '--ref-w': '1920',
+      '--gap': '16px',
+      '--cols': '4',
+      '--glass-radius': '24px',
+      '--glass-blur': '26px',
+      '--btn-scale': '1',
+      '--actions-max-w': '2000px'
+    },
+    tablet: {
+      '--hero-top': '16vh',
+      '--name-size': '21.3vw',
+      '--name-x': '0vw',
+      '--name-y': '0vh',
+      '--photo-h': '104vh',
+      '--photo-h-max': '150vw',
+      '--hero-gap': '3vh',
+      '--author-x': '0vw',
+      '--author-y': '0vh',
+      '--desc-x': '0vw',
+      '--desc-y': '0vh',
+      '--btn-x': '0vw',
+      '--btn-y': '0vh',
+      '--ref-w': '900',
+      '--gap': '14px',
+      '--cols': '4',
+      '--glass-radius': '22px',
+      '--glass-blur': '22px',
+      '--btn-scale': '1',
+      '--actions-max-w': '2000px'
+    },
+    intermediate: {
+      '--hero-top': '15vh',
+      '--name-size': '22.9vw',
+      '--name-x': '0vw',
+      '--name-y': '0vh',
+      '--photo-h': '92.5vh',
+      '--photo-h-max': '213vw',
+      '--hero-gap': '7.8vh',
+      '--author-x': '0vw',
+      '--author-y': '0vh',
+      '--desc-x': '0vw',
+      '--desc-y': '0vh',
+      '--btn-x': '0vw',
+      '--btn-y': '0vh',
+      '--ref-w': '402',
+      '--gap': '10px',
+      '--cols': '2',
+      '--glass-radius': '20px',
+      '--glass-blur': '20px',
+      '--btn-scale': '0.95',
+      '--actions-max-w': '250px'
+    },
+    phone: {
+      '--hero-top': '19vh',
+      '--name-size': '22.9vw',
+      '--name-x': '0vw',
+      '--name-y': '0vh',
+      '--photo-h': '92.5vh',
+      '--photo-h-max': '213vw',
+      '--hero-gap': '7.8vh',
+      '--author-x': '0vw',
+      '--author-y': '0vh',
+      '--desc-x': '0vw',
+      '--desc-y': '0vh',
+      '--btn-x': '0vw',
+      '--btn-y': '0vh',
+      '--ref-w': '402',
+      '--gap': '10px',
+      '--cols': '2',
+      '--glass-radius': '20px',
+      '--glass-blur': '20px',
+      '--btn-scale': '0.95',
+      '--actions-max-w': '250px'
+    }
+  };
   var ALL_KEYS = [];
   GROUPS.forEach(function (g) {
     g.props.forEach(function (p) {
@@ -2370,8 +2463,26 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   var state = savedState || {};
   var currentContext = detectContext();
   var appliedVars = [];
+  var DESKTOP_ONLY_KEYS = [
+    '--hero-top',
+    '--name-size',
+    '--name-x',
+    '--name-y',
+    '--photo-h',
+    '--photo-h-max',
+    '--hero-gap',
+    '--author-x',
+    '--author-y',
+    '--desc-x',
+    '--desc-y',
+    '--btn-x',
+    '--btn-y'
+  ];
   function isTouchContext() {
     return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }
+  function isApplicable(ctx, key) {
+    return ctx === 'desktop' || DESKTOP_ONLY_KEYS.indexOf(key) === -1;
   }
   function detectContext() {
     var w = window.innerWidth;
@@ -2415,6 +2526,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     appliedVars = [];
     var vals = getValues(currentContext);
     ALL_KEYS.forEach(function (k) {
+      if (!isApplicable(currentContext, k)) return;
       var v = vals[k];
       if (v == null || v === '') return;
       document.documentElement.style.setProperty(k, v + unitOf(k));
@@ -2723,6 +2835,10 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
         var v = vals[k];
         if (v == null || v === '') return;
         o[k] = String(v) + unitOf(k);
+      });
+      var extra = EXPORT_EXTRA[ctx] || {};
+      Object.keys(extra).forEach(function (k) {
+        o[k] = extra[k];
       });
       out[ctx] = o;
     });
