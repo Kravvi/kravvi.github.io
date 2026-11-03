@@ -2138,11 +2138,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v19';
+  var STORAGE_KEY = 'kravvi-tuner-v20';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18','v19'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2154,6 +2154,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var raw = localStorage.getItem(STORAGE_KEY);
     if (raw) savedState = JSON.parse(raw);
   } catch (e) { savedState = null; }
+  var state;
+  if (savedState && savedState.values) {
+    state = savedState;
+  } else {
+    state = { values: {}, meta: {} };
+  }
+  if (!state.values) state.values = {};
+  if (!state.meta) state.meta = {};
   if (!((tunerParam === '1') || (savedState !== null))) return;
   var GROUPS = [
     {
@@ -2460,9 +2468,12 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }
     return '';
   }
-  var state = savedState || {};
-  var currentContext = detectContext();
-  var appliedVars = [];
+  var PHONE_MQ = window.matchMedia('(max-width: 700px)');
+  var INTERMEDIATE_MQ = window.matchMedia('(min-width: 701px) and (max-width: 1024px) and (min-aspect-ratio: 11 / 10) and (max-aspect-ratio: 13 / 10), ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px) and (min-aspect-ratio: 11 / 10) and (max-aspect-ratio: 13 / 10)');
+  var TABLET_MQ = window.matchMedia('(min-width: 701px) and (max-width: 1024px), ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px))');
+  var FINE_POINTER_MQ = window.matchMedia('(hover: hover) and (pointer: fine)');
+  var COARSE_POINTER_MQ = window.matchMedia('(pointer: coarse)');
+  var HOVER_NONE_MQ = window.matchMedia('(hover: none)');
   var DESKTOP_ONLY_KEYS = [
     '--hero-top',
     '--name-size',
@@ -2478,47 +2489,57 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     '--btn-x',
     '--btn-y'
   ];
-  function isTouchContext() {
-    return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  function detectContext() {
+    if (PHONE_MQ.matches) return 'phone';
+    if (INTERMEDIATE_MQ.matches) return 'intermediate';
+    if (TABLET_MQ.matches) return 'tablet';
+    return 'desktop';
   }
   function isApplicable(ctx, key) {
     return ctx === 'desktop' || DESKTOP_ONLY_KEYS.indexOf(key) === -1;
   }
-  function detectContext() {
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    var aspect = h > 0 ? (w / h) : 0;
-    var isTouch = isTouchContext();
-    if (
-      w > 700 &&
-      ((w <= 1024) || (isTouch && w <= 1366)) &&
-      aspect >= 1.1 &&
-      aspect <= 1.3
-    ) {
-      return 'intermediate';
-    }
-    if (isTouch && w > 1024 && w <= 1366) return 'tablet';
-    if (w > 1024) return 'desktop';
-    if (w > 700) return 'tablet';
-    return 'phone';
+  function getSnapshot(ctx) {
+    var w = window.innerWidth || document.documentElement.clientWidth || 0;
+    var h = window.innerHeight || document.documentElement.clientHeight || 0;
+    var aspect = h > 0 ? w / h : 0;
+    return {
+      editedContext: ctx,
+      detectedContext: detectContext(),
+      width: w,
+      height: h,
+      aspectRatio: Number(aspect.toFixed(4)),
+      touch: !FINE_POINTER_MQ.matches,
+      coarsePointer: COARSE_POINTER_MQ.matches,
+      hoverNone: HOVER_NONE_MQ.matches,
+      phoneMedia: PHONE_MQ.matches,
+      intermediateMedia: INTERMEDIATE_MQ.matches,
+      tabletMedia: TABLET_MQ.matches,
+      updatedAt: new Date().toISOString()
+    };
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function captureMeta(ctx) {
+    state.meta[ctx] = getSnapshot(ctx);
+    saveState();
   }
   function getValues(ctx) {
     var out = {};
     var d = DEFAULTS[ctx] || {};
-    var s = state[ctx] || {};
+    var s = state.values[ctx] || {};
     ALL_KEYS.forEach(function (k) {
       out[k] = (s[k] != null) ? s[k] : d[k];
     });
     return out;
   }
   function setValue(ctx, key, value) {
-    if (!state[ctx]) state[ctx] = {};
-    state[ctx][key] = String(value);
-    saveState();
+    if (!state.values[ctx]) state.values[ctx] = {};
+    state.values[ctx][key] = String(value);
+    captureMeta(ctx);
   }
-  function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-  }
+  var currentContext = detectContext();
+  var appliedVars = [];
   function applyContextValues() {
     appliedVars.forEach(function (k) {
       document.documentElement.style.removeProperty(k);
@@ -2538,6 +2559,41 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var s = Number(n);
     if (!isFinite(s)) return '0';
     return String(parseFloat(s.toFixed(4)));
+  }
+  function exportValues(ctx) {
+    var vals = getValues(ctx);
+    var o = {};
+    ALL_KEYS.forEach(function (k) {
+      var v = vals[k];
+      if (v == null || v === '') return;
+      o[k] = String(v) + unitOf(k);
+    });
+    var extra = EXPORT_EXTRA[ctx] || {};
+    Object.keys(extra).forEach(function (k) {
+      o[k] = extra[k];
+    });
+    return o;
+  }
+  function exportJSON() {
+    captureMeta(currentContext);
+    var out = {};
+    ['desktop', 'tablet', 'intermediate', 'phone'].forEach(function (ctx) {
+      out[ctx] = exportValues(ctx);
+    });
+    out.snapshots = {};
+    ['desktop', 'tablet', 'intermediate', 'phone'].forEach(function (ctx) {
+      out.snapshots[ctx] = state.meta[ctx] || getSnapshot(ctx);
+    });
+    out.tunerVersion = STORAGE_KEY;
+    return JSON.stringify(out, null, 2);
+  }
+  function exportCurrentJSON() {
+    captureMeta(currentContext);
+    return JSON.stringify({
+      context: currentContext,
+      values: exportValues(currentContext),
+      snapshot: state.meta[currentContext]
+    }, null, 2);
   }
   var styles = document.createElement('style');
   styles.textContent = ''
@@ -2678,18 +2734,22 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     +   '</div>'
     +   '<div data-role="groups"></div>'
     +   '<div class="tuner-actions">'
-    +     '<button type="button" class="wide" data-action="copy">Copy JSON</button>'
+    +     '<button type="button" data-action="copy-all">Copy all</button>'
+    +     '<button type="button" data-action="copy-current">Copy current</button>'
     +     '<button type="button" data-action="reset-ctx">Reset context</button>'
     +     '<button type="button" class="danger" data-action="reset-all">Reset all</button>'
     +   '</div>'
-    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy JSON → значения появятся здесь"></textarea>'
+    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy → значения появятся здесь"></textarea>'
     + '</div>';
   document.body.appendChild(fab);
   document.body.appendChild(panel);
   var currentStep = 0.5;
   function ctxMode(ctx) { return ctx === 'desktop' ? 'd' : 'm'; }
   function renderContexts() {
-    panel.querySelector('[data-role="badge"]').textContent = currentContext;
+    var detected = detectContext();
+    var text = currentContext;
+    if (detected !== currentContext) text += ' ≠ ' + detected;
+    panel.querySelector('[data-role="badge"]').textContent = text;
     panel.querySelectorAll('[data-role="contexts"] button').forEach(function (b) {
       b.classList.toggle('is-active', b.getAttribute('data-ctx') === currentContext);
     });
@@ -2767,6 +2827,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (!b) return;
     currentContext = b.getAttribute('data-ctx');
     applyContextValues();
+    captureMeta(currentContext);
     renderAll();
   });
   panel.querySelector('[data-role="step"]').addEventListener('click', function (e) {
@@ -2799,8 +2860,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var b = e.target.closest('button[data-action]');
     if (!b) return;
     var action = b.getAttribute('data-action');
-    if (action === 'copy') {
-      var json = exportJSON();
+    if (action === 'copy-all' || action === 'copy-current') {
+      var json = action === 'copy-all' ? exportJSON() : exportCurrentJSON();
       var ta = panel.querySelector('[data-role="json"]');
       ta.value = json;
       try { ta.select(); document.execCommand('copy'); } catch (err) {}
@@ -2813,45 +2874,41 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }
     if (action === 'reset-ctx') {
       if (!confirm('Сбросить контекст «' + currentContext + '»?')) return;
-      delete state[currentContext];
+      delete state.values[currentContext];
+      delete state.meta[currentContext];
       saveState();
       applyContextValues();
       renderAll();
     }
     if (action === 'reset-all') {
       if (!confirm('Сбросить ВСЕ значения?')) return;
-      state = {};
+      state = { values: {}, meta: {} };
       saveState();
       applyContextValues();
       renderAll();
     }
   });
-  function exportJSON() {
-    var out = {};
-    ['desktop', 'tablet', 'intermediate', 'phone'].forEach(function (ctx) {
-      var vals = getValues(ctx);
-      var o = {};
-      ALL_KEYS.forEach(function (k) {
-        var v = vals[k];
-        if (v == null || v === '') return;
-        o[k] = String(v) + unitOf(k);
-      });
-      var extra = EXPORT_EXTRA[ctx] || {};
-      Object.keys(extra).forEach(function (k) {
-        o[k] = extra[k];
-      });
-      out[ctx] = o;
-    });
-    return JSON.stringify(out, null, 2);
-  }
   var rT;
   function onResize() {
     var next = detectContext();
-    if (next === currentContext) return;
-    currentContext = next;
-    applyContextValues();
+    if (next !== currentContext) {
+      currentContext = next;
+      applyContextValues();
+    }
+    captureMeta(currentContext);
     renderAll();
   }
+  function addMQListener(mq) {
+    if (mq.addEventListener) {
+      mq.addEventListener('change', onResize);
+    } else if (mq.addListener) {
+      mq.addListener(onResize);
+    }
+  }
+  addMQListener(PHONE_MQ);
+  addMQListener(INTERMEDIATE_MQ);
+  addMQListener(TABLET_MQ);
+  addMQListener(FINE_POINTER_MQ);
   window.addEventListener('resize', function () {
     clearTimeout(rT);
     rT = setTimeout(onResize, 80);
@@ -2861,6 +2918,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     rT = setTimeout(onResize, 150);
   });
   applyContextValues();
+  captureMeta(currentContext);
   renderAll();
 })();
 </script>
