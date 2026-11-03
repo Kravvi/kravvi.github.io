@@ -1098,28 +1098,39 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h-max-scale: 150;
     --kravvi-x-v: 50;
     --kravvi-y-v: 26;
-    --kravvi-size: 12;
+    --kravvi-size: 44;
     --kravvi-shift-x: 0cqw;
     --kravvi-shift-y: 0cqw;
+    --name-size: 21.3vw;
+    --name-x: 0vw;
+    --name-y: 0vh;
     --name-opsz: 96;
     --name-stroke: 0px;
     --stack-shift-x-v: 0;
     --stack-shift-y-v: 0;
     --stack-collision-gap: 16px;
     --stack-width: 640px;
-    --author-size-v: 22;
+    --hero-text-gap: 8px;
+    --hero-stack-gap: 28px;
+    --author-size-v: 21;
     --ma-x: 0;
-    --ma-y: 0;
+    --ma-y: 1;
     --desc-size-v: 16;
     --desc-width-v: 478;
     --md-x: 0;
-    --md-y: 0;
-    --btn-size-v: 13;
+    --md-y: 1.5;
+    --btn-size-v: 11;
     --btn-gap-v: 15;
     --btn-pad-x: 2.2em;
     --btn-pad-y: 1em;
+    --btn-scale: 1;
     --mb-x: 0;
     --mb-y: 0;
+    --actions-max-w: 2000px;
+    --gap: 14px;
+    --cols: 4;
+    --glass-radius: 22px;
+    --glass-blur: 22px;
   }
 }
 @media (max-width: 700px) {
@@ -1222,15 +1233,15 @@ body.overlay-active #view-home.is-active .hero-actions {
     text-align: right;
   }
 }
-@media (min-width: 701px) and (max-width: 1024px) and (min-aspect-ratio: 11 / 10) and (max-aspect-ratio: 13 / 10),
-       ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px) and (min-aspect-ratio: 11 / 10) and (max-aspect-ratio: 13 / 10)) {
+@media (max-width: 1024px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10),
+       (hover: none) and (pointer: coarse) and (max-width: 1366px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10) {
   :root {
     --gap: 10px;
     --cols: 2;
     --glass-radius: 20px;
     --glass-blur: 20px;
     --ref-w: 402;
-    --hero-top: 15vh;
+    --hero-top: 19vh;
     --hero-gap: 7.8vh;
     --photo-h: 92.5vh;
     --photo-h-max: 213vw;
@@ -1238,32 +1249,35 @@ body.overlay-active #view-home.is-active .hero-actions {
     --photo-h-max-scale: 213;
     --kravvi-x-v: 50;
     --kravvi-y-v: 21;
-    --kravvi-size: 29;
+    --kravvi-size: 30;
     --kravvi-shift-x: 0cqw;
     --kravvi-shift-y: 0cqw;
     --name-size: 22.9vw;
+    --name-x: 0vw;
+    --name-y: 0vh;
     --name-opsz: 30;
     --name-stroke: 0.33px;
     --stack-shift-x-v: 0;
     --stack-shift-y-v: 0;
     --stack-collision-gap: 16px;
     --stack-width: 360px;
+    --hero-text-gap: 8px;
+    --hero-stack-gap: 35px;
     --author-size-v: 15;
     --ma-x: 0;
     --ma-y: 5;
-    --desc-size-v: 11.5;
+    --desc-size-v: 11;
     --desc-width-v: 292;
     --md-x: 0;
     --md-y: 5.5;
-    --btn-size-v: 9.3;
-    --btn-gap-v: 10;
+    --btn-size-v: 9.8;
+    --btn-gap-v: 11;
     --btn-pad-y: 0.85em;
     --btn-pad-x: 1.75em;
     --btn-scale: 0.95;
     --mb-x: 0;
-    --mb-y: 3;
+    --mb-y: 2;
     --actions-max-w: 250px;
-    --hero-stack-gap: 35px;
   }
   html.is-firefox-mobile { --btn-scale: 1.1; }
   .hero-name {
@@ -2138,11 +2152,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v20';
+  var STORAGE_KEY = 'kravvi-tuner-v21';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18','v19'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18','v19','v20'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2273,7 +2287,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     tablet: {
       '--kravvi-x-v': '50',
       '--kravvi-y-v': '26',
-      '--kravvi-size': '12',
+      '--kravvi-size': '44',
       '--kravvi-shift-x': '0',
       '--kravvi-shift-y': '0',
       '--name-opsz': '96',
@@ -2286,24 +2300,24 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--hero-text-gap': '8',
       '--hero-stack-gap': '28',
       '--stack-width': '640',
-      '--author-size-v': '22',
+      '--author-size-v': '21',
       '--ma-x': '0',
-      '--ma-y': '0',
+      '--ma-y': '1',
       '--desc-size-v': '16',
       '--desc-width-v': '478',
       '--md-x': '0',
-      '--md-y': '0',
-      '--btn-size-v': '13',
+      '--md-y': '1.5',
+      '--btn-size-v': '11',
       '--btn-gap-v': '15',
       '--btn-pad-x': '2.2',
       '--btn-pad-y': '1',
       '--mb-x': '0',
       '--mb-y': '0'
     },
-    intermediate: {
+    album: {
       '--kravvi-x-v': '50',
       '--kravvi-y-v': '21',
-      '--kravvi-size': '29',
+      '--kravvi-size': '30',
       '--kravvi-shift-x': '0',
       '--kravvi-shift-y': '0',
       '--name-opsz': '30',
@@ -2319,16 +2333,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--author-size-v': '15',
       '--ma-x': '0',
       '--ma-y': '5',
-      '--desc-size-v': '11.5',
+      '--desc-size-v': '11',
       '--desc-width-v': '292',
       '--md-x': '0',
       '--md-y': '5.5',
-      '--btn-size-v': '9.3',
-      '--btn-gap-v': '10',
+      '--btn-size-v': '9.8',
+      '--btn-gap-v': '11',
       '--btn-pad-x': '1.75',
       '--btn-pad-y': '0.85',
       '--mb-x': '0',
-      '--mb-y': '3'
+      '--mb-y': '2'
     },
     phone: {
       '--kravvi-x-v': '50',
@@ -2409,8 +2423,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--btn-scale': '1',
       '--actions-max-w': '2000px'
     },
-    intermediate: {
-      '--hero-top': '15vh',
+    album: {
+      '--hero-top': '19vh',
       '--name-size': '22.9vw',
       '--name-x': '0vw',
       '--name-y': '0vh',
@@ -2469,8 +2483,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     return '';
   }
   var PHONE_MQ = window.matchMedia('(max-width: 700px)');
-  var INTERMEDIATE_MQ = window.matchMedia('(min-width: 701px) and (max-width: 1024px) and (min-aspect-ratio: 11 / 10) and (max-aspect-ratio: 13 / 10), ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px) and (min-aspect-ratio: 11 / 10) and (max-aspect-ratio: 13 / 10)');
-  var TABLET_MQ = window.matchMedia('(min-width: 701px) and (max-width: 1024px), ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px))');
+  var ALBUM_MQ = window.matchMedia('(max-width: 1024px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10), (hover: none) and (pointer: coarse) and (max-width: 1366px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10)');
+  var TABLET_MQ = window.matchMedia('(min-width: 701px) and (max-width: 1024px), (hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)');
   var FINE_POINTER_MQ = window.matchMedia('(hover: hover) and (pointer: fine)');
   var COARSE_POINTER_MQ = window.matchMedia('(pointer: coarse)');
   var HOVER_NONE_MQ = window.matchMedia('(hover: none)');
@@ -2490,8 +2504,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     '--btn-y'
   ];
   function detectContext() {
+    if (ALBUM_MQ.matches) return 'album';
     if (PHONE_MQ.matches) return 'phone';
-    if (INTERMEDIATE_MQ.matches) return 'intermediate';
     if (TABLET_MQ.matches) return 'tablet';
     return 'desktop';
   }
@@ -2512,7 +2526,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       coarsePointer: COARSE_POINTER_MQ.matches,
       hoverNone: HOVER_NONE_MQ.matches,
       phoneMedia: PHONE_MQ.matches,
-      intermediateMedia: INTERMEDIATE_MQ.matches,
+      albumMedia: ALBUM_MQ.matches,
       tabletMedia: TABLET_MQ.matches,
       updatedAt: new Date().toISOString()
     };
@@ -2570,18 +2584,18 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
     var extra = EXPORT_EXTRA[ctx] || {};
     Object.keys(extra).forEach(function (k) {
-      o[k] = extra[k];
+      if (o[k] == null) o[k] = extra[k];
     });
     return o;
   }
   function exportJSON() {
     captureMeta(currentContext);
     var out = {};
-    ['desktop', 'tablet', 'intermediate', 'phone'].forEach(function (ctx) {
+    ['desktop', 'tablet', 'album', 'phone'].forEach(function (ctx) {
       out[ctx] = exportValues(ctx);
     });
     out.snapshots = {};
-    ['desktop', 'tablet', 'intermediate', 'phone'].forEach(function (ctx) {
+    ['desktop', 'tablet', 'album', 'phone'].forEach(function (ctx) {
       out.snapshots[ctx] = state.meta[ctx] || getSnapshot(ctx);
     });
     out.tunerVersion = STORAGE_KEY;
@@ -2718,7 +2732,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     +     '<div class="tuner-tabs" data-role="contexts">'
     +       '<button type="button" data-ctx="desktop">Desktop</button>'
     +       '<button type="button" data-ctx="tablet">Tablet</button>'
-    +       '<button type="button" data-ctx="intermediate">Interm.</button>'
+    +       '<button type="button" data-ctx="album">Album</button>'
     +       '<button type="button" data-ctx="phone">Phone</button>'
     +     '</div>'
     +   '</div>'
@@ -2906,7 +2920,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }
   }
   addMQListener(PHONE_MQ);
-  addMQListener(INTERMEDIATE_MQ);
+  addMQListener(ALBUM_MQ);
   addMQListener(TABLET_MQ);
   addMQListener(FINE_POINTER_MQ);
   window.addEventListener('resize', function () {
