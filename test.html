@@ -1681,7 +1681,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var isOverlay = (name === 'portfolio' || name === 'contacts');
     portfolio.classList.toggle('is-active', name === 'portfolio');
     contacts.classList.toggle('is-active', name === 'contacts');
-    portfolio.setAttribute('aria-hidden', name === 'portfolio ? 'false' : 'true');
+    portfolio.setAttribute('aria-hidden', name === 'portfolio' ? 'false' : 'true');
     contacts.setAttribute('aria-hidden', name === 'contacts' ? 'false' : 'true');
     portfolio.classList.remove('is-entering');
     contacts.classList.remove('is-entering');
