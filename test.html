@@ -30,9 +30,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   1. RESET
-   ============================================================ */
 *, *::before, *::after { box-sizing: border-box; }
 html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, menu, figure, blockquote { margin: 0; padding: 0; }
 ul, ol, menu { list-style: none; }
@@ -40,9 +37,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 svg { display: block; }
-/* ============================================================
-   2. TOKENS
-   ============================================================ */
 :root {
   --font-hero:    "Bodoni Moda", Georgia, "Times New Roman", serif;
   --font-ui: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -133,7 +127,7 @@ svg { display: block; }
   --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
   --kravvi-x-v: 50;
   --kravvi-y-v: 21;
-  --kravvi-size: 18.5;
+  --kravvi-size: 17.5;
   --kravvi-shift-x: 0cqw;
   --kravvi-shift-y: 0cqw;
   --kravvi-font-px: calc(var(--photo-frame-w) * var(--kravvi-size) / 100);
@@ -148,9 +142,6 @@ svg { display: block; }
   --mb-x: 0;
   --mb-y: 3;
 }
-/* ============================================================
-   3. BASE
-   ============================================================ */
 html, body {
   width: 100%;
   height: 100%;
@@ -169,9 +160,6 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 body.is-loading { visibility: hidden; }
-/* ============================================================
-   4. УГЛОВЫЕ ЭЛЕМЕНТЫ
-   ============================================================ */
 .brand-tag {
   position: fixed;
   top: calc(22px + var(--safe-top));
@@ -290,9 +278,6 @@ body.overlay-active .copyright {
 }
 body.overlay-active .brand-tag { transform: translateY(-8px); }
 body.overlay-active .copyright  { transform: translateY(8px); }
-/* ============================================================
-   5. APP
-   ============================================================ */
 #app {
   position: relative;
   width: 100%;
@@ -300,9 +285,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   height: 100dvh;
   z-index: 1;
 }
-/* ============================================================
-   6. HOME
-   ============================================================ */
 .view-home {
   position: absolute;
   inset: 0;
@@ -494,9 +476,6 @@ body.overlay-active #view-home.is-active .hero-author {
 body.overlay-active #view-home.is-active .hero-tagline {
   transform: translate(var(--desc-x), calc(var(--desc-y) + 20px));
 }
-/* ============================================================
-   КНОПКИ ГЛАВНОЙ
-   ============================================================ */
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -617,9 +596,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     0 0 20px rgba(255, 255, 255, 0.25);
   transform: translateY(-2px) translateZ(0);
 }
-/* ============================================================
-   7. BENTO OVERLAY
-   ============================================================ */
 .view-grid {
   position: fixed;
   inset: 0;
@@ -719,9 +695,6 @@ body.overlay-active #view-home.is-active .hero-actions {
 .grid::-webkit-scrollbar { width: 6px; height: 6px; }
 .grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
 .grid::-webkit-scrollbar-track { background: transparent; }
-/* ============================================================
-   8. TILES (BENTO)
-   ============================================================ */
 .tile {
   position: relative;
   display: block;
@@ -894,9 +867,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   letter-spacing: 0.01em;
   text-shadow: 0 1px 10px rgba(0,0,0,0.4);
 }
-/* ============================================================
-   9. BACK BUTTON
-   ============================================================ */
 .glass-btn {
   display: inline-flex;
   align-items: center; justify-content: center;
@@ -965,9 +935,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     transition-delay: 0ms !important;
   }
 }
-/* ============================================================
-   TABLET + PHONE  ·  ≤1024px ИЛИ (touch и ≤1366px)
-   ============================================================ */
 @media (max-width: 1024px),
        ((hover: none) and (pointer: coarse) and (max-width: 1366px)) {
   :root {
@@ -1112,9 +1079,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     white-space: pre-line;
   }
 }
-/* ============================================================
-   TABLET  ·  701–1024px ИЛИ (touch и 701–1366px)
-   ============================================================ */
 @media (min-width: 701px) and (max-width: 1024px),
        ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
   :root {
@@ -1151,9 +1115,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     --mb-y: 0;
   }
 }
-/* ============================================================
-   PHONE  ·  ≤700px
-   ============================================================ */
 @media (max-width: 700px) {
   :root {
     --gap: 10px;
@@ -1165,11 +1126,11 @@ body.overlay-active #view-home.is-active .hero-actions {
     --hero-gap: 7.8vh;
     --photo-h: 92.5vh;
     --photo-h-max: 213vw;
-    --photo-h-scale: 96;
+    --photo-h-scale: 93;
     --photo-h-max-scale: 213;
     --kravvi-x-v: 50;
     --kravvi-y-v: 21;
-    --kravvi-size: 18.5;
+    --kravvi-size: 17.5;
     --kravvi-shift-x: 0cqw;
     --kravvi-shift-y: 0cqw;
     --name-size: 22.9vw;
@@ -1254,9 +1215,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     text-align: right;
   }
 }
-/* ============================================================
-   TELEGRAM MINI APP
-   ============================================================ */
 body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
   --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
@@ -1723,7 +1681,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var isOverlay = (name === 'portfolio' || name === 'contacts');
     portfolio.classList.toggle('is-active', name === 'portfolio');
     contacts.classList.toggle('is-active', name === 'contacts');
-    portfolio.setAttribute('aria-hidden', name === 'portfolio' ? 'false' : 'true');
+    portfolio.setAttribute('aria-hidden', name === 'portfolio ? 'false' : 'true');
     contacts.setAttribute('aria-hidden', name === 'contacts' ? 'false' : 'true');
     portfolio.classList.remove('is-entering');
     contacts.classList.remove('is-entering');
@@ -1814,8 +1772,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function layoutMobile() {
     var root = document.documentElement;
     var stack = document.querySelector('.hero-stack');
-    var name = document.querySelector('.hero-name');
-    if (!stack || !name) return;
+    if (!stack) return;
     if (!mobileMQ.matches) {
       stack.style.top = '';
       stack.style.left = '';
@@ -1847,16 +1804,19 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     setPx('--photo-frame-w', frameW);
 
     var kravviSize = cssNum('--kravvi-size', 10);
-    setPx('--kravvi-font-px', frameW * kravviSize / 100);
+    var fontSize = frameW * kravviSize / 100;
+    setPx('--kravvi-font-px', fontSize);
 
-    var artRect = art.getBoundingClientRect();
-    var nameRect = name.getBoundingClientRect();
-    var nameBottom = nameRect.bottom - stageRect.top;
-    if (!isFinite(nameBottom) || nameBottom < 0) {
-      nameBottom = (artRect.top - stageRect.top) + artRect.height * cssNum('--kravvi-y-v', 20) / 100;
-    }
+    var kravviY = cssNum('--kravvi-y-v', 20);
+    var kravviShiftY = cssNum('--kravvi-shift-y', 0);
+    var shiftYpx = frameW * kravviShiftY / 100;
+    var artTop = stageH - frameH;
+    var nameCenterY = artTop + frameH * kravviY / 100 + shiftYpx;
+    var nameBoxH = fontSize * 0.92;
+    var nameBottom = nameCenterY + nameBoxH / 2;
 
-    var stackH = Math.max(1, stack.offsetHeight || stack.getBoundingClientRect().height || 1);
+    var stackRect = stack.getBoundingClientRect();
+    var stackH = Math.max(1, stackRect.height || stack.offsetHeight || 1);
     var collisionGap = cssNum('--stack-collision-gap', 16);
     var stackShiftX = cssNum('--stack-shift-x-v', 0);
     var stackShiftY = cssNum('--stack-shift-y-v', 0);
@@ -2067,17 +2027,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   }
 })();
 </script>
-<!-- ============================================================
-     LAYOUT TUNER · открой с ?tuner=1
-     ============================================================ -->
 <script>
 (function () {
   'use strict';
-  var STORAGE_KEY = 'kravvi-tuner-v15';
+  var STORAGE_KEY = 'kravvi-tuner-v16';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14'].forEach(function (old) {
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15'].forEach(function (old) {
     try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
   });
   if (tunerParam === '0') {
@@ -2230,12 +2187,12 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     phone: {
       '--kravvi-x-v': '50',
       '--kravvi-y-v': '21',
-      '--kravvi-size': '18.5',
+      '--kravvi-size': '17.5',
       '--kravvi-shift-x': '0',
       '--kravvi-shift-y': '0',
       '--name-opsz': '30',
       '--name-stroke': '0.33',
-      '--photo-h-scale': '96',
+      '--photo-h-scale': '93',
       '--photo-h-max-scale': '213',
       '--stack-shift-x-v': '0',
       '--stack-shift-y-v': '0',
