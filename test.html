@@ -1788,7 +1788,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function updateBackButton(viewName) {
     var tg = window.Telegram && window.Telegram.WebApp;
     if (!tg || !tg.BackButton) return;
-    if (viewName === 'home' || document.body.classList.contains('tg-mobile')) {
+    if (viewName === 'home') {
       tg.BackButton.hide();
     } else {
       tg.BackButton.show();
@@ -2468,6 +2468,8 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       '--actions-max-w': '250px'
     }
   };
+  var CONTEXT_LIST = ['desktop', 'tablet', 'album', 'phone'];
+  var CONTEXT_PRIORITY = ['album', 'phone', 'tablet', 'desktop'];
   var ALL_KEYS = [];
   GROUPS.forEach(function (g) {
     g.props.forEach(function (p) {
@@ -2503,6 +2505,9 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     '--btn-x',
     '--btn-y'
   ];
+  function mqMedia(mq, fallback) {
+    return (mq && mq.media) ? mq.media : fallback;
+  }
   function detectContext() {
     if (ALBUM_MQ.matches) return 'album';
     if (PHONE_MQ.matches) return 'phone';
@@ -2516,12 +2521,24 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var w = window.innerWidth || document.documentElement.clientWidth || 0;
     var h = window.innerHeight || document.documentElement.clientHeight || 0;
     var aspect = h > 0 ? w / h : 0;
+    var vv = window.visualViewport;
+    var vvInfo = null;
+    if (vv) {
+      vvInfo = {
+        width: Math.round(vv.width || 0),
+        height: Math.round(vv.height || 0),
+        offsetTop: Math.round(vv.offsetTop || 0),
+        offsetLeft: Math.round(vv.offsetLeft || 0),
+        scale: vv.scale || 1
+      };
+    }
     return {
       editedContext: ctx,
       detectedContext: detectContext(),
       width: w,
       height: h,
       aspectRatio: Number(aspect.toFixed(4)),
+      visualViewport: vvInfo,
       touch: !FINE_POINTER_MQ.matches,
       coarsePointer: COARSE_POINTER_MQ.matches,
       hoverNone: HOVER_NONE_MQ.matches,
@@ -2588,16 +2605,70 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     });
     return o;
   }
+  function getRelevantVarKeys() {
+    var keys = ALL_KEYS.slice();
+    CONTEXT_LIST.forEach(function (ctx) {
+      var extra = EXPORT_EXTRA[ctx] || {};
+      Object.keys(extra).forEach(function (k) {
+        if (keys.indexOf(k) === -1) keys.push(k);
+      });
+    });
+    return keys;
+  }
+  function getComputedRelevantVars() {
+    var keys = getRelevantVarKeys();
+    var cs = window.getComputedStyle(document.documentElement);
+    var out = {};
+    keys.forEach(function (k) {
+      var v = cs.getPropertyValue(k);
+      if (v && String(v).trim()) out[k] = String(v).trim();
+    });
+    return out;
+  }
+  function getInlineTunerVars() {
+    var out = {};
+    appliedVars.forEach(function (k) {
+      var v = document.documentElement.style.getPropertyValue(k);
+      if (v) out[k] = v;
+    });
+    return out;
+  }
+  function exportConfig() {
+    return {
+      storageKey: STORAGE_KEY,
+      contextList: CONTEXT_LIST,
+      contextPriority: CONTEXT_PRIORITY,
+      mediaQueries: {
+        album: mqMedia(ALBUM_MQ, ''),
+        phone: mqMedia(PHONE_MQ, ''),
+        tablet: mqMedia(TABLET_MQ, ''),
+        desktop: 'fallback when album, phone and tablet media queries do not match'
+      },
+      desktopOnlyKeys: DESKTOP_ONLY_KEYS,
+      requiredEdits: [
+        'Apply values to the matching CSS :root media query block in index.html.',
+        'For tuner DEFAULTS.<context>, store unitless string values for keys controlled by GROUPS.',
+        'For tuner EXPORT_EXTRA.<context>, store static/desktop-only values with units where required.',
+        'Do not apply DESKTOP_ONLY_KEYS inline in non-desktop contexts.',
+        'If contexts/media queries change, update CSS, GROUPS, DEFAULTS, EXPORT_EXTRA, detectContext and bump STORAGE_KEY.'
+      ]
+    };
+  }
   function exportJSON() {
     captureMeta(currentContext);
     var out = {};
-    ['desktop', 'tablet', 'album', 'phone'].forEach(function (ctx) {
+    CONTEXT_LIST.forEach(function (ctx) {
       out[ctx] = exportValues(ctx);
     });
     out.snapshots = {};
-    ['desktop', 'tablet', 'album', 'phone'].forEach(function (ctx) {
+    CONTEXT_LIST.forEach(function (ctx) {
       out.snapshots[ctx] = state.meta[ctx] || getSnapshot(ctx);
     });
+    out.currentContext = currentContext;
+    out.detectedContext = detectContext();
+    out.computedRelevantVars = getComputedRelevantVars();
+    out.inlineTunerVars = getInlineTunerVars();
+    out.config = exportConfig();
     out.tunerVersion = STORAGE_KEY;
     return JSON.stringify(out, null, 2);
   }
@@ -2605,8 +2676,13 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     captureMeta(currentContext);
     return JSON.stringify({
       context: currentContext,
+      detectedContext: detectContext(),
       values: exportValues(currentContext),
-      snapshot: state.meta[currentContext]
+      snapshot: state.meta[currentContext],
+      computedRelevantVars: getComputedRelevantVars(),
+      inlineTunerVars: getInlineTunerVars(),
+      config: exportConfig(),
+      tunerVersion: STORAGE_KEY
     }, null, 2);
   }
   var styles = document.createElement('style');
