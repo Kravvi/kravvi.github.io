@@ -180,7 +180,7 @@ body.is-loading > * { visibility: hidden; }
 }
 .lang-btn {
   position: fixed;
-  top: calc(18px + var(--safe-top));
+  top: calc(15px + var(--safe-top));
   right: calc(24px + var(--safe-right));
   z-index: 101;
   display: inline-flex;
@@ -202,10 +202,13 @@ body.is-loading > * { visibility: hidden; }
   user-select: none;
   -webkit-user-select: none;
 }
+.lang-btn span {
+  display: inline-block;
+}
 .lang-btn:hover { color: #fff; background: rgba(255,255,255,0.06); }
 .lang-menu {
   position: fixed;
-  top: calc(48px + var(--safe-top));
+  top: calc(45px + var(--safe-top));
   right: calc(24px + var(--safe-right));
   z-index: 102;
   min-width: 84px;
@@ -1349,14 +1352,15 @@ body.telegram-mini-app {
   }
 }
 body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
-body.telegram-mini-app .lang-btn { top: var(--tg-pad); }
-body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+body.telegram-mini-app .lang-btn { top: calc(var(--tg-pad) - 7px); }
+body.telegram-mini-app .lang-btn span { display: inline-block; }
+body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 21px); }
 body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 @media (max-width: 700px) {
   body.telegram-mini-app {
     --tg-pad: calc(32px + var(--tg-top) + var(--safe-top));
   }
-  body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+  body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 21px); }
   body.telegram-mini-app .view-grid {
     padding: 0 !important;
   }
@@ -1442,6 +1446,31 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   var STEP_MS       = 80;
   var TRANSITION_MS = 900;
   var TAP_ANIM_MS   = 150;
+  var telegramReadyResolved = false;
+  var telegramReadyCallbacks = [];
+  var telegramReadyFallbackTimer = 0;
+  function resolveTelegramReady() {
+    if (telegramReadyResolved) return;
+    telegramReadyResolved = true;
+    if (telegramReadyFallbackTimer) {
+      clearTimeout(telegramReadyFallbackTimer);
+      telegramReadyFallbackTimer = 0;
+    }
+    var cbs = telegramReadyCallbacks.slice();
+    telegramReadyCallbacks = [];
+    for (var i = 0; i < cbs.length; i++) cbs[i]();
+  }
+  window.kravviMarkTelegramReady = resolveTelegramReady;
+  function whenTelegramReady(cb) {
+    if (telegramReadyResolved || !window.Telegram || !window.Telegram.WebApp) {
+      cb();
+      return;
+    }
+    telegramReadyCallbacks.push(cb);
+    if (!telegramReadyFallbackTimer) {
+      telegramReadyFallbackTimer = setTimeout(resolveTelegramReady, 1200);
+    }
+  }
   var ROUTES = {
     '/':          'home',
     '/portfolio': 'portfolio',
@@ -1581,39 +1610,45 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   var PATTERNS = {
     portfolio: {
       desktop: {
-        'behance':       '1 / 1 / 2 / 3',
-        'dribbble':      '1 / 3 / 2 / 5',
+        'behance': '1 / 1 / 2 / 3',
+        'dribbble': '1 / 3 / 2 / 5',
         'photo-archive': '2 / 1 / 3 / 5'
       },
       mobile: {
-        'behance':       '1 / 1 / 2 / 2',
-        'dribbble':      '1 / 2 / 2 / 3',
+        'behance': '1 / 1 / 2 / 2',
+        'dribbble': '1 / 2 / 2 / 3',
         'photo-archive': '2 / 1 / 3 / 3'
       }
     },
     contacts: {
       desktop: {
-        'telegram':     '1 / 1 / 3 / 3',
-        'instagram':    '1 / 3 / 2 / 4',
-        'vk-page':      '1 / 4 / 2 / 5',
+        'telegram': '1 / 1 / 3 / 3',
+        'instagram': '1 / 3 / 2 / 4',
+        'vk-page': '1 / 4 / 2 / 5',
         'vk-community': '2 / 3 / 3 / 5',
-        'threads':      '3 / 1 / 4 / 2',
-        'facebook':     '3 / 2 / 4 / 3',
-        'mail':         '3 / 3 / 4 / 5'
+        'threads': '3 / 1 / 4 / 2',
+        'facebook': '3 / 2 / 4 / 3',
+        'mail': '3 / 3 / 4 / 5'
       },
       mobile: {
-        'telegram':     '1 / 1 / 3 / 3',
-        'instagram':    '3 / 1 / 4 / 2',
-        'vk-page':      '3 / 2 / 4 / 3',
+        'telegram': '1 / 1 / 3 / 3',
+        'instagram': '3 / 1 / 4 / 2',
+        'vk-page': '3 / 2 / 4 / 3',
         'vk-community': '4 / 1 / 5 / 3',
-        'threads':      '5 / 1 / 6 / 2',
-        'facebook':     '5 / 2 / 6 / 3',
-        'mail':         '6 / 1 / 7 / 3'
+        'threads': '5 / 1 / 6 / 2',
+        'facebook': '5 / 2 / 6 / 3',
+        'mail': '6 / 1 / 7 / 3'
       }
     }
   };
-  function $$(sel, ctx) {
-    return Array.prototype.slice.call((ctx || document).querySelectorAll(sel));
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function $(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+  function isTouchDevice() {
+    return !(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+  }
+  function isFirefoxMobile() {
+    var ua = navigator.userAgent || '';
+    return /Firefox/i.test(ua) && /(Android|Mobile)/i.test(ua);
   }
   function debounce(fn, ms) {
     var t;
@@ -1624,27 +1659,21 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     };
   }
   function getLang() {
-    try {
-      var s = localStorage.getItem('lang');
-      if (s === 'ru' || s === 'en' || s === 'de') return s;
-    } catch (e) {}
-    var nav = (navigator.language || 'ru').toLowerCase();
+    var stored = '';
+    try { stored = localStorage.getItem('lang') || ''; } catch (e) {}
+    stored = String(stored).toLowerCase();
+    if (stored === 'ru' || stored === 'en' || stored === 'de') return stored;
+    var nav = String(navigator.language || navigator.userLanguage || '').toLowerCase();
     if (nav.indexOf('ru') === 0) return 'ru';
     if (nav.indexOf('en') === 0) return 'en';
     if (nav.indexOf('de') === 0) return 'de';
     return 'ru';
   }
   function setLang(lang) {
-    if (lang !== 'ru' && lang !== 'en' && lang !== 'de') return;
+    lang = String(lang || '').toLowerCase();
+    if (lang !== 'ru' && lang !== 'en' && lang !== 'de') lang = 'ru';
     try { localStorage.setItem('lang', lang); } catch (e) {}
     applyI18n();
-  }
-  function isTouchDevice() {
-    return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  }
-  function isFirefoxMobile() {
-    var ua = navigator.userAgent || '';
-    return /Firefox/.test(ua) && /Android|Mobile/.test(ua);
   }
   function applyI18n() {
     var lang = getLang();
@@ -1658,16 +1687,16 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (ogTitle) ogTitle.setAttribute('content', title);
     var ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc) ogDesc.setAttribute('content', dict['meta.description'] || '');
-    $$('[data-i18n]').forEach(function (el) {
+    $('[data-i18n]').forEach(function (el) {
       var k = el.getAttribute('data-i18n');
       if (dict[k] != null) el.textContent = dict[k];
     });
     var cur = document.getElementById('lang-current');
     if (cur) cur.textContent = lang.charAt(0).toUpperCase() + lang.charAt(1);
-    $$('.lang-item').forEach(function (el) {
+    $('.lang-item').forEach(function (el) {
       el.classList.toggle('is-active', el.getAttribute('data-lang') === lang);
     });
-    $$('.back-btn').forEach(function (el) {
+    $('.back-btn').forEach(function (el) {
       el.setAttribute('aria-label', dict['btn.back'] || 'Back');
     });
     var photo = document.getElementById('hero-photo');
@@ -1761,7 +1790,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     ['portfolio', 'contacts'].forEach(function (kind) {
       var table = PATTERNS[kind] && PATTERNS[kind][mode];
       if (!table) return;
-      $$('[data-grid="' + kind + '"] .tile').forEach(function (tile) {
+      $('[data-grid="' + kind + '"] .tile').forEach(function (tile) {
         var id = tile.getAttribute('data-tile-id');
         if (table[id]) tile.style.gridArea = table[id];
       });
@@ -1777,7 +1806,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   function clearHomeButtonEffects() {
     var active = document.activeElement;
     if (active && active.blur) active.blur();
-    $$('.hero-actions .btn-pill').forEach(function (btn) {
+    $('.hero-actions .btn-pill').forEach(function (btn) {
       if (btn.blur) btn.blur();
       btn.classList.remove('is-tapped');
     });
@@ -1870,7 +1899,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var targetHash = '#' + route;
     var isHomeBtn = nav.classList.contains('btn-pill');
     if (isTouchDevice() && isHomeBtn) {
-      $$('.hero-actions .btn-pill').forEach(function (b) {
+      $('.hero-actions .btn-pill').forEach(function (b) {
         if (b !== nav) b.classList.remove('is-tapped');
       });
       nav.classList.add('is-tapped');
@@ -2098,14 +2127,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       if (!isTouchDevice()) return;
       var btn = e.target.closest && e.target.closest('.hero-actions .btn-pill');
       if (!btn) return;
-      $$('.hero-actions .btn-pill').forEach(function (b) {
+      $('.hero-actions .btn-pill').forEach(function (b) {
         if (b !== btn) b.classList.remove('is-tapped');
       });
       btn.classList.add('is-tapped');
     }, { passive: true });
     document.addEventListener('touchcancel', function () {
       if (!isTouchDevice()) return;
-      $$('.hero-actions .btn-pill').forEach(function (b) {
+      $('.hero-actions .btn-pill').forEach(function (b) {
         b.classList.remove('is-tapped');
       });
     }, { passive: true });
@@ -2154,8 +2183,18 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       history.replaceState({ page: initialView }, '', '#' + (initialView === 'home' ? '/' : '/' + initialView));
     } catch (e) { /* ignore */ }
     preloadHeroPhoto().then(function () {
-      revealBody();
+      if (document.fonts && document.fonts.ready) {
+        return document.fonts.ready.catch(function () {});
+      }
+    }).then(function () {
+      return new Promise(function (resolve) {
+        whenTelegramReady(resolve);
+      });
+    }).then(function () {
+      layoutMobile();
       requestAnimationFrame(function () {
+        layoutMobile();
+        revealBody();
         requestAnimationFrame(function () {
           navigate();
           scheduleLayout();
@@ -3036,7 +3075,20 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 <script>
 (function initTelegram() {
   var tg = window.Telegram && window.Telegram.WebApp;
-  if (!tg) return;
+  var readyTimer = 0;
+  function markTelegramReady() {
+    clearTimeout(readyTimer);
+    readyTimer = 0;
+    if (window.kravviMarkTelegramReady) window.kravviMarkTelegramReady();
+  }
+  function scheduleTelegramReady(delay) {
+    clearTimeout(readyTimer);
+    readyTimer = setTimeout(markTelegramReady, delay || 0);
+  }
+  if (!tg) {
+    markTelegramReady();
+    return;
+  }
   var isMiniApp = false;
   if (tg.initData && tg.initData.length > 0) {
     isMiniApp = true;
@@ -3045,6 +3097,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   }
   if (!isMiniApp) {
     tg.ready();
+    markTelegramReady();
     return;
   }
   document.body.classList.add('telegram-mini-app');
@@ -3096,8 +3149,12 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   }
   updateSafeArea();
   if (tg.onEvent) {
-    tg.onEvent('viewportChanged', updateSafeArea);
+    tg.onEvent('viewportChanged', function () {
+      updateSafeArea();
+      scheduleTelegramReady(350);
+    });
   }
+  scheduleTelegramReady(useMobileMode ? 350 : 0);
   if (tg.BackButton) {
     tg.BackButton.onClick(function () {
       window.history.back();
