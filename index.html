@@ -30,9 +30,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   1. RESET
-   ============================================================ */
 *, *::before, *::after { box-sizing: border-box; }
 html, body, h1, h2, h3, h4, h5, h6, p, ul, ol, li, menu, figure, blockquote { margin: 0; padding: 0; }
 ul, ol, menu { list-style: none; }
@@ -40,36 +37,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 svg { display: block; }
-
-/* ============================================================
-   2. TOKENS
-   ============================================================ */
 :root {
   --font-hero:    "Bodoni Moda", Georgia, "Times New Roman", serif;
   --font-ui: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-
   --bg: #0A0A0A;
   --text: #f5f5f6;
   --text-dim: #dddddd;
   --text-soft: #9a9aa2;
   --text-muted: #6a6a72;
-
   --hover-color:  #A8895C;
   --hover-shadow: rgba(168, 137, 92, 0.55);
   --hover-glow:   rgba(168, 137, 92, 0.22);
-
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-blur: 26px;
   --glass-sat: 1.4;
   --glass-radius: 24px;
-
   --grid-max-w: min(1360px, 88vw);
   --grid-max-h: min(780px, 82vh);
-
   --gap: 16px;
   --cols: 4;
-
   --ref-w: 1920;
   --hero-top: 10.3vh;
   --hero-gap: 4.1vh;
@@ -82,17 +69,13 @@ svg { display: block; }
   --name-y: 0vh;
   --name-opsz: 96;
   --name-stroke: 0px;
-
   --author-size-v: 22;
   --author-x: -31vw;
   --author-y: 0vh;
-
   --desc-x: -31vw;
   --desc-y: 0.5vh;
-
   --btn-x: -31.2vw;
   --btn-y: -0.3vh;
-
   --desc-size-v: 16;
   --desc-width-v: 478;
   --btn-size-v: 13;
@@ -100,20 +83,16 @@ svg { display: block; }
   --btn-pad-y: 1em;
   --btn-pad-x: 2.2em;
   --btn-scale: 1;
-
   --actions-max-w: 2000px;
-
   --author-size: max(14px, calc(var(--author-size-v) * 100vw / var(--ref-w)));
   --desc-size:   max(13px, calc(var(--desc-size-v)   * 100vw / var(--ref-w)));
   --desc-width:  max(240px, calc(var(--desc-width-v) * 100vw / var(--ref-w)));
   --btn-size-base: max(12px, calc(var(--btn-size-v)  * 100vw / var(--ref-w)));
   --btn-size: calc(var(--btn-size-base) * var(--btn-scale));
   --btn-gap:   max(8px,  calc(var(--btn-gap-v)   * 100vw / var(--ref-w)));
-
   --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-soft:    cubic-bezier(0.4, 0, 0.6, 1);
   --ease: cubic-bezier(.22, .61, .36, 1);
-
   --view-fade: 500ms;
   --dur-name:  1100ms;
   --dur-photo: 1150ms;
@@ -121,240 +100,48 @@ svg { display: block; }
   --dur-btn:   950ms;
   --dur-tile:  850ms;
   --step-ms:   80;
-
   --delay-name:  60ms;
   --delay-photo: 200ms;
   --delay-desc:  400ms;
   --delay-btn:   540ms;
-
   --safe-top: 0px;
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
-
   --vv-bottom: 0px;
+  --vv-top: 0px;
   --bottom-safe: max(var(--safe-bottom), var(--vv-bottom));
+  --vvh: 100dvh;
+  --vvw: 100vw;
+  --vis-top: 0px;
+  --vis-bottom: 0px;
+  --vis-h: 100dvh;
+  --vis-w: 100vw;
+  --photo-ratio: 1.5;
+  --photo-h-scale: 104;
+  --photo-h-max-scale: 150;
+  --photo-frame-h: min(
+    calc(var(--vis-h) * var(--photo-h-scale) / 100),
+    calc(var(--vis-w) * var(--photo-h-max-scale) / 100)
+  );
+  --photo-frame-w: calc(var(--photo-frame-h) * var(--photo-ratio));
+  --kravvi-x-v: 50;
+  --kravvi-y-v: 21;
+  --kravvi-size: 17.5;
+  --kravvi-shift-x: 0cqw;
+  --kravvi-shift-y: 0cqw;
+  --kravvi-font-px: calc(var(--photo-frame-w) * var(--kravvi-size) / 100);
+  --stack-shift-x-v: 0;
+  --stack-shift-y-v: 0;
+  --stack-collision-gap: 16px;
+  --stack-width: 640px;
+  --ma-x: 0;
+  --ma-y: 5;
+  --md-x: 0;
+  --md-y: 5.5;
+  --mb-x: 0;
+  --mb-y: 3;
 }
-
-/* ============================================================
-   TABLET + PHONE  ·  ≤1024px ИЛИ (touch и ≤1366px)
-   ============================================================ */
-@media (max-width: 1024px),
-       ((hover: none) and (pointer: coarse) and (max-width: 1366px)) {
-  :root {
-    --gap: 14px;
-    --glass-radius: 22px;
-    --glass-blur: 22px;
-
-    --hero-gap: 3vh;
-    --photo-h: 104vh;
-    --photo-h-max: 150vw;
-
-    --name-x: 0vw;
-    --name-y: 0vh;
-    --author-x: 0vw;
-    --author-y: 0vh;
-    --desc-x: 0vw;
-    --desc-y: 0vh;
-    --btn-x: 0vw;
-    --btn-y: 0vh;
-
-    --actions-max-w: 2000px;
-  }
-
-  .hero-stack {
-    position: absolute !important;
-    top: calc(var(--hero-top) + (var(--name-size) * 0.9) + (var(--hero-gap))) !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: auto !important;
-    max-width: none !important;
-    transform: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: var(--hero-stack-gap);
-    padding-left: max(20px, var(--safe-left));
-    padding-right: max(20px, var(--safe-right));
-    pointer-events: none;
-  }
-  .hero-stack > * { pointer-events: auto; }
-
-  .hero-text { align-items: center; text-align: center; }
-  .hero-actions { justify-content: center; }
-
-  .hero-author {
-    width: var(--desc-width);
-    box-sizing: border-box;
-    text-align: center;
-  }
-
-  .view-grid {
-    padding:
-      calc(var(--gap) + var(--safe-top))
-      calc(var(--gap) + var(--safe-right))
-      calc(var(--gap) + var(--bottom-safe))
-      calc(var(--gap) + var(--safe-left));
-    justify-content: flex-start;
-  }
-
-  .view-header {
-    max-width: none;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  .grid {
-    max-width: none;
-    max-height: none;
-  }
-
-  [data-tile-id="photo-archive"] .tile-desc {
-    white-space: pre-line;
-  }
-}
-
-/* ============================================================
-   TABLET  ·  701–1024px ИЛИ (touch и 701–1366px)
-   ============================================================ */
-@media (min-width: 701px) and (max-width: 1024px),
-       ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
-  :root {
-    --ref-w: 900;
-    --hero-top: 16vh;
-    --hero-gap: 3vh;
-    --photo-h: 104vh;
-    --photo-h-max: 150vw;
-    --name-size: 22vw;
-    --name-opsz: 96;
-    --name-stroke: 0px;
-    --name-x: 0vw;
-    --name-y: 0vh;
-    --author-size-v: 22;
-    --author-x: 0vw;
-    --author-y: 0vh;
-    --desc-size-v: 16;
-    --desc-width-v: 478;
-    --desc-x: 0vw;
-    --desc-y: 1vh;
-    --btn-size-v: 13;
-    --btn-gap-v: 15;
-    --btn-x: 0vw;
-    --btn-y: 0.2vh;
-  }
-}
-
-/* ============================================================
-   PHONE  ·  ≤700px
-   ============================================================ */
-@media (max-width: 700px) {
-  :root {
-    --gap: 10px;
-    --cols: 2;
-    --glass-radius: 20px;
-    --glass-blur: 20px;
-
-    --ref-w: 402;
-
-    --hero-top: 15vh;
-    --hero-gap: 7.8vh;
-    --photo-h: 92.5vh;
-    --photo-h-max: 213vw;
-    --name-size: 22.9vw;
-    --name-x: 0vw;
-    --name-y: 3.1vh;
-    --name-opsz: 30;
-    --name-stroke: 0.33px;
-
-    --author-size-v: 19;
-    --author-x: 0vw;
-    --author-y: 4.9vh;
-
-    --desc-size-v: 14;
-    --desc-width-v: 292;
-    --desc-x: 0vw;
-    --desc-y: 5.6vh;
-
-    --btn-size-v: 11.3;
-    --btn-gap-v: 14;
-    --btn-pad-y: 0.85em;
-    --btn-pad-x: 1.75em;
-    --btn-scale: 0.95;
-    --btn-x: 0vw;
-    --btn-y: 3.5vh;
-
-    --actions-max-w: 250px;
-
-    --hero-stack-gap: 35px;
-  }
-
-  html.is-firefox-mobile { --btn-scale: 1.1; }
-
-  .hero-name {
-    font-optical-sizing: none;
-    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
-    font-weight: 400;
-  }
-
-  .hero-tagline {
-    text-align: justify !important;
-    text-justify: inter-word !important;
-    text-align-last: left !important;
-    hyphens: none !important;
-    -webkit-hyphens: none !important;
-    -ms-hyphens: none !important;
-    overflow-wrap: normal;
-    word-break: normal;
-  }
-
-  .view-title {
-    font-size: 1.15rem;
-  }
-
-  .view-grid {
-    padding: 0 !important;
-    gap: 0 !important;
-    align-items: stretch !important;
-    justify-content: flex-start !important;
-  }
-  .view-header {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding:
-      calc(10px + var(--safe-top))
-      max(10px, var(--safe-right))
-      6px
-      max(10px, var(--safe-left)) !important;
-  }
-  .grid {
-    width: 100% !important;
-    max-width: 100% !important;
-    max-height: none !important;
-    align-self: stretch !important;
-    flex: 1 1 auto;
-    min-height: 0;
-    padding:
-      0
-      max(10px, var(--safe-right))
-      max(10px, var(--bottom-safe))
-      max(10px, var(--safe-left)) !important;
-    gap: 10px !important;
-  }
-
-  [data-tile-id="photo-archive"] .tile-content,
-  [data-tile-id="mail"] .tile-content {
-    flex-direction: column-reverse;
-  }
-  [data-tile-id="photo-archive"] .tile-bottom,
-  [data-tile-id="mail"] .tile-bottom {
-    align-items: flex-end;
-    text-align: right;
-  }
-}
-
-/* ============================================================
-   3. BASE
-   ============================================================ */
 html, body {
   width: 100%;
   height: 100%;
@@ -372,11 +159,8 @@ html, body {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
 }
-body.is-loading { visibility: hidden; }
-
-/* ============================================================
-   4. УГЛОВЫЕ ЭЛЕМЕНТЫ
-   ============================================================ */
+body.is-loading { visibility: visible; }
+body.is-loading > * { visibility: hidden; }
 .brand-tag {
   position: fixed;
   top: calc(22px + var(--safe-top));
@@ -394,7 +178,6 @@ body.is-loading { visibility: hidden; }
   pointer-events: none;
   transition: opacity 350ms var(--ease-out-smooth), transform 350ms var(--ease-out-smooth);
 }
-
 .lang-btn {
   position: fixed;
   top: calc(18px + var(--safe-top));
@@ -420,7 +203,6 @@ body.is-loading { visibility: hidden; }
   -webkit-user-select: none;
 }
 .lang-btn:hover { color: #fff; background: rgba(255,255,255,0.06); }
-
 .lang-menu {
   position: fixed;
   top: calc(48px + var(--safe-top));
@@ -471,7 +253,6 @@ body.is-loading { visibility: hidden; }
 }
 .lang-item:hover { background: rgba(255,255,255,0.10); color: #fff; }
 .lang-item.is-active { color: #fff; background: rgba(255,255,255,0.06); }
-
 .copyright {
   position: fixed;
   bottom: calc(20px + var(--bottom-safe));
@@ -489,7 +270,6 @@ body.is-loading { visibility: hidden; }
   pointer-events: none;
   transition: opacity 350ms var(--ease-out-smooth), transform 350ms var(--ease-out-smooth);
 }
-
 body.overlay-active .brand-tag,
 body.overlay-active .lang-btn,
 body.overlay-active .lang-menu,
@@ -499,18 +279,6 @@ body.overlay-active .copyright {
 }
 body.overlay-active .brand-tag { transform: translateY(-8px); }
 body.overlay-active .copyright  { transform: translateY(8px); }
-
-@media (max-width: 700px) {
-  .brand-tag { font-size: 9px; letter-spacing: 0.28em; top: calc(18px + var(--safe-top)); left: calc(18px + var(--safe-left)); }
-  .lang-btn  { font-size: 11px; padding: 5px 10px; top: calc(14px + var(--safe-top)); right: calc(18px + var(--safe-right)); }
-  .lang-menu { top: calc(42px + var(--safe-top)); right: calc(18px + var(--safe-right)); min-width: 76px; }
-  .lang-item { padding: 5px 12px; font-size: 11px; }
-  .copyright { font-size: 9px; letter-spacing: 0.2em; bottom: calc(16px + var(--bottom-safe)); right: calc(18px + var(--safe-right)); }
-}
-
-/* ============================================================
-   5. APP
-   ============================================================ */
 #app {
   position: relative;
   width: 100%;
@@ -518,10 +286,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   height: 100dvh;
   z-index: 1;
 }
-
-/* ============================================================
-   6. HOME
-   ============================================================ */
 .view-home {
   position: absolute;
   inset: 0;
@@ -541,14 +305,15 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     opacity var(--view-fade) var(--ease-out-smooth),
     visibility 0ms linear 0ms;
 }
-
 .home-stage {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
-
+.hero-artboard {
+  display: contents;
+}
 .hero-name {
   position: absolute;
   top: var(--hero-top);
@@ -564,16 +329,13 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   color: #ffffff;
   white-space: nowrap;
   font-feature-settings: "locl" 0;
-
   -webkit-text-stroke: var(--name-stroke) currentColor;
   text-stroke: var(--name-stroke) currentColor;
   paint-order: stroke fill;
-
   z-index: 1;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
-
   opacity: 0;
   filter: blur(14px);
   transform: translateX(-50%) translate(var(--name-x), calc(var(--name-y) + 20px));
@@ -591,7 +353,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     filter var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     transform var(--dur-name) var(--ease-out-smooth) var(--delay-name);
 }
-
 .hero-photo-wrap {
   position: absolute;
   inset: 0;
@@ -602,7 +363,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   pointer-events: none;
 }
 .hero-photo-wrap picture { display: contents; }
-
 .hero-photo {
   position: relative;
   height: min(var(--photo-h), var(--photo-h-max));
@@ -611,7 +371,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
-
   opacity: 0;
   filter: blur(12px);
   transform: translateY(28px);
@@ -629,7 +388,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     filter var(--dur-photo) var(--ease-out-smooth) var(--delay-photo),
     transform var(--dur-photo) var(--ease-out-smooth) var(--delay-photo);
 }
-
 .hero-stack {
   position: absolute;
   top: calc(var(--hero-top) + (var(--name-size) * 0.9) + var(--hero-gap));
@@ -645,14 +403,12 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   pointer-events: none;
 }
 .hero-stack > * { pointer-events: auto; }
-
 .hero-text {
   display: flex;
   flex-direction: column;
   gap: var(--hero-text-gap);
   align-items: flex-start;
 }
-
 .hero-author {
   font-family: var(--font-ui);
   font-weight: 400;
@@ -660,7 +416,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   letter-spacing: 0.01em;
   color: var(--text);
   line-height: 1.3;
-
   opacity: 0;
   filter: blur(10px);
   transform: translate(var(--author-x), calc(var(--author-y) + 14px));
@@ -678,7 +433,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     filter var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
     transform var(--dur-desc) var(--ease-out-smooth) var(--delay-desc);
 }
-
 .hero-tagline {
   font-family: var(--font-ui);
   font-weight: 300;
@@ -690,7 +444,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   hyphens: none;
   width: var(--desc-width);
   max-width: 90vw;
-
   opacity: 0;
   filter: blur(10px);
   transform: translate(var(--desc-x), calc(var(--desc-y) + 18px));
@@ -708,7 +461,6 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     filter var(--dur-desc) var(--ease-out-smooth) var(--delay-desc),
     transform var(--dur-desc) var(--ease-out-smooth) var(--delay-desc);
 }
-
 body.overlay-active #view-home.is-active .hero-author,
 body.overlay-active #view-home.is-active .hero-tagline {
   opacity: 0;
@@ -725,16 +477,11 @@ body.overlay-active #view-home.is-active .hero-author {
 body.overlay-active #view-home.is-active .hero-tagline {
   transform: translate(var(--desc-x), calc(var(--desc-y) + 20px));
 }
-
-/* ============================================================
-   КНОПКИ ГЛАВНОЙ
-   ============================================================ */
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: var(--btn-gap);
   max-width: var(--actions-max-w);
-
   opacity: 0;
   transform: translate(var(--btn-x), calc(var(--btn-y) + 18px));
   transition:
@@ -756,7 +503,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     opacity 500ms var(--ease-in-soft),
     transform 500ms var(--ease-in-soft);
 }
-
 .hero-actions .btn-pill {
   position: relative;
   isolation: isolate;
@@ -788,7 +534,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     text-shadow 400ms ease,
     border-color 400ms ease;
 }
-
 .hero-actions .btn-pill::before {
   content: "";
   position: absolute;
@@ -809,7 +554,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   transition: opacity 400ms ease;
   pointer-events: none;
 }
-
 @media (hover: hover) and (pointer: fine) {
   .hero-actions .btn-pill:hover::before { opacity: 1; }
   .hero-actions .btn-pill:hover {
@@ -825,7 +569,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     transform: translateY(0) scale(0.985) translateZ(0);
   }
 }
-
 .hero-actions .btn-pill.is-tapped::before {
   opacity: 1;
   transition: opacity 150ms ease;
@@ -844,7 +587,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     transform 150ms ease,
     border-color 150ms ease;
 }
-
 .hero-actions .btn-pill:focus-visible::before { opacity: 1; }
 .hero-actions .btn-pill:focus-visible {
   color: #ffffff;
@@ -855,10 +597,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     0 0 20px rgba(255, 255, 255, 0.25);
   transform: translateY(-2px) translateZ(0);
 }
-
-/* ============================================================
-   7. BENTO OVERLAY
-   ============================================================ */
 .view-grid {
   position: fixed;
   inset: 0;
@@ -875,7 +613,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     calc(60px + var(--safe-left));
   overflow: hidden;
   isolation: isolate;
-
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -891,7 +628,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     opacity 800ms var(--ease-out-smooth),
     visibility 0ms linear 0ms;
 }
-
 .view-grid::before {
   content: "";
   position: absolute;
@@ -903,16 +639,15 @@ body.overlay-active #view-home.is-active .hero-actions {
   pointer-events: none;
 }
 .view-grid.is-active::before { opacity: 1; }
-
 .view-grid > * {
   position: relative;
   z-index: 1;
 }
-
 .view-header {
   width: 100%;
   max-width: var(--grid-max-w);
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -935,7 +670,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     transform 800ms var(--ease-out-smooth) 80ms,
     filter 800ms var(--ease-out-smooth) 80ms;
 }
-
 .view-title {
   font-family: var(--font-ui);
   font-weight: 600;
@@ -943,8 +677,8 @@ body.overlay-active #view-home.is-active .hero-actions {
   line-height: 1.2;
   letter-spacing: 0.02em;
   color: var(--text);
+  text-align: right;
 }
-
 .grid {
   width: 100%;
   max-width: var(--grid-max-w);
@@ -963,10 +697,6 @@ body.overlay-active #view-home.is-active .hero-actions {
 .grid::-webkit-scrollbar { width: 6px; height: 6px; }
 .grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 3px; }
 .grid::-webkit-scrollbar-track { background: transparent; }
-
-/* ============================================================
-   8. TILES (BENTO)
-   ============================================================ */
 .tile {
   position: relative;
   display: block;
@@ -977,14 +707,12 @@ body.overlay-active #view-home.is-active .hero-actions {
   cursor: pointer;
   outline: none;
   -webkit-tap-highlight-color: transparent;
-
   opacity: 0;
   transform: translateY(22px) scale(0.96);
   transition:
     opacity 400ms var(--ease-in-soft),
     transform 400ms var(--ease-in-soft);
 }
-
 .tile::before {
   content: "";
   position: absolute;
@@ -997,7 +725,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   -webkit-backdrop-filter: blur(18px) saturate(1.2);
   pointer-events: none;
 }
-
 .tile::after {
   content: "";
   position: absolute;
@@ -1009,7 +736,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   pointer-events: none;
   transition: opacity 300ms var(--ease-out-smooth);
 }
-
 .view-grid.is-active .tile {
   opacity: 1;
   transform: none;
@@ -1022,7 +748,6 @@ body.overlay-active #view-home.is-active .hero-actions {
     calc(var(--i, 0) * var(--step-ms) * 1ms),
     calc(var(--i, 0) * var(--step-ms) * 1ms);
 }
-
 .view-grid.is-active .tile:hover::after { opacity: 1; }
 .view-grid.is-active .tile:hover .tile-content {
   transform: translateY(-2px);
@@ -1031,7 +756,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   transform: translateY(-1px) scale(0.985);
   transition-duration: 200ms;
 }
-
 .tile.is-disabled {
   cursor: not-allowed;
   opacity: 0.7;
@@ -1080,7 +804,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   letter-spacing: 0.08em;
   line-height: 1.3;
 }
-
 .tile-media {
   position: absolute;
   inset: 0;
@@ -1108,7 +831,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   transition: transform 450ms var(--ease-out-smooth);
 }
 .tile-top { display: flex; justify-content: flex-end; align-items: flex-start; }
-
 .tile-arrow {
   display: inline-flex;
   align-items: center; justify-content: center;
@@ -1129,7 +851,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   transform: translate(2px, -2px);
 }
 .tile-bottom { display: flex; flex-direction: column; gap: 4px; }
-
 .tile-title {
   font-family: var(--font-ui);
   font-weight: 600;
@@ -1148,10 +869,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   letter-spacing: 0.01em;
   text-shadow: 0 1px 10px rgba(0,0,0,0.4);
 }
-
-/* ============================================================
-   9. BACK BUTTON
-   ============================================================ */
 .glass-btn {
   display: inline-flex;
   align-items: center; justify-content: center;
@@ -1179,7 +896,6 @@ body.overlay-active #view-home.is-active .hero-actions {
   color: #fff;
 }
 .glass-btn:active { transform: translateY(-1px) scale(0.985); }
-
 .back-btn {
   width: 34px;
   height: 34px;
@@ -1207,16 +923,13 @@ body.overlay-active #view-home.is-active .hero-actions {
   stroke-width: 2.2;
   pointer-events: none;
 }
-
 @media (max-width: 700px) {
   .glass-btn { padding: 0.8em 1.4em; font-size: 0.9rem; }
   .tile-arrow { width: 24px; height: 24px; }
   .tile-arrow svg { width: 11px; height: 11px; }
-
   .back-btn { width: 28px; height: 28px; }
   .back-btn svg { width: 14px; height: 14px; }
 }
-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
@@ -1224,37 +937,428 @@ body.overlay-active #view-home.is-active .hero-actions {
     transition-delay: 0ms !important;
   }
 }
+@media (max-width: 1024px),
+       ((hover: none) and (pointer: coarse) and (max-width: 1366px)) {
+  :root {
+    --gap: 14px;
+    --glass-radius: 22px;
+    --glass-blur: 22px;
+    --photo-h-scale: 100;
+    --photo-h-max-scale: 150;
+    --kravvi-x-v: 50;
+    --kravvi-y-v: 26;
+    --kravvi-size: 12;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
+    --stack-collision-gap: 16px;
+    --stack-width: 640px;
+    --actions-max-w: 2000px;
+    --author-x: calc(var(--ma-x) * var(--vis-w) / 100);
+    --author-y: calc(var(--ma-y) * var(--vis-h) / 100);
+    --desc-x:   calc(var(--md-x) * var(--vis-w) / 100);
+    --desc-y:   calc(var(--md-y) * var(--vis-h) / 100);
+    --btn-x:    calc(var(--mb-x) * var(--vis-w) / 100);
+    --btn-y:    calc(var(--mb-y) * var(--vis-h) / 100);
+    --author-size: max(14px, calc(var(--author-size-v) * var(--vvw) / var(--ref-w)));
+    --desc-size:   max(13px, calc(var(--desc-size-v)   * var(--vvw) / var(--ref-w)));
+    --desc-width:  max(240px, calc(var(--desc-width-v) * var(--vvw) / var(--ref-w)));
+    --btn-size-base: max(12px, calc(var(--btn-size-v)  * var(--vvw) / var(--ref-w)));
+    --btn-gap:   max(8px,  calc(var(--btn-gap-v)   * var(--vvw) / var(--ref-w)));
+  }
 
-/* ============================================================
-   TELEGRAM MINI APP
-   ============================================================ */
+  .home-stage {
+    position: fixed;
+    top: var(--vis-top, 0px);
+    left: 0;
+    right: 0;
+    height: var(--vis-h, 100dvh);
+    bottom: auto;
+    overflow: hidden;
+  }
+
+  .hero-artboard {
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: var(--photo-frame-w);
+    height: var(--photo-frame-h);
+    container-type: inline-size;
+    overflow: visible;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .hero-photo-wrap {
+    position: absolute;
+    inset: 0;
+    display: block;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hero-photo-wrap picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero-photo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: center;
+    max-width: none;
+    transform: none;
+  }
+
+  #view-home.is-active .hero-photo {
+    transform: none;
+  }
+
+  .hero-name {
+    top: calc(var(--kravvi-y-v) * 1%);
+    left: calc(var(--kravvi-x-v) * 1%);
+    z-index: 1;
+    font-size: calc(var(--kravvi-size) * 1vw);
+    font-size: calc(var(--kravvi-size) * 1cqw);
+    font-size: var(--kravvi-font-px);
+    transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), calc(var(--kravvi-shift-y) + 20px));
+  }
+
+  #view-home.is-active .hero-name {
+    transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), var(--kravvi-shift-y));
+  }
+
+  .hero-stack {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: max-content;
+    max-width: min(var(--stack-width), calc(var(--vis-w) - 40px));
+    align-items: center;
+    gap: var(--hero-stack-gap);
+    padding-left: max(20px, var(--safe-left));
+    padding-right: max(20px, var(--safe-right));
+    pointer-events: none;
+  }
+
+  .hero-stack > * { pointer-events: auto; }
+  .hero-text { align-items: center; text-align: center; }
+  .hero-actions { justify-content: center; }
+  .hero-author {
+    width: var(--desc-width);
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .hero-tagline {
+    text-align: center;
+  }
+
+  .view-grid {
+    padding:
+      calc(var(--gap) + var(--safe-top))
+      calc(var(--gap) + var(--safe-right))
+      calc(var(--gap) + var(--bottom-safe))
+      calc(var(--gap) + var(--safe-left));
+    justify-content: flex-start;
+  }
+  .view-header {
+    max-width: none;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  body.telegram-mini-app.tg-mobile .view-header {
+    justify-content: flex-end;
+  }
+  body.telegram-mini-app.tg-mobile .view-header .back-btn {
+    display: none;
+  }
+  .grid {
+    max-width: none;
+    max-height: none;
+  }
+  [data-tile-id="photo-archive"] .tile-desc {
+    white-space: pre-line;
+  }
+}
+@media (min-width: 701px) and (max-width: 1024px),
+       ((hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)) {
+  :root {
+    --ref-w: 900;
+    --hero-top: 16vh;
+    --hero-gap: 3vh;
+    --photo-h: 104vh;
+    --photo-h-max: 150vw;
+    --photo-h-scale: 100;
+    --photo-h-max-scale: 150;
+    --kravvi-x-v: 50;
+    --kravvi-y-v: 26;
+    --kravvi-size: 44;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
+    --name-size: 21.3vw;
+    --name-x: 0vw;
+    --name-y: 0vh;
+    --name-opsz: 96;
+    --name-stroke: 0px;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
+    --stack-collision-gap: 16px;
+    --stack-width: 640px;
+    --hero-text-gap: 8px;
+    --hero-stack-gap: 28px;
+    --author-size-v: 21;
+    --ma-x: 0;
+    --ma-y: 1;
+    --desc-size-v: 16;
+    --desc-width-v: 478;
+    --md-x: 0;
+    --md-y: 1.5;
+    --btn-size-v: 11;
+    --btn-gap-v: 15;
+    --btn-pad-x: 2.2em;
+    --btn-pad-y: 1em;
+    --btn-scale: 1;
+    --mb-x: 0;
+    --mb-y: 0;
+    --actions-max-w: 2000px;
+    --gap: 14px;
+    --cols: 4;
+    --glass-radius: 22px;
+    --glass-blur: 22px;
+  }
+}
+@media (max-width: 700px) {
+  :root {
+    --gap: 10px;
+    --cols: 2;
+    --glass-radius: 20px;
+    --glass-blur: 20px;
+    --ref-w: 402;
+    --hero-top: 19vh;
+    --hero-gap: 7.8vh;
+    --photo-h: 92.5vh;
+    --photo-h-max: 213vw;
+    --photo-h-scale: 93;
+    --photo-h-max-scale: 213;
+    --kravvi-x-v: 50;
+    --kravvi-y-v: 21;
+    --kravvi-size: 18.1;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
+    --name-size: 22.9vw;
+    --name-opsz: 30;
+    --name-stroke: 0.33px;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
+    --stack-collision-gap: 16px;
+    --stack-width: 360px;
+    --author-size-v: 19;
+    --ma-x: 0;
+    --ma-y: 5;
+    --desc-size-v: 14;
+    --desc-width-v: 292;
+    --md-x: 0;
+    --md-y: 5.5;
+    --btn-size-v: 11.3;
+    --btn-gap-v: 14;
+    --btn-pad-y: 0.85em;
+    --btn-pad-x: 1.75em;
+    --btn-scale: 0.95;
+    --mb-x: 0;
+    --mb-y: 3;
+    --actions-max-w: 250px;
+    --hero-stack-gap: 35px;
+  }
+  html.is-firefox-mobile { --btn-scale: 1.1; }
+  .hero-name {
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
+    font-weight: 400;
+  }
+  .hero-tagline {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .view-title {
+    font-size: 1.15rem;
+  }
+  .view-grid {
+    padding: 0 !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+  .view-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding:
+      calc(10px + var(--safe-top))
+      max(10px, var(--safe-right))
+      6px
+      max(10px, var(--safe-left)) !important;
+  }
+  .grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    align-self: stretch !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding:
+      0
+      max(10px, var(--safe-right))
+      max(10px, var(--bottom-safe))
+      max(10px, var(--safe-left)) !important;
+    gap: 10px !important;
+  }
+  [data-tile-id="photo-archive"] .tile-content,
+  [data-tile-id="mail"] .tile-content {
+    flex-direction: column-reverse;
+  }
+  [data-tile-id="photo-archive"] .tile-bottom,
+  [data-tile-id="mail"] .tile-bottom {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+@media (max-width: 1024px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10),
+       (hover: none) and (pointer: coarse) and (max-width: 1366px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10) {
+  :root {
+    --gap: 10px;
+    --cols: 2;
+    --glass-radius: 20px;
+    --glass-blur: 20px;
+    --ref-w: 402;
+    --hero-top: 19vh;
+    --hero-gap: 7.8vh;
+    --photo-h: 92.5vh;
+    --photo-h-max: 213vw;
+    --photo-h-scale: 93;
+    --photo-h-max-scale: 213;
+    --kravvi-x-v: 50;
+    --kravvi-y-v: 21;
+    --kravvi-size: 30;
+    --kravvi-shift-x: 0cqw;
+    --kravvi-shift-y: 0cqw;
+    --name-size: 22.9vw;
+    --name-x: 0vw;
+    --name-y: 0vh;
+    --name-opsz: 30;
+    --name-stroke: 0.33px;
+    --stack-shift-x-v: 0;
+    --stack-shift-y-v: 0;
+    --stack-collision-gap: 16px;
+    --stack-width: 360px;
+    --hero-text-gap: 8px;
+    --hero-stack-gap: 35px;
+    --author-size-v: 14;
+    --ma-x: 0;
+    --ma-y: 5;
+    --desc-size-v: 10;
+    --desc-width-v: 292;
+    --md-x: 0;
+    --md-y: 5.5;
+    --btn-size-v: 8.8;
+    --btn-gap-v: 10;
+    --btn-pad-y: 0.85em;
+    --btn-pad-x: 1.75em;
+    --btn-scale: 0.95;
+    --mb-x: 0;
+    --mb-y: 2;
+    --actions-max-w: 250px;
+  }
+  html.is-firefox-mobile { --btn-scale: 1.1; }
+  .hero-name {
+    font-optical-sizing: none;
+    font-variation-settings: "opsz" var(--name-opsz, 30), "wght" 400;
+    font-weight: 400;
+  }
+  .hero-tagline {
+    text-align: justify !important;
+    text-justify: inter-word !important;
+    text-align-last: left !important;
+    hyphens: none !important;
+    -webkit-hyphens: none !important;
+    -ms-hyphens: none !important;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .view-title {
+    font-size: 1.15rem;
+  }
+  .view-grid {
+    padding: 0 !important;
+    gap: 0 !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+  .view-header {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding:
+      calc(10px + var(--safe-top))
+      max(10px, var(--safe-right))
+      6px
+      max(10px, var(--safe-left)) !important;
+  }
+  .grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: none !important;
+    align-self: stretch !important;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding:
+      0
+      max(10px, var(--safe-right))
+      max(10px, var(--bottom-safe))
+      max(10px, var(--safe-left)) !important;
+    gap: 10px !important;
+  }
+  [data-tile-id="photo-archive"] .tile-content,
+  [data-tile-id="mail"] .tile-content {
+    flex-direction: column-reverse;
+  }
+  [data-tile-id="photo-archive"] .tile-bottom,
+  [data-tile-id="mail"] .tile-bottom {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
 body.telegram-mini-app {
   --tg-top: var(--tg-content-safe-area-inset-top, 0px);
   --tg-pad: calc(12px + var(--tg-top) + var(--safe-top));
 }
-
 @media (hover: hover) and (pointer: fine) {
   body.telegram-mini-app .hero-name {
     -webkit-text-stroke: 0.35px currentColor;
     text-stroke: 0.35px currentColor;
   }
 }
-
 body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
 body.telegram-mini-app .lang-btn { top: var(--tg-pad); }
 body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
-
 body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
-
 @media (max-width: 700px) {
   body.telegram-mini-app {
     --tg-pad: calc(32px + var(--tg-top) + var(--safe-top));
   }
-  
   body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
-  
   body.telegram-mini-app .view-grid {
-    padding: 0 !important; 
+    padding: 0 !important;
   }
   body.telegram-mini-app .view-header {
     padding-top: var(--tg-pad) !important;
@@ -1264,9 +1368,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 </style>
 </head>
 <body class="is-loading">
-
 <div class="brand-tag" aria-hidden="true">VISUAL &amp; CREATIVE</div>
-
 <button class="lang-btn" id="lang-btn" type="button" aria-label="Сменить язык">
   <span id="lang-current">Ru</span>
 </button>
@@ -1275,24 +1377,23 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   <button type="button" class="lang-item" data-lang="en" role="menuitem">En</button>
   <button type="button" class="lang-item" data-lang="de" role="menuitem">De</button>
 </div>
-
 <div class="copyright" aria-hidden="true"><span id="copy-year">2026</span> © KRAVVI</div>
-
 <main id="app">
-
   <section id="view-home" class="view-home" aria-hidden="false">
     <div class="home-stage">
-      <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
-      <div class="hero-photo-wrap">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="images/VV%201600x1067.webp 1600w,
-                    images/VV%201920x1280.webp 1920w,
-                    images/VV%202356x1571.webp 2356w"
-            sizes="(max-width: 700px) 130vw, (max-width: 1024px) 100vw, 60vw">
-          <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async">
-        </picture>
+      <div class="hero-artboard">
+        <h1 class="hero-name" data-i18n="hero.name">KRAVVI</h1>
+        <div class="hero-photo-wrap">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="images/VV%201600x1067.webp 1600w,
+                      images/VV%201920x1280.webp 1920w,
+                      images/VV%202356x1571.webp 2356w"
+              sizes="(max-width: 700px) 290vw, (max-width: 1024px) 160vw, 60vw">
+            <img id="hero-photo" class="hero-photo" src="images/VV%20SIte.png" alt="Александр Кравви" decoding="async">
+          </picture>
+        </div>
       </div>
       <div class="hero-stack">
         <div class="hero-text">
@@ -1307,7 +1408,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       </div>
     </div>
   </section>
-
   <section id="view-portfolio" class="view-grid" aria-hidden="true">
     <header class="view-header">
       <a class="glass-btn back-btn" href="#/" data-nav="/" aria-label="Back">
@@ -1319,7 +1419,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     </header>
     <div class="grid" id="grid-portfolio" data-grid="portfolio"></div>
   </section>
-
   <section id="view-contacts" class="view-grid" aria-hidden="true">
     <header class="view-header">
       <a class="glass-btn back-btn" href="#/" data-nav="/" aria-label="Back">
@@ -1331,29 +1430,23 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     </header>
     <div class="grid" id="grid-contacts" data-grid="contacts"></div>
   </section>
-
 </main>
-
 <noscript>
   <div style="padding:40px;text-align:center;color:#fff;font-family:sans-serif;">
     Для работы сайта требуется JavaScript.
   </div>
 </noscript>
-
 <script>
 (function () {
   'use strict';
-
   var STEP_MS       = 80;
   var TRANSITION_MS = 900;
   var TAP_ANIM_MS   = 150;
-
   var ROUTES = {
     '/':          'home',
     '/portfolio': 'portfolio',
     '/contacts':  'contacts'
   };
-
   var I18N = {
     ru: {
       'meta.title':       'Digital card',
@@ -1458,7 +1551,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       'tile.disabled':           'Vorübergehend nicht verfügbar'
     }
   };
-
   var TILES = {
     portfolio: [
       { id: 'behance', url: '', disabled: true,
@@ -1486,7 +1578,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
         titleKey: 'tile.mail.title', descKey: 'tile.mail.desc' }
     ]
   };
-
   var PATTERNS = {
     portfolio: {
       desktop: {
@@ -1521,7 +1612,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       }
     }
   };
-
   function $$(sel, ctx) {
     return Array.prototype.slice.call((ctx || document).querySelectorAll(sel));
   }
@@ -1549,47 +1639,37 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     try { localStorage.setItem('lang', lang); } catch (e) {}
     applyI18n();
   }
-
   function isTouchDevice() {
     return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   }
-
   function isFirefoxMobile() {
     var ua = navigator.userAgent || '';
     return /Firefox/.test(ua) && /Android|Mobile/.test(ua);
   }
-
   function applyI18n() {
     var lang = getLang();
     var dict = I18N[lang] || I18N.ru;
     document.documentElement.setAttribute('lang', lang);
-
     var title = dict['meta.title'] || 'Digital card';
     document.title = title;
-
     var metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) metaDesc.setAttribute('content', dict['meta.description'] || '');
     var ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) ogTitle.setAttribute('content', title);
     var ogDesc = document.querySelector('meta[property="og:description"]');
     if (ogDesc) ogDesc.setAttribute('content', dict['meta.description'] || '');
-
     $$('[data-i18n]').forEach(function (el) {
       var k = el.getAttribute('data-i18n');
       if (dict[k] != null) el.textContent = dict[k];
     });
-
     var cur = document.getElementById('lang-current');
     if (cur) cur.textContent = lang.charAt(0).toUpperCase() + lang.charAt(1);
-
     $$('.lang-item').forEach(function (el) {
       el.classList.toggle('is-active', el.getAttribute('data-lang') === lang);
     });
-
     $$('.back-btn').forEach(function (el) {
       el.setAttribute('aria-label', dict['btn.back'] || 'Back');
     });
-
     var photo = document.getElementById('hero-photo');
     if (photo) {
       var altMap = {
@@ -1599,52 +1679,42 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       };
       photo.setAttribute('alt', altMap[lang] || 'Alexandr Kravvi');
     }
+    scheduleLayout();
   }
-
   var ARROW_SVG =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg>';
-
   var LOCK_SVG =
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
     'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
     '<rect x="4" y="11" width="16" height="10" rx="2"/>' +
     '<path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
-
   function buildTile(t, i) {
     var a = document.createElement('a');
     a.className = 'tile';
     a.setAttribute('data-tile-id', t.id);
     a.style.setProperty('--i', String(i));
-
     if (t.disabled) {
       a.classList.add('is-disabled');
       a.href = '#';
       a.addEventListener('click', function (e) { e.preventDefault(); });
-
       var inner = document.createElement('div');
       inner.className = 'tile-disabled-inner';
-
       var lock = document.createElement('div');
       lock.className = 'tile-disabled-lock';
       lock.innerHTML = LOCK_SVG;
-
       var label = document.createElement('div');
       label.className = 'tile-disabled-text';
       label.setAttribute('data-i18n', 'tile.disabled');
-
       inner.appendChild(lock);
       inner.appendChild(label);
-
       var content = document.createElement('div');
       content.className = 'tile-content';
       content.appendChild(inner);
-
       a.appendChild(content);
       return a;
     }
-
     if (t.url) {
       a.href = t.url;
       a.target = '_blank';
@@ -1653,37 +1723,29 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       a.href = '#';
       a.addEventListener('click', function (e) { e.preventDefault(); });
     }
-
     var title = document.createElement('div');
     title.className = 'tile-title';
     title.setAttribute('data-i18n', t.titleKey);
-
     var desc = document.createElement('div');
     desc.className = 'tile-desc';
     desc.setAttribute('data-i18n', t.descKey);
-
     var arrow = document.createElement('span');
     arrow.className = 'tile-arrow';
     arrow.innerHTML = ARROW_SVG;
-
     var top = document.createElement('div');
     top.className = 'tile-top';
     top.appendChild(arrow);
-
     var bottom = document.createElement('div');
     bottom.className = 'tile-bottom';
     bottom.appendChild(title);
     bottom.appendChild(desc);
-
     var content = document.createElement('div');
     content.className = 'tile-content';
     content.appendChild(top);
     content.appendChild(bottom);
-
     a.appendChild(content);
     return a;
   }
-
   function buildGrids() {
     ['portfolio', 'contacts'].forEach(function (kind) {
       var container = document.getElementById('grid-' + kind);
@@ -1693,11 +1755,9 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       container.appendChild(frag);
     });
   }
-
   function applyPatterns() {
-    var isMobile = window.matchMedia('(max-width: 700px)').matches;
-    var mode = isMobile ? 'mobile' : 'desktop';
-
+    var cols = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cols'));
+    var mode = (cols === 2) ? 'mobile' : 'desktop';
     ['portfolio', 'contacts'].forEach(function (kind) {
       var table = PATTERNS[kind] && PATTERNS[kind][mode];
       if (!table) return;
@@ -1707,7 +1767,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       });
     });
   }
-
   function parseHash() {
     var h = location.hash || '';
     if (h.charAt(0) === '#') h = h.slice(1);
@@ -1715,7 +1774,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     if (h.charAt(0) !== '/') h = '/' + h;
     return h;
   }
-
   function clearHomeButtonEffects() {
     var active = document.activeElement;
     if (active && active.blur) active.blur();
@@ -1724,12 +1782,10 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       btn.classList.remove('is-tapped');
     });
   }
-
   function closeLangMenu() {
     var menu = document.getElementById('lang-menu');
     if (menu) menu.classList.remove('is-open');
   }
-
   function updateBackButton(viewName) {
     var tg = window.Telegram && window.Telegram.WebApp;
     if (!tg || !tg.BackButton) return;
@@ -1739,30 +1795,22 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       tg.BackButton.show();
     }
   }
-
   function setView(name) {
     var home      = document.getElementById('view-home');
     var portfolio = document.getElementById('view-portfolio');
     var contacts  = document.getElementById('view-contacts');
-
     home.classList.add('is-active');
     home.setAttribute('aria-hidden', 'false');
-
     var isOverlay = (name === 'portfolio' || name === 'contacts');
-
     portfolio.classList.toggle('is-active', name === 'portfolio');
     contacts.classList.toggle('is-active', name === 'contacts');
     portfolio.setAttribute('aria-hidden', name === 'portfolio' ? 'false' : 'true');
     contacts.setAttribute('aria-hidden', name === 'contacts' ? 'false' : 'true');
-
     portfolio.classList.remove('is-entering');
     contacts.classList.remove('is-entering');
-
     document.body.classList.toggle('overlay-active', isOverlay);
-
     clearHomeButtonEffects();
     updateBackButton(name);
-
     if (name === 'portfolio') {
       portfolio.classList.add('is-entering');
       scheduleEnterClear(portfolio);
@@ -1770,14 +1818,13 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       contacts.classList.add('is-entering');
       scheduleEnterClear(contacts);
     }
+    scheduleLayout();
   }
-
   function scheduleEnterClear(view) {
     var tilesCount = view.querySelectorAll('.tile').length;
     var total = TRANSITION_MS + tilesCount * STEP_MS + 150;
     setTimeout(function () { view.classList.remove('is-entering'); }, total);
   }
-
   function navigate() {
     var h = parseHash();
     var name = ROUTES[h];
@@ -1792,14 +1839,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     }
     setView(name);
   }
-
   function preloadHeroPhoto() {
     return new Promise(function (resolve) {
       var img = document.getElementById('hero-photo');
       if (!img) return resolve(false);
-
       if (img.complete && img.naturalWidth > 0) return resolve(true);
-
       var done = false;
       function finish(ok) { if (!done) { done = true; resolve(ok); } }
       img.addEventListener('load', function () { finish(true); });
@@ -1807,9 +1851,7 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       setTimeout(function () { finish(false); }, 3000);
     });
   }
-
   function revealBody() { document.body.classList.remove('is-loading'); }
-
   function goHome() {
     var h = location.hash;
     if (h && h !== '#' && h !== '#/') {
@@ -1819,65 +1861,188 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       navigate();
     }
   }
-
   function handleNavClick(e) {
     var nav = e.target.closest ? e.target.closest('[data-nav]') : null;
     if (!nav) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     e.preventDefault();
-
     var route = nav.getAttribute('data-nav');
     var targetHash = '#' + route;
-
     var isHomeBtn = nav.classList.contains('btn-pill');
-
     if (isTouchDevice() && isHomeBtn) {
       $$('.hero-actions .btn-pill').forEach(function (b) {
         if (b !== nav) b.classList.remove('is-tapped');
       });
       nav.classList.add('is-tapped');
-
       setTimeout(function () {
         history.pushState({ page: route }, '', targetHash);
         navigate();
       }, TAP_ANIM_MS);
-
       return;
     }
-
     history.pushState({ page: route }, '', targetHash);
     navigate();
   }
-
-  function initViewportFix() {
-    if (!window.visualViewport) return;
-
+  var mobileMQ = window.matchMedia('(max-width: 1024px), ((hover: none) and (pointer: coarse) and (max-width: 1366px))');
+  var layoutRAF = 0;
+  function cssNum(name, fallback) {
+    var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name));
+    return isFinite(v) ? v : fallback;
+  }
+  function setPx(name, value) {
+    document.documentElement.style.setProperty(name, (Math.round(value * 100) / 100) + 'px');
+  }
+  function layoutMobile() {
     var root = document.documentElement;
-    var lastOffset = -1;
-    var rafPending = false;
+    var stack = document.querySelector('.hero-stack');
+    if (!stack) return;
+    if (!mobileMQ.matches) {
+      stack.style.top = '';
+      stack.style.left = '';
+      return;
+    }
+    var stage = document.querySelector('.home-stage');
+    var art = document.querySelector('.hero-artboard');
+    var img = document.getElementById('hero-photo');
+    if (!stage || !art || !img) return;
 
+    var stageRect = stage.getBoundingClientRect();
+    var stageW = Math.max(1, stageRect.width || cssNum('--vis-w', window.innerWidth || 360));
+    var stageH = Math.max(1, stageRect.height || cssNum('--vis-h', window.innerHeight || 640));
+
+    var natW = img.naturalWidth || 0;
+    var natH = img.naturalHeight || 0;
+    var ratio = (natW > 0 && natH > 0) ? (natW / natH) : cssNum('--photo-ratio', 1.5);
+    root.style.setProperty('--photo-ratio', String(ratio));
+
+    var hScale = cssNum('--photo-h-scale', 100);
+    var maxHScale = cssNum('--photo-h-max-scale', 150);
+    var frameH = stageH * hScale / 100;
+    var maxH = stageW * maxHScale / 100;
+    frameH = Math.min(frameH, maxH, stageH);
+    if (!isFinite(frameH) || frameH < 1) frameH = stageH;
+    var frameW = frameH * ratio;
+
+    setPx('--photo-frame-h', frameH);
+    setPx('--photo-frame-w', frameW);
+
+    var kravviSize = cssNum('--kravvi-size', 10);
+    var fontSize = frameW * kravviSize / 100;
+    setPx('--kravvi-font-px', fontSize);
+
+    var nameEl = document.querySelector('.hero-name');
+    if (nameEl) {
+      var edgeMargin = 10;
+      var nameRect = nameEl.getBoundingClientRect();
+      var centerX = nameRect.left + nameRect.width / 2;
+      var stageLeft = stageRect.left;
+      var leftSpace = centerX - stageLeft - edgeMargin;
+      var rightSpace = stageLeft + stageW - edgeMargin - centerX;
+      var maxNameWidth = 2 * Math.min(leftSpace, rightSpace);
+
+      if (!isFinite(maxNameWidth) || maxNameWidth < 1) {
+        maxNameWidth = Math.max(1, stageW - edgeMargin * 2);
+      }
+
+      if (nameRect.width > maxNameWidth && nameRect.width > 0) {
+        fontSize = fontSize * (maxNameWidth / nameRect.width);
+        setPx('--kravvi-font-px', fontSize);
+      }
+    }
+
+    var kravviY = cssNum('--kravvi-y-v', 20);
+    var kravviShiftY = cssNum('--kravvi-shift-y', 0);
+    var shiftYpx = frameW * kravviShiftY / 100;
+    var artTop = stageH - frameH;
+    var nameCenterY = artTop + frameH * kravviY / 100 + shiftYpx;
+    var nameBoxH = fontSize * 0.92;
+    var nameBottom = nameCenterY + nameBoxH / 2;
+
+    var stackRect = stack.getBoundingClientRect();
+    var stackH = Math.max(1, stackRect.height || stack.offsetHeight || 1);
+    var collisionGap = cssNum('--stack-collision-gap', 16);
+    var stackShiftX = cssNum('--stack-shift-x-v', 0);
+    var stackShiftY = cssNum('--stack-shift-y-v', 0);
+
+    var cx = stageW / 2 + stageW * stackShiftX / 100;
+    var cy = stageH / 2 + stageH * stackShiftY / 100;
+    var minCy = nameBottom + collisionGap + stackH / 2;
+    if (cy < minCy) cy = minCy;
+
+    var maxCy = stageH - stackH / 2 - 8;
+    if (maxCy >= minCy && cy > maxCy) cy = maxCy;
+
+    stack.style.left = cx + 'px';
+    stack.style.top = cy + 'px';
+  }
+  function scheduleLayout() {
+    if (layoutRAF) cancelAnimationFrame(layoutRAF);
+    layoutRAF = requestAnimationFrame(function () {
+      layoutRAF = 0;
+      layoutMobile();
+    });
+  }
+  window.kravviRelayout = scheduleLayout;
+  function initViewportVars() {
+    var root = document.documentElement;
+    var rafPending = false;
     function update() {
       rafPending = false;
       var vv = window.visualViewport;
-      var offset = window.innerHeight - (vv.offsetTop + vv.height);
-      if (offset < 0) offset = 0;
-      offset = Math.round(offset);
-      if (offset === lastOffset) return;
-      lastOffset = offset;
-      root.style.setProperty('--vv-bottom', offset + 'px');
-    }
+      var layoutW = Math.max(1, window.innerWidth || document.documentElement.clientWidth || 360);
+      var layoutH = Math.max(1, window.innerHeight || document.documentElement.clientHeight || 640);
+      var top = 0;
+      var h = layoutH;
+      var w = layoutW;
+      var bottom = 0;
 
+      if (vv) {
+        top = Math.max(0, Math.round(vv.offsetTop || 0));
+        h = Math.max(1, Math.round(vv.height || layoutH));
+        w = Math.max(1, Math.round(vv.width || layoutW));
+        bottom = layoutH - (top + h);
+        if (bottom < 0) {
+          bottom = 0;
+          layoutH = top + h;
+        }
+      }
+
+      top = Math.max(0, Math.round(top));
+      bottom = Math.max(0, Math.round(bottom));
+      h = Math.max(1, Math.round(h));
+      w = Math.max(1, Math.round(w));
+
+      root.style.setProperty('--vv-top', top + 'px');
+      root.style.setProperty('--vv-bottom', bottom + 'px');
+      root.style.setProperty('--vvh', h + 'px');
+      root.style.setProperty('--vvw', w + 'px');
+      root.style.setProperty('--vis-top', top + 'px');
+      root.style.setProperty('--vis-bottom', bottom + 'px');
+      root.style.setProperty('--vis-h', h + 'px');
+      root.style.setProperty('--vis-w', w + 'px');
+
+      scheduleLayout();
+    }
     function schedule() {
       if (rafPending) return;
       rafPending = true;
       requestAnimationFrame(update);
     }
-
-    window.visualViewport.addEventListener('resize', schedule);
-    window.visualViewport.addEventListener('scroll', schedule);
     update();
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', schedule);
+      window.visualViewport.addEventListener('scroll', schedule);
+    }
+    window.addEventListener('resize', schedule);
+    window.addEventListener('orientationchange', function () {
+      setTimeout(schedule, 120);
+    });
+    if (mobileMQ.addEventListener) {
+      mobileMQ.addEventListener('change', schedule);
+    } else if (mobileMQ.addListener) {
+      mobileMQ.addListener(schedule);
+    }
   }
-
   function bindEvents() {
     window.addEventListener('popstate', function (e) {
       if (e.state && e.state.page) {
@@ -1892,15 +2057,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
         window.Telegram.WebApp.close();
       }
     });
-
     window.addEventListener('resize', debounce(function () {
       applyPatterns();
+      scheduleLayout();
     }, 120));
-
     window.addEventListener('orientationchange', debounce(function () {
       applyPatterns();
+      scheduleLayout();
     }, 150));
-
     var langBtn = document.getElementById('lang-btn');
     var langMenu = document.getElementById('lang-menu');
     if (langBtn && langMenu) {
@@ -1920,7 +2084,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       if (e.target.closest && e.target.closest('#lang-menu, #lang-btn')) return;
       closeLangMenu();
     });
-
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape' && e.key !== 'Esc') return;
       if (langMenu && langMenu.classList.contains('is-open')) {
@@ -1931,7 +2094,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       e.preventDefault();
       goHome();
     });
-
     document.addEventListener('touchstart', function (e) {
       if (!isTouchDevice()) return;
       var btn = e.target.closest && e.target.closest('.hero-actions .btn-pill');
@@ -1941,35 +2103,28 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       });
       btn.classList.add('is-tapped');
     }, { passive: true });
-
     document.addEventListener('touchcancel', function () {
       if (!isTouchDevice()) return;
       $$('.hero-actions .btn-pill').forEach(function (b) {
         b.classList.remove('is-tapped');
       });
     }, { passive: true });
-
     document.addEventListener('click', handleNavClick);
-
     document.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('.hero-actions .btn-pill') : null;
       if (btn && btn.blur) btn.blur();
     }, true);
   }
-
   window.updateBackButton = updateBackButton;
   window.getCurrentView = function () {
     return ROUTES[parseHash()] || 'home';
   };
-
   function init() {
     var yearEl = document.getElementById('copy-year');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
     if (isFirefoxMobile()) {
       document.documentElement.classList.add('is-firefox-mobile');
     }
-
     try {
       var keys = Object.keys(localStorage);
       for (var i = 0; i < keys.length; i++) {
@@ -1978,27 +2133,36 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
         }
       }
     } catch (e) { /* ignore */ }
-
-    initViewportFix();
+    initViewportVars();
     buildGrids();
     applyPatterns();
     applyI18n();
     bindEvents();
-
+    var heroImg = document.getElementById('hero-photo');
+    if (heroImg) {
+      heroImg.addEventListener('load', scheduleLayout);
+      if (heroImg.complete && heroImg.naturalWidth > 0) {
+        scheduleLayout();
+      }
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(scheduleLayout);
+    }
     var initialHash = parseHash();
     var initialView = ROUTES[initialHash] || 'home';
     try {
       history.replaceState({ page: initialView }, '', '#' + (initialView === 'home' ? '/' : '/' + initialView));
     } catch (e) { /* ignore */ }
-
     preloadHeroPhoto().then(function () {
       revealBody();
       requestAnimationFrame(function () {
-        requestAnimationFrame(function () { navigate(); });
+        requestAnimationFrame(function () {
+          navigate();
+          scheduleLayout();
+        });
       });
     });
   }
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
@@ -2006,44 +2170,49 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   }
 })();
 </script>
-
-<!-- ============================================================
-     LAYOUT TUNER · открой с ?tuner=1
-     ============================================================ -->
 <script>
 (function () {
   'use strict';
-
-  var STORAGE_KEY = 'kravvi-tuner-v5';
-
+  var STORAGE_KEY = 'kravvi-tuner-v22';
   var params = null;
   try { params = new URLSearchParams(location.search); } catch (e) {}
   var tunerParam = params ? params.get('tuner') : null;
-
+  ['v5','v6','v7','v8','v9','v10','v11','v12','v13','v14','v15','v16','v17','v18','v19','v20','v21'].forEach(function (old) {
+    try { localStorage.removeItem('kravvi-tuner-' + old); } catch (e) {}
+  });
   if (tunerParam === '0') {
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     return;
   }
-
   var savedState = null;
   try {
     var raw = localStorage.getItem(STORAGE_KEY);
     if (raw) savedState = JSON.parse(raw);
   } catch (e) { savedState = null; }
-
-  var shouldActivate = (tunerParam === '1') || (savedState !== null);
-  if (!shouldActivate) return;
-
+  var state;
+  if (savedState && savedState.values) {
+    state = savedState;
+  } else {
+    state = { values: {}, meta: {} };
+  }
+  if (!state.values) state.values = {};
+  if (!state.meta) state.meta = {};
+  if (!((tunerParam === '1') || (savedState !== null))) return;
   var GROUPS = [
     {
-      id: 'name',
+      id: 'kravvi',
       title: 'KRAVVI',
       props: [
-        { key: '--hero-top',    label: 'Top',    unit: 'vh', step: 0.1 },
-        { key: '--name-size',   label: 'Size',   unit: 'vw', step: 0.1 },
-        { key: '--name-x',      label: 'X',      unit: 'vw', step: 0.1 },
-        { key: '--name-y',      label: 'Y',      unit: 'vh', step: 0.1 },
-        { key: '--name-opsz',   label: 'opsz',   unit: '',   step: 1   },
+        { key: '--hero-top', label: 'Top VP', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--name-size', label: 'Size VP', unit: 'vw', step: 0.1, only: 'd' },
+        { key: '--name-x', label: 'X VP', unit: 'vw', step: 0.1, only: 'd' },
+        { key: '--name-y', label: 'Y VP', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--kravvi-x-v', label: 'X Photo %', unit: '', step: 0.1, only: 'm' },
+        { key: '--kravvi-y-v', label: 'Y Photo %', unit: '', step: 0.1, only: 'm' },
+        { key: '--kravvi-size', label: 'Size Photo %', unit: '', step: 0.1, only: 'm' },
+        { key: '--kravvi-shift-x', label: 'Fine X cqw', unit: 'cqw', step: 0.1, only: 'm' },
+        { key: '--kravvi-shift-y', label: 'Fine Y cqw', unit: 'cqw', step: 0.1, only: 'm' },
+        { key: '--name-opsz', label: 'opsz', unit: '', step: 1 },
         { key: '--name-stroke', label: 'Stroke', unit: 'px', step: 0.05 }
       ]
     },
@@ -2051,158 +2220,492 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       id: 'photo',
       title: 'Photo',
       props: [
-        { key: '--photo-h',     label: 'Height',     unit: 'vh', step: 1 },
-        { key: '--photo-h-max', label: 'Max-height', unit: 'vw', step: 5 }
+        { key: '--photo-h', label: 'Height desktop', unit: 'vh', step: 1, only: 'd' },
+        { key: '--photo-h-max', label: 'Max desktop', unit: 'vw', step: 5, only: 'd' },
+        { key: '--photo-h-scale', label: 'Height M %', unit: '', step: 1, only: 'm' },
+        { key: '--photo-h-max-scale', label: 'Max M %', unit: '', step: 5, only: 'm' }
       ]
     },
     {
       id: 'stack',
       title: 'Stack',
       props: [
-        { key: '--hero-gap',       label: 'KRAVVI gap', unit: 'vh', step: 0.1 },
-        { key: '--hero-stack-gap', label: 'Text gap',   unit: 'px', step: 1 }
+        { key: '--hero-gap', label: 'KRAVVI gap desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--stack-shift-x-v', label: 'Center X %', unit: '', step: 0.5, only: 'm' },
+        { key: '--stack-shift-y-v', label: 'Center Y %', unit: '', step: 0.5, only: 'm' },
+        { key: '--stack-collision-gap', label: 'Kravvi gap', unit: 'px', step: 1, only: 'm' },
+        { key: '--hero-text-gap', label: 'Text gap', unit: 'px', step: 1 },
+        { key: '--hero-stack-gap', label: 'Block gap', unit: 'px', step: 1 },
+        { key: '--stack-width', label: 'Width', unit: 'px', step: 10 }
       ]
     },
     {
       id: 'author',
       title: 'Author',
       props: [
-        { key: '--author-size-v', label: 'Size', unit: '',   step: 0.5 },
-        { key: '--author-x',      label: 'X',    unit: 'vw', step: 0.5 },
-        { key: '--author-y',      label: 'Y',    unit: 'vh', step: 0.1 }
+        { key: '--author-size-v', label: 'Size', unit: '', step: 0.5 },
+        { key: '--author-x', label: 'X desktop', unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--author-y', label: 'Y desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--ma-x', label: 'X M %', unit: '', step: 0.5, only: 'm' },
+        { key: '--ma-y', label: 'Y M %', unit: '', step: 0.5, only: 'm' }
       ]
     },
     {
       id: 'tagline',
       title: 'Tagline',
       props: [
-        { key: '--desc-size-v',  label: 'Size',  unit: '',   step: 0.5 },
-        { key: '--desc-width-v', label: 'Width', unit: '',   step: 4 },
-        { key: '--desc-x',       label: 'X',     unit: 'vw', step: 0.5 },
-        { key: '--desc-y',       label: 'Y',     unit: 'vh', step: 0.1 }
+        { key: '--desc-size-v', label: 'Size', unit: '', step: 0.5 },
+        { key: '--desc-width-v', label: 'Width', unit: '', step: 4 },
+        { key: '--desc-x', label: 'X desktop', unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--desc-y', label: 'Y desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--md-x', label: 'X M %', unit: '', step: 0.5, only: 'm' },
+        { key: '--md-y', label: 'Y M %', unit: '', step: 0.5, only: 'm' }
       ]
     },
     {
       id: 'buttons',
       title: 'Buttons',
       props: [
-        { key: '--btn-size-v', label: 'Size',  unit: '',   step: 0.5 },
-        { key: '--btn-gap-v',  label: 'Gap',   unit: '',   step: 1 },
-        { key: '--btn-pad-x',  label: 'Pad X', unit: 'em', step: 0.05 },
-        { key: '--btn-pad-y',  label: 'Pad Y', unit: 'em', step: 0.05 },
-        { key: '--btn-x',      label: 'X',     unit: 'vw', step: 0.5 },
-        { key: '--btn-y',      label: 'Y',     unit: 'vh', step: 0.1 }
+        { key: '--btn-size-v', label: 'Size', unit: '', step: 0.5 },
+        { key: '--btn-gap-v', label: 'Gap', unit: '', step: 1 },
+        { key: '--btn-pad-x', label: 'Pad X', unit: 'em', step: 0.05 },
+        { key: '--btn-pad-y', label: 'Pad Y', unit: 'em', step: 0.05 },
+        { key: '--btn-x', label: 'X desktop', unit: 'vw', step: 0.5, only: 'd' },
+        { key: '--btn-y', label: 'Y desktop', unit: 'vh', step: 0.1, only: 'd' },
+        { key: '--mb-x', label: 'X M %', unit: '', step: 0.5, only: 'm' },
+        { key: '--mb-y', label: 'Y M %', unit: '', step: 0.5, only: 'm' }
       ]
     }
   ];
-
   var DEFAULTS = {
     desktop: {
-      '--hero-top': '10.3', '--name-size': '21.3', '--name-x': '0', '--name-y': '0',
-      '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '175',
-      '--hero-gap': '4.1', '--hero-stack-gap': '28',
-      '--author-size-v': '22', '--author-x': '-31', '--author-y': '0',
-      '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '-31', '--desc-y': '0.5',
-      '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
-      '--btn-x': '-31.2', '--btn-y': '-0.3'
+      '--hero-top': '10.3',
+      '--name-size': '21.3',
+      '--name-x': '0',
+      '--name-y': '0',
+      '--name-opsz': '96',
+      '--name-stroke': '0',
+      '--photo-h': '104',
+      '--photo-h-max': '175',
+      '--hero-gap': '4.1',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '28',
+      '--stack-width': '640',
+      '--author-size-v': '22',
+      '--author-x': '-31',
+      '--author-y': '0',
+      '--desc-size-v': '16',
+      '--desc-width-v': '478',
+      '--desc-x': '-31',
+      '--desc-y': '0.5',
+      '--btn-size-v': '13',
+      '--btn-gap-v': '15',
+      '--btn-pad-x': '2.2',
+      '--btn-pad-y': '1',
+      '--btn-x': '-31.2',
+      '--btn-y': '-0.3'
     },
     tablet: {
-      '--hero-top': '16', '--name-size': '22', '--name-x': '0', '--name-y': '0',
-      '--name-opsz': '96', '--name-stroke': '0',
-      '--photo-h': '104', '--photo-h-max': '150',
-      '--hero-gap': '3', '--hero-stack-gap': '28',
-      '--author-size-v': '22', '--author-x': '0', '--author-y': '0',
-      '--desc-size-v': '16', '--desc-width-v': '478', '--desc-x': '0', '--desc-y': '1',
-      '--btn-size-v': '13', '--btn-gap-v': '15', '--btn-pad-x': '2.2', '--btn-pad-y': '1',
-      '--btn-x': '0', '--btn-y': '0.2'
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '26',
+      '--kravvi-size': '44',
+      '--kravvi-shift-x': '0',
+      '--kravvi-shift-y': '0',
+      '--name-opsz': '96',
+      '--name-stroke': '0',
+      '--photo-h-scale': '100',
+      '--photo-h-max-scale': '150',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '28',
+      '--stack-width': '640',
+      '--author-size-v': '21',
+      '--ma-x': '0',
+      '--ma-y': '1',
+      '--desc-size-v': '16',
+      '--desc-width-v': '478',
+      '--md-x': '0',
+      '--md-y': '1.5',
+      '--btn-size-v': '11',
+      '--btn-gap-v': '15',
+      '--btn-pad-x': '2.2',
+      '--btn-pad-y': '1',
+      '--mb-x': '0',
+      '--mb-y': '0'
+    },
+    album: {
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '21',
+      '--kravvi-size': '30',
+      '--kravvi-shift-x': '0',
+      '--kravvi-shift-y': '0',
+      '--name-opsz': '30',
+      '--name-stroke': '0.33',
+      '--photo-h-scale': '93',
+      '--photo-h-max-scale': '213',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '35',
+      '--stack-width': '360',
+      '--author-size-v': '14',
+      '--ma-x': '0',
+      '--ma-y': '5',
+      '--desc-size-v': '10',
+      '--desc-width-v': '292',
+      '--md-x': '0',
+      '--md-y': '5.5',
+      '--btn-size-v': '8.8',
+      '--btn-gap-v': '10',
+      '--btn-pad-x': '1.75',
+      '--btn-pad-y': '0.85',
+      '--mb-x': '0',
+      '--mb-y': '2'
     },
     phone: {
-      '--hero-top': '15', '--name-size': '22.9', '--name-x': '0', '--name-y': '3.1',
-      '--name-opsz': '30', '--name-stroke': '0.33',
-      '--photo-h': '92.5', '--photo-h-max': '213',
-      '--hero-gap': '7.8', '--hero-stack-gap': '35',
-      '--author-size-v': '19', '--author-x': '0', '--author-y': '4.9',
-      '--desc-size-v': '14', '--desc-width-v': '292', '--desc-x': '0', '--desc-y': '5.6',
-      '--btn-size-v': '11.3', '--btn-gap-v': '14', '--btn-pad-x': '1.75', '--btn-pad-y': '0.85',
-      '--btn-x': '0', '--btn-y': '3.5'
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '21',
+      '--kravvi-size': '18.1',
+      '--kravvi-shift-x': '0',
+      '--kravvi-shift-y': '0',
+      '--name-opsz': '30',
+      '--name-stroke': '0.33',
+      '--photo-h-scale': '93',
+      '--photo-h-max-scale': '213',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16',
+      '--hero-text-gap': '8',
+      '--hero-stack-gap': '35',
+      '--stack-width': '360',
+      '--author-size-v': '19',
+      '--ma-x': '0',
+      '--ma-y': '5',
+      '--desc-size-v': '14',
+      '--desc-width-v': '292',
+      '--md-x': '0',
+      '--md-y': '5.5',
+      '--btn-size-v': '11.3',
+      '--btn-gap-v': '14',
+      '--btn-pad-x': '1.75',
+      '--btn-pad-y': '0.85',
+      '--mb-x': '0',
+      '--mb-y': '3'
     }
   };
-
-  var ALL_KEYS = (function () {
-    var out = [];
-    GROUPS.forEach(function (g) {
-      g.props.forEach(function (p) {
-        if (out.indexOf(p.key) === -1) out.push(p.key);
-      });
+  var EXPORT_EXTRA = {
+    desktop: {
+      '--kravvi-x-v': '50',
+      '--kravvi-y-v': '21',
+      '--kravvi-size': '17.5',
+      '--kravvi-shift-x': '0cqw',
+      '--kravvi-shift-y': '0cqw',
+      '--photo-h-scale': '104',
+      '--photo-h-max-scale': '150',
+      '--stack-shift-x-v': '0',
+      '--stack-shift-y-v': '0',
+      '--stack-collision-gap': '16px',
+      '--ma-x': '0',
+      '--ma-y': '5',
+      '--md-x': '0',
+      '--md-y': '5.5',
+      '--mb-x': '0',
+      '--mb-y': '3',
+      '--ref-w': '1920',
+      '--gap': '16px',
+      '--cols': '4',
+      '--glass-radius': '24px',
+      '--glass-blur': '26px',
+      '--btn-scale': '1',
+      '--actions-max-w': '2000px'
+    },
+    tablet: {
+      '--hero-top': '16vh',
+      '--name-size': '21.3vw',
+      '--name-x': '0vw',
+      '--name-y': '0vh',
+      '--photo-h': '104vh',
+      '--photo-h-max': '150vw',
+      '--hero-gap': '3vh',
+      '--author-x': '0vw',
+      '--author-y': '0vh',
+      '--desc-x': '0vw',
+      '--desc-y': '0vh',
+      '--btn-x': '0vw',
+      '--btn-y': '0vh',
+      '--ref-w': '900',
+      '--gap': '14px',
+      '--cols': '4',
+      '--glass-radius': '22px',
+      '--glass-blur': '22px',
+      '--btn-scale': '1',
+      '--actions-max-w': '2000px'
+    },
+    album: {
+      '--hero-top': '19vh',
+      '--name-size': '22.9vw',
+      '--name-x': '0vw',
+      '--name-y': '0vh',
+      '--photo-h': '92.5vh',
+      '--photo-h-max': '213vw',
+      '--hero-gap': '7.8vh',
+      '--author-x': '0vw',
+      '--author-y': '0vh',
+      '--desc-x': '0vw',
+      '--desc-y': '0vh',
+      '--btn-x': '0vw',
+      '--btn-y': '0vh',
+      '--ref-w': '402',
+      '--gap': '10px',
+      '--cols': '2',
+      '--glass-radius': '20px',
+      '--glass-blur': '20px',
+      '--btn-scale': '0.95',
+      '--actions-max-w': '250px'
+    },
+    phone: {
+      '--hero-top': '19vh',
+      '--name-size': '22.9vw',
+      '--name-x': '0vw',
+      '--name-y': '0vh',
+      '--photo-h': '92.5vh',
+      '--photo-h-max': '213vw',
+      '--hero-gap': '7.8vh',
+      '--author-x': '0vw',
+      '--author-y': '0vh',
+      '--desc-x': '0vw',
+      '--desc-y': '0vh',
+      '--btn-x': '0vw',
+      '--btn-y': '0vh',
+      '--ref-w': '402',
+      '--gap': '10px',
+      '--cols': '2',
+      '--glass-radius': '20px',
+      '--glass-blur': '20px',
+      '--btn-scale': '0.95',
+      '--actions-max-w': '250px'
+    }
+  };
+  var CONTEXT_LIST = ['desktop', 'tablet', 'album', 'phone'];
+  var CONTEXT_PRIORITY = ['album', 'phone', 'tablet', 'desktop'];
+  var ALL_KEYS = [];
+  GROUPS.forEach(function (g) {
+    g.props.forEach(function (p) {
+      if (ALL_KEYS.indexOf(p.key) === -1) ALL_KEYS.push(p.key);
     });
-    return out;
-  })();
-
+  });
   function unitOf(key) {
-    for (var i = 0; i < GROUPS.length; i++)
-      for (var j = 0; j < GROUPS[i].props.length; j++)
+    for (var i = 0; i < GROUPS.length; i++) {
+      for (var j = 0; j < GROUPS[i].props.length; j++) {
         if (GROUPS[i].props[j].key === key) return GROUPS[i].props[j].unit;
+      }
+    }
     return '';
   }
-
-  var state = savedState || {};
-  var currentContext = detectContext();
-  var appliedVars = [];
-
-  function isTouchContext() {
-    return !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var PHONE_MQ = window.matchMedia('(max-width: 700px)');
+  var ALBUM_MQ = window.matchMedia('(max-width: 1024px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10), (hover: none) and (pointer: coarse) and (max-width: 1366px) and (min-aspect-ratio: 9 / 10) and (max-aspect-ratio: 13 / 10)');
+  var TABLET_MQ = window.matchMedia('(min-width: 701px) and (max-width: 1024px), (hover: none) and (pointer: coarse) and (min-width: 701px) and (max-width: 1366px)');
+  var FINE_POINTER_MQ = window.matchMedia('(hover: hover) and (pointer: fine)');
+  var COARSE_POINTER_MQ = window.matchMedia('(pointer: coarse)');
+  var HOVER_NONE_MQ = window.matchMedia('(hover: none)');
+  var DESKTOP_ONLY_KEYS = [
+    '--hero-top',
+    '--name-size',
+    '--name-x',
+    '--name-y',
+    '--photo-h',
+    '--photo-h-max',
+    '--hero-gap',
+    '--author-x',
+    '--author-y',
+    '--desc-x',
+    '--desc-y',
+    '--btn-x',
+    '--btn-y'
+  ];
+  function mqMedia(mq, fallback) {
+    return (mq && mq.media) ? mq.media : fallback;
   }
-
   function detectContext() {
-    var w = window.innerWidth;
-    var isTouch = isTouchContext();
-
-    if (isTouch && w > 1024 && w <= 1366) return 'tablet';
-    if (w > 1024) return 'desktop';
-    if (w > 700)  return 'tablet';
-    return 'phone';
+    if (ALBUM_MQ.matches) return 'album';
+    if (PHONE_MQ.matches) return 'phone';
+    if (TABLET_MQ.matches) return 'tablet';
+    return 'desktop';
   }
-
+  function isApplicable(ctx, key) {
+    return ctx === 'desktop' || DESKTOP_ONLY_KEYS.indexOf(key) === -1;
+  }
+  function getSnapshot(ctx) {
+    var w = window.innerWidth || document.documentElement.clientWidth || 0;
+    var h = window.innerHeight || document.documentElement.clientHeight || 0;
+    var aspect = h > 0 ? w / h : 0;
+    var vv = window.visualViewport;
+    var vvInfo = null;
+    if (vv) {
+      vvInfo = {
+        width: Math.round(vv.width || 0),
+        height: Math.round(vv.height || 0),
+        offsetTop: Math.round(vv.offsetTop || 0),
+        offsetLeft: Math.round(vv.offsetLeft || 0),
+        scale: vv.scale || 1
+      };
+    }
+    return {
+      editedContext: ctx,
+      detectedContext: detectContext(),
+      width: w,
+      height: h,
+      aspectRatio: Number(aspect.toFixed(4)),
+      visualViewport: vvInfo,
+      touch: !FINE_POINTER_MQ.matches,
+      coarsePointer: COARSE_POINTER_MQ.matches,
+      hoverNone: HOVER_NONE_MQ.matches,
+      phoneMedia: PHONE_MQ.matches,
+      albumMedia: ALBUM_MQ.matches,
+      tabletMedia: TABLET_MQ.matches,
+      updatedAt: new Date().toISOString()
+    };
+  }
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function captureMeta(ctx) {
+    state.meta[ctx] = getSnapshot(ctx);
+    saveState();
+  }
   function getValues(ctx) {
     var out = {};
     var d = DEFAULTS[ctx] || {};
-    var s = state[ctx] || {};
+    var s = state.values[ctx] || {};
     ALL_KEYS.forEach(function (k) {
       out[k] = (s[k] != null) ? s[k] : d[k];
     });
     return out;
   }
   function setValue(ctx, key, value) {
-    if (!state[ctx]) state[ctx] = {};
-    state[ctx][key] = String(value);
-    saveState();
+    if (!state.values[ctx]) state.values[ctx] = {};
+    state.values[ctx][key] = String(value);
+    captureMeta(ctx);
   }
-  function saveState() {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
-  }
-
+  var currentContext = detectContext();
+  var appliedVars = [];
   function applyContextValues() {
     appliedVars.forEach(function (k) {
       document.documentElement.style.removeProperty(k);
     });
     appliedVars = [];
-
     var vals = getValues(currentContext);
     ALL_KEYS.forEach(function (k) {
+      if (!isApplicable(currentContext, k)) return;
       var v = vals[k];
       if (v == null || v === '') return;
       document.documentElement.style.setProperty(k, v + unitOf(k));
       appliedVars.push(k);
     });
+    if (window.kravviRelayout) window.kravviRelayout();
   }
-
   function fmt(n) {
     var s = Number(n);
     if (!isFinite(s)) return '0';
     return String(parseFloat(s.toFixed(4)));
   }
-
+  function exportValues(ctx) {
+    var vals = getValues(ctx);
+    var o = {};
+    ALL_KEYS.forEach(function (k) {
+      var v = vals[k];
+      if (v == null || v === '') return;
+      o[k] = String(v) + unitOf(k);
+    });
+    var extra = EXPORT_EXTRA[ctx] || {};
+    Object.keys(extra).forEach(function (k) {
+      if (o[k] == null) o[k] = extra[k];
+    });
+    return o;
+  }
+  function getRelevantVarKeys() {
+    var keys = ALL_KEYS.slice();
+    CONTEXT_LIST.forEach(function (ctx) {
+      var extra = EXPORT_EXTRA[ctx] || {};
+      Object.keys(extra).forEach(function (k) {
+        if (keys.indexOf(k) === -1) keys.push(k);
+      });
+    });
+    return keys;
+  }
+  function getComputedRelevantVars() {
+    var keys = getRelevantVarKeys();
+    var cs = window.getComputedStyle(document.documentElement);
+    var out = {};
+    keys.forEach(function (k) {
+      var v = cs.getPropertyValue(k);
+      if (v && String(v).trim()) out[k] = String(v).trim();
+    });
+    return out;
+  }
+  function getInlineTunerVars() {
+    var out = {};
+    appliedVars.forEach(function (k) {
+      var v = document.documentElement.style.getPropertyValue(k);
+      if (v) out[k] = v;
+    });
+    return out;
+  }
+  function exportConfig() {
+    return {
+      storageKey: STORAGE_KEY,
+      contextList: CONTEXT_LIST,
+      contextPriority: CONTEXT_PRIORITY,
+      mediaQueries: {
+        album: mqMedia(ALBUM_MQ, ''),
+        phone: mqMedia(PHONE_MQ, ''),
+        tablet: mqMedia(TABLET_MQ, ''),
+        desktop: 'fallback when album, phone and tablet media queries do not match'
+      },
+      desktopOnlyKeys: DESKTOP_ONLY_KEYS,
+      requiredEdits: [
+        'Apply values to the matching CSS :root media query block in index.html.',
+        'For tuner DEFAULTS.<context>, store unitless string values for keys controlled by GROUPS.',
+        'For tuner EXPORT_EXTRA.<context>, store static/desktop-only values with units where required.',
+        'Do not apply DESKTOP_ONLY_KEYS inline in non-desktop contexts.',
+        'If contexts/media queries change, update CSS, GROUPS, DEFAULTS, EXPORT_EXTRA, detectContext and bump STORAGE_KEY.'
+      ]
+    };
+  }
+  function exportJSON() {
+    captureMeta(currentContext);
+    var out = {};
+    CONTEXT_LIST.forEach(function (ctx) {
+      out[ctx] = exportValues(ctx);
+    });
+    out.snapshots = {};
+    CONTEXT_LIST.forEach(function (ctx) {
+      out.snapshots[ctx] = state.meta[ctx] || getSnapshot(ctx);
+    });
+    out.currentContext = currentContext;
+    out.detectedContext = detectContext();
+    out.computedRelevantVars = getComputedRelevantVars();
+    out.inlineTunerVars = getInlineTunerVars();
+    out.config = exportConfig();
+    out.tunerVersion = STORAGE_KEY;
+    return JSON.stringify(out, null, 2);
+  }
+  function exportCurrentJSON() {
+    captureMeta(currentContext);
+    return JSON.stringify({
+      context: currentContext,
+      detectedContext: detectContext(),
+      values: exportValues(currentContext),
+      snapshot: state.meta[currentContext],
+      computedRelevantVars: getComputedRelevantVars(),
+      inlineTunerVars: getInlineTunerVars(),
+      config: exportConfig(),
+      tunerVersion: STORAGE_KEY
+    }, null, 2);
+  }
   var styles = document.createElement('style');
   styles.textContent = ''
     + '.tuner-fab{position:fixed;right:20px;bottom:20px;z-index:2147483000;'
@@ -2216,7 +2719,6 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '.tuner-fab:active{transform:scale(.94)}'
     + '.tuner-fab svg{width:20px;height:20px;display:block;stroke:currentColor;fill:none;'
     + 'stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}'
-
     + '.tuner-panel{position:fixed;right:20px;bottom:84px;width:360px;'
     + 'max-width:calc(100vw - 40px);max-height:calc(100dvh - 120px);z-index:2147483001;'
     + 'background:rgba(16,16,18,.95);backdrop-filter:blur(24px) saturate(1.4);'
@@ -2229,33 +2731,31 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + 'pointer-events:none;'
     + 'transition:opacity .24s cubic-bezier(.22,1,.36,1),transform .24s cubic-bezier(.22,1,.36,1)}'
     + '.tuner-panel.is-open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}'
-
     + '.tuner-head{padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;'
     + 'border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}'
-    + '.tuner-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;letter-spacing:.01em}'
+    + '.tuner-title{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px}'
     + '.tuner-dot{width:6px;height:6px;border-radius:50%;background:#A8895C;box-shadow:0 0 10px rgba(168,137,92,.8)}'
+    + '.tuner-ctx-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;'
+    + 'color:#E8C89A;background:rgba(168,137,92,.16);border:1px solid rgba(168,137,92,.3);'
+    + 'padding:3px 8px;border-radius:999px;margin-left:6px}'
     + '.tuner-close{width:26px;height:26px;display:flex;align-items:center;justify-content:center;'
     + 'background:transparent;border:0;color:rgba(255,255,255,.55);cursor:pointer;border-radius:8px;'
     + 'font-size:18px;line-height:1;padding:0;font-family:inherit;transition:background .15s,color .15s}'
     + '.tuner-close:hover{background:rgba(255,255,255,.08);color:#fff}'
-
     + '.tuner-body{flex:1;overflow-y:auto;padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px;'
     + 'scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}'
     + '.tuner-body::-webkit-scrollbar{width:6px}'
     + '.tuner-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}'
-
     + '.tuner-group{display:flex;flex-direction:column;gap:7px}'
     + '.tuner-group-title{font-size:10px;font-weight:600;opacity:.55;text-transform:uppercase;letter-spacing:.14em}'
-
     + '.tuner-tabs{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
     + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
-    + '.tuner-tabs button{flex:1;padding:7px 6px;background:transparent;border:0;border-radius:8px;'
-    + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;font-family:inherit;font-weight:500;'
+    + '.tuner-tabs button{flex:1;padding:7px 4px;background:transparent;border:0;border-radius:8px;'
+    + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:10.5px;font-family:inherit;font-weight:500;'
     + 'transition:background .15s,color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
     + '.tuner-tabs button:hover{color:#fff;background:rgba(255,255,255,.05)}'
     + '.tuner-tabs button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
     + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
-
     + '.tuner-step{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
     + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
     + '.tuner-step button{flex:1;padding:6px 4px;background:transparent;border:0;border-radius:8px;'
@@ -2263,12 +2763,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + 'transition:background .15s,color .15s}'
     + '.tuner-step button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
     + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
-
     + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
-    + '.tuner-prop{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center;padding:2px 0}'
+    + '.tuner-prop{display:grid;grid-template-columns:132px 1fr;gap:10px;align-items:center;padding:2px 0}'
     + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
     + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
-    + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 26px 28px;gap:4px;align-items:center}'
+    + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 30px 28px;gap:4px;align-items:center}'
     + '.tuner-prop-controls button{background:rgba(255,255,255,.05);border:0;color:rgba(255,255,255,.75);'
     + 'border-radius:7px;padding:0;height:28px;cursor:pointer;font-size:16px;font-family:inherit;font-weight:400;'
     + 'display:flex;align-items:center;justify-content:center;'
@@ -2283,36 +2782,30 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '.tuner-prop-controls input::-webkit-outer-spin-button,'
     + '.tuner-prop-controls input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}'
     + '.tuner-prop-controls input[type=number]{-moz-appearance:textfield}'
-    + '.tuner-unit{font-size:10px;color:rgba(255,255,255,.35);text-align:center;pointer-events:none;'
-    + 'font-variant-numeric:tabular-nums}'
-
+    + '.tuner-unit{font-size:9.5px;color:rgba(255,255,255,.35);text-align:center;pointer-events:none;'
+    + 'font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
     + '.tuner-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:12px;margin-top:2px;'
     + 'border-top:1px solid rgba(255,255,255,.06)}'
     + '.tuner-actions button{padding:8px 10px;background:rgba(255,255,255,.05);border:0;'
     + 'color:rgba(255,255,255,.8);border-radius:9px;cursor:pointer;font-size:11.5px;font-family:inherit;'
-    + 'font-weight:500;letter-spacing:.01em;transition:background .15s,color .15s}'
+    + 'font-weight:500;transition:background .15s,color .15s}'
     + '.tuner-actions button:hover{background:rgba(255,255,255,.1);color:#fff}'
-    + '.tuner-actions button:active{transform:scale(.97)}'
     + '.tuner-actions button.wide{grid-column:1/-1;background:rgba(168,137,92,.18);color:#E8C89A;'
     + 'border:1px solid rgba(168,137,92,.3)}'
     + '.tuner-actions button.wide:hover{background:rgba(168,137,92,.28);color:#fff}'
     + '.tuner-actions button.danger{color:rgba(255,140,140,.85)}'
     + '.tuner-actions button.danger:hover{background:rgba(255,80,80,.14);color:#ffb0b0}'
-
     + '.tuner-json{width:100%;min-height:110px;background:rgba(0,0,0,.55);'
     + 'border:1px solid rgba(255,255,255,.08);color:#e0e0e0;'
     + 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;'
     + 'padding:8px 10px;border-radius:9px;resize:vertical;box-sizing:border-box;line-height:1.5}'
     + '.tuner-json:focus{outline:none;border-color:rgba(168,137,92,.5)}'
-
     + '@media (max-width:700px){'
     + '.tuner-fab{right:14px;bottom:14px;width:52px;height:52px}'
     + '.tuner-panel{right:8px;left:8px;bottom:76px;width:auto;max-width:none;'
     + 'max-height:calc(100dvh - 100px);border-radius:16px}'
     + '}';
-
   document.head.appendChild(styles);
-
   var fab = document.createElement('button');
   fab.type = 'button';
   fab.className = 'tuner-fab';
@@ -2323,12 +2816,11 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     + '<path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/>'
     + '<path d="M4 18h12"/><path d="M20 18h0"/><circle cx="18" cy="18" r="2"/>'
     + '</svg>';
-
   var panel = document.createElement('div');
   panel.className = 'tuner-panel';
   panel.innerHTML = ''
     + '<div class="tuner-head">'
-    +   '<span class="tuner-title"><span class="tuner-dot"></span>Layout Tuner</span>'
+    +   '<span class="tuner-title"><span class="tuner-dot"></span>Tuner<span class="tuner-ctx-badge" data-role="badge">—</span></span>'
     +   '<button class="tuner-close" type="button" aria-label="Close">×</button>'
     + '</div>'
     + '<div class="tuner-body">'
@@ -2337,12 +2829,14 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     +     '<div class="tuner-tabs" data-role="contexts">'
     +       '<button type="button" data-ctx="desktop">Desktop</button>'
     +       '<button type="button" data-ctx="tablet">Tablet</button>'
+    +       '<button type="button" data-ctx="album">Album</button>'
     +       '<button type="button" data-ctx="phone">Phone</button>'
     +     '</div>'
     +   '</div>'
     +   '<div class="tuner-group">'
     +     '<div class="tuner-group-title">Step</div>'
     +     '<div class="tuner-step" data-role="step">'
+    +       '<button type="button" data-step="0.05">0.05</button>'
     +       '<button type="button" data-step="0.1">0.1</button>'
     +       '<button type="button" data-step="0.5" class="is-active">0.5</button>'
     +       '<button type="button" data-step="1">1</button>'
@@ -2351,89 +2845,81 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     +   '</div>'
     +   '<div data-role="groups"></div>'
     +   '<div class="tuner-actions">'
-    +     '<button type="button" class="wide" data-action="copy">Copy JSON</button>'
+    +     '<button type="button" data-action="copy-all">Copy all</button>'
+    +     '<button type="button" data-action="copy-current">Copy current</button>'
     +     '<button type="button" data-action="reset-ctx">Reset context</button>'
     +     '<button type="button" class="danger" data-action="reset-all">Reset all</button>'
     +   '</div>'
-    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy JSON → результат появится здесь"></textarea>'
+    +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy → значения появятся здесь"></textarea>'
     + '</div>';
-
   document.body.appendChild(fab);
   document.body.appendChild(panel);
-
   var currentStep = 0.5;
-
+  function ctxMode(ctx) { return ctx === 'desktop' ? 'd' : 'm'; }
   function renderContexts() {
+    var detected = detectContext();
+    var text = currentContext;
+    if (detected !== currentContext) text += ' ≠ ' + detected;
+    panel.querySelector('[data-role="badge"]').textContent = text;
     panel.querySelectorAll('[data-role="contexts"] button').forEach(function (b) {
       b.classList.toggle('is-active', b.getAttribute('data-ctx') === currentContext);
     });
   }
   function renderStep() {
     panel.querySelectorAll('[data-role="step"] button').forEach(function (b) {
-      var v = parseFloat(b.getAttribute('data-step'));
-      b.classList.toggle('is-active', Math.abs(v - currentStep) < 0.0001);
+      b.classList.toggle('is-active', Math.abs(parseFloat(b.getAttribute('data-step')) - currentStep) < 0.0001);
     });
   }
   function renderGroups() {
     var box = panel.querySelector('[data-role="groups"]');
     box.innerHTML = '';
     var vals = getValues(currentContext);
-
+    var mode = ctxMode(currentContext);
     GROUPS.forEach(function (g) {
+      var props = g.props.filter(function (p) { return !p.only || p.only === mode; });
+      if (!props.length) return;
       var groupEl = document.createElement('div');
       groupEl.className = 'tuner-group';
-
       var title = document.createElement('div');
       title.className = 'tuner-group-title';
       title.textContent = g.title;
       groupEl.appendChild(title);
-
       var propsEl = document.createElement('div');
       propsEl.className = 'tuner-props';
-
-      g.props.forEach(function (p) {
+      props.forEach(function (p) {
         var row = document.createElement('div');
         row.className = 'tuner-prop';
-
         var label = document.createElement('div');
         label.className = 'tuner-prop-label';
         label.textContent = p.label;
-
         var ctrls = document.createElement('div');
         ctrls.className = 'tuner-prop-controls';
-
         var minus = document.createElement('button');
         minus.type = 'button';
         minus.textContent = '−';
         minus.setAttribute('data-dir', '-1');
         minus.setAttribute('data-key', p.key);
-
         var input = document.createElement('input');
         input.type = 'number';
         input.step = 'any';
         input.value = vals[p.key];
         input.setAttribute('data-key', p.key);
-
         var unitEl = document.createElement('span');
         unitEl.className = 'tuner-unit';
         unitEl.textContent = p.unit || '—';
-
         var plus = document.createElement('button');
         plus.type = 'button';
         plus.textContent = '+';
         plus.setAttribute('data-dir', '1');
         plus.setAttribute('data-key', p.key);
-
         ctrls.appendChild(minus);
         ctrls.appendChild(input);
         ctrls.appendChild(unitEl);
         ctrls.appendChild(plus);
-
         row.appendChild(label);
         row.appendChild(ctrls);
         propsEl.appendChild(row);
       });
-
       groupEl.appendChild(propsEl);
       box.appendChild(groupEl);
     });
@@ -2443,27 +2929,24 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     renderStep();
     renderGroups();
   }
-
   fab.addEventListener('click', function () { panel.classList.toggle('is-open'); });
   panel.querySelector('.tuner-close').addEventListener('click', function () {
     panel.classList.remove('is-open');
   });
-
   panel.querySelector('[data-role="contexts"]').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-ctx]');
     if (!b) return;
     currentContext = b.getAttribute('data-ctx');
     applyContextValues();
+    captureMeta(currentContext);
     renderAll();
   });
-
   panel.querySelector('[data-role="step"]').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-step]');
     if (!b) return;
     currentStep = parseFloat(b.getAttribute('data-step'));
     renderStep();
   });
-
   panel.querySelector('[data-role="groups"]').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-dir]');
     if (!b) return;
@@ -2471,12 +2954,10 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var dir = parseFloat(b.getAttribute('data-dir'));
     var cur = parseFloat(getValues(currentContext)[key]);
     if (!isFinite(cur)) cur = 0;
-    var next = cur + dir * currentStep;
-    setValue(currentContext, key, fmt(next));
+    setValue(currentContext, key, fmt(cur + dir * currentStep));
     applyContextValues();
     renderGroups();
   });
-
   panel.querySelector('[data-role="groups"]').addEventListener('input', function (e) {
     var input = e.target.closest('input[data-key]');
     if (!input) return;
@@ -2486,14 +2967,12 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     setValue(currentContext, key, fmt(v));
     applyContextValues();
   });
-
   panel.querySelector('.tuner-actions').addEventListener('click', function (e) {
     var b = e.target.closest('button[data-action]');
     if (!b) return;
     var action = b.getAttribute('data-action');
-
-    if (action === 'copy') {
-      var json = exportJSON();
+    if (action === 'copy-all' || action === 'copy-current') {
+      var json = action === 'copy-all' ? exportJSON() : exportCurrentJSON();
       var ta = panel.querySelector('[data-role="json"]');
       ta.value = json;
       try { ta.select(); document.execCommand('copy'); } catch (err) {}
@@ -2504,47 +2983,43 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
       b.textContent = 'Copied!';
       setTimeout(function () { b.textContent = old; }, 1200);
     }
-
     if (action === 'reset-ctx') {
       if (!confirm('Сбросить контекст «' + currentContext + '»?')) return;
-      delete state[currentContext];
+      delete state.values[currentContext];
+      delete state.meta[currentContext];
       saveState();
       applyContextValues();
       renderAll();
     }
-
     if (action === 'reset-all') {
-      if (!confirm('Сбросить ВСЕ значения во всех контекстах?')) return;
-      state = {};
+      if (!confirm('Сбросить ВСЕ значения?')) return;
+      state = { values: {}, meta: {} };
       saveState();
       applyContextValues();
       renderAll();
     }
   });
-
-  function exportJSON() {
-    var out = {};
-    ['desktop', 'tablet', 'phone'].forEach(function (ctx) {
-      var vals = getValues(ctx);
-      var o = {};
-      ALL_KEYS.forEach(function (k) {
-        var v = vals[k];
-        if (v == null || v === '') return;
-        o[k] = String(v) + unitOf(k);
-      });
-      out[ctx] = o;
-    });
-    return JSON.stringify(out, null, 2);
-  }
-
+  var rT;
   function onResize() {
     var next = detectContext();
-    if (next === currentContext) return;
-    currentContext = next;
-    applyContextValues();
+    if (next !== currentContext) {
+      currentContext = next;
+      applyContextValues();
+    }
+    captureMeta(currentContext);
     renderAll();
   }
-  var rT;
+  function addMQListener(mq) {
+    if (mq.addEventListener) {
+      mq.addEventListener('change', onResize);
+    } else if (mq.addListener) {
+      mq.addListener(onResize);
+    }
+  }
+  addMQListener(PHONE_MQ);
+  addMQListener(ALBUM_MQ);
+  addMQListener(TABLET_MQ);
+  addMQListener(FINE_POINTER_MQ);
   window.addEventListener('resize', function () {
     clearTimeout(rT);
     rT = setTimeout(onResize, 80);
@@ -2553,56 +3028,83 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     clearTimeout(rT);
     rT = setTimeout(onResize, 150);
   });
-
   applyContextValues();
+  captureMeta(currentContext);
   renderAll();
-
 })();
 </script>
-
 <script>
 (function initTelegram() {
   var tg = window.Telegram && window.Telegram.WebApp;
   if (!tg) return;
-
   var isMiniApp = false;
   if (tg.initData && tg.initData.length > 0) {
     isMiniApp = true;
   } else if (location.hash.indexOf('tgWebAppVersion') !== -1) {
     isMiniApp = true;
   }
-
-  if (isMiniApp) {
-    document.body.classList.add('telegram-mini-app');
-
+  if (!isMiniApp) {
     tg.ready();
+    return;
+  }
+  document.body.classList.add('telegram-mini-app');
+  tg.ready();
+  var platform = String(tg.platform || '').toLowerCase();
+  var ua = navigator.userAgent || '';
+  var isMobilePlatform = (platform === 'android' || platform === 'ios');
+  var isTouch = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  var hasFinePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var maxTouchPoints = navigator.maxTouchPoints || 0;
+  var isTouchLike = isTouch || (maxTouchPoints > 0 && !hasFinePointer);
+  var isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+  var isIPadLike = /Macintosh/.test(ua) && isTouchLike && (platform === 'mac' || platform === 'macos' || platform === 'unknown');
+  var isDesktopPlatform = !isIPadLike && (
+    platform === 'windows' ||
+    platform === 'mac' ||
+    platform === 'macos' ||
+    platform === 'linux' ||
+    platform === 'web' ||
+    platform === 'weba' ||
+    platform === 'tdesktop' ||
+    platform === 'bot'
+  );
+  var useMobileMode = false;
+  if (!isDesktopPlatform) {
+    if (isMobilePlatform) {
+      useMobileMode = true;
+    } else if (platform === 'unknown' && isMobileUA && isTouch) {
+      useMobileMode = true;
+    } else if (isIPadLike) {
+      useMobileMode = true;
+    }
+  }
+  if (useMobileMode) {
+    document.body.classList.add('tg-mobile');
     if (tg.expand) tg.expand();
     if (tg.requestFullscreen) tg.requestFullscreen();
-
-    function updateSafeArea() {
-      var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
-                (tg.safeAreaInset && tg.safeAreaInset.top) ||
-                0;
-      document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
-    }
-
-    updateSafeArea();
-
-    if (tg.onEvent) {
-      tg.onEvent('viewportChanged', updateSafeArea);
-    }
-
-    if (tg.BackButton) {
-      tg.BackButton.onClick(function () {
-        window.history.back();
-      });
-
-      if (window.updateBackButton && window.getCurrentView) {
-        window.updateBackButton(window.getCurrentView());
-      }
-    }
   } else {
-    tg.ready();
+    document.body.classList.remove('tg-mobile');
+    if (tg.exitFullscreen) {
+      try { tg.exitFullscreen(); } catch (e) {}
+    }
+  }
+  function updateSafeArea() {
+    var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
+              (tg.safeAreaInset && tg.safeAreaInset.top) ||
+              0;
+    document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
+  }
+  updateSafeArea();
+  if (tg.onEvent) {
+    tg.onEvent('viewportChanged', updateSafeArea);
+  }
+  if (tg.BackButton) {
+    tg.BackButton.onClick(function () {
+      window.history.back();
+    });
+    if (window.updateBackButton && window.getCurrentView) {
+      window.updateBackButton(window.getCurrentView());
+    }
   }
 })();
 </script>
