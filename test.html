@@ -1930,6 +1930,26 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
     var fontSize = frameW * kravviSize / 100;
     setPx('--kravvi-font-px', fontSize);
 
+    var nameEl = document.querySelector('.hero-name');
+    if (nameEl) {
+      var edgeMargin = 10;
+      var nameRect = nameEl.getBoundingClientRect();
+      var centerX = nameRect.left + nameRect.width / 2;
+      var stageLeft = stageRect.left;
+      var leftSpace = centerX - stageLeft - edgeMargin;
+      var rightSpace = stageLeft + stageW - edgeMargin - centerX;
+      var maxNameWidth = 2 * Math.min(leftSpace, rightSpace);
+
+      if (!isFinite(maxNameWidth) || maxNameWidth < 1) {
+        maxNameWidth = Math.max(1, stageW - edgeMargin * 2);
+      }
+
+      if (nameRect.width > maxNameWidth && nameRect.width > 0) {
+        fontSize = fontSize * (maxNameWidth / nameRect.width);
+        setPx('--kravvi-font-px', fontSize);
+      }
+    }
+
     var kravviY = cssNum('--kravvi-y-v', 20);
     var kravviShiftY = cssNum('--kravvi-shift-y', 0);
     var shiftYpx = frameW * kravviShiftY / 100;
