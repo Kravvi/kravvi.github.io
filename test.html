@@ -180,7 +180,7 @@ body.is-loading > * { visibility: hidden; }
 }
 .lang-btn {
   position: fixed;
-  top: calc(18px + var(--safe-top));
+  top: calc(15px + var(--safe-top));
   right: calc(24px + var(--safe-right));
   z-index: 101;
   display: inline-flex;
@@ -204,12 +204,11 @@ body.is-loading > * { visibility: hidden; }
 }
 .lang-btn span {
   display: inline-block;
-  transform: translateY(-3px);
 }
 .lang-btn:hover { color: #fff; background: rgba(255,255,255,0.06); }
 .lang-menu {
   position: fixed;
-  top: calc(48px + var(--safe-top));
+  top: calc(45px + var(--safe-top));
   right: calc(24px + var(--safe-right));
   z-index: 102;
   min-width: 84px;
@@ -1353,15 +1352,15 @@ body.telegram-mini-app {
   }
 }
 body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
-body.telegram-mini-app .lang-btn { top: var(--tg-pad); }
-body.telegram-mini-app .lang-btn span { transform: translateY(-7px); }
-body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+body.telegram-mini-app .lang-btn { top: calc(var(--tg-pad) - 7px); }
+body.telegram-mini-app .lang-btn span { display: inline-block; }
+body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 21px); }
 body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
 @media (max-width: 700px) {
   body.telegram-mini-app {
     --tg-pad: calc(32px + var(--tg-top) + var(--safe-top));
   }
-  body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 28px); }
+  body.telegram-mini-app .lang-menu { top: calc(var(--tg-pad) + 21px); }
   body.telegram-mini-app .view-grid {
     padding: 0 !important;
   }
