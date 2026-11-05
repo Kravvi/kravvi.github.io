@@ -159,7 +159,8 @@ html, body {
   overscroll-behavior: none;
   -webkit-tap-highlight-color: transparent;
 }
-body.is-loading { visibility: hidden; }
+body.is-loading { visibility: visible; }
+body.is-loading > * { visibility: hidden; }
 .brand-tag {
   position: fixed;
   top: calc(22px + var(--safe-top));
