@@ -3052,13 +3052,41 @@ body.telegram-mini-app .view-grid { padding-top: var(--tg-pad); }
   var platform = String(tg.platform || '').toLowerCase();
   var ua = navigator.userAgent || '';
   var isMobilePlatform = (platform === 'android' || platform === 'ios');
-  var isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
   var isTouch = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-  var useMobileMode = isMobilePlatform || (platform === 'unknown' && isMobileUA && isTouch);
+  var hasFinePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  var maxTouchPoints = navigator.maxTouchPoints || 0;
+  var isTouchLike = isTouch || (maxTouchPoints > 0 && !hasFinePointer);
+  var isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+  var isIPadLike = /Macintosh/.test(ua) && isTouchLike && (platform === 'mac' || platform === 'macos' || platform === 'unknown');
+  var isDesktopPlatform = !isIPadLike && (
+    platform === 'windows' ||
+    platform === 'mac' ||
+    platform === 'macos' ||
+    platform === 'linux' ||
+    platform === 'web' ||
+    platform === 'weba' ||
+    platform === 'tdesktop' ||
+    platform === 'bot'
+  );
+  var useMobileMode = false;
+  if (!isDesktopPlatform) {
+    if (isMobilePlatform) {
+      useMobileMode = true;
+    } else if (platform === 'unknown' && isMobileUA && isTouch) {
+      useMobileMode = true;
+    } else if (isIPadLike) {
+      useMobileMode = true;
+    }
+  }
   if (useMobileMode) {
     document.body.classList.add('tg-mobile');
     if (tg.expand) tg.expand();
     if (tg.requestFullscreen) tg.requestFullscreen();
+  } else {
+    document.body.classList.remove('tg-mobile');
+    if (tg.exitFullscreen) {
+      try { tg.exitFullscreen(); } catch (e) {}
+    }
   }
   function updateSafeArea() {
     var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
