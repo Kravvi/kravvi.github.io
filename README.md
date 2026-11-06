@@ -46,7 +46,7 @@ Navigation is built on top of the **History API** (`history.pushState` / `popsta
 - **OG preview** — a 1200×630 image for correct link rendering in messengers and social networks.
 - **Firefox mobile handling** — for Firefox on Android the button size is automatically adjusted.
 - **History API navigation** — section switching goes through `history.pushState`; the `popstate` handler restores the previous view or closes the Mini App. Back button and swipe behave like a native app instead of immediately collapsing the WebView.
-- **Telegram Mini App** — full integration with the Telegram WebApp SDK: strict environment detection, expanded viewport, safe-area paddings, and a native **BackButton** synchronized with the in-app history.
+- **Telegram Mini App** — full integration with the Telegram WebApp SDK: strict environment detection, expanded viewport on mobile / `exitFullscreen()` on desktop, safe-area paddings, a native **BackButton** synchronized with the in-app history, and a ready-gate so the first paint and first layout pass happen only after `tg.ready()` (or a 1200 ms fallback).
 - **Layout tuner** — a hidden built-in panel for tuning CSS variables per layout context, opened with `?tuner=1`. Not user-facing, kept in the codebase as a design tool.
 
 ---
@@ -60,8 +60,8 @@ The site detects whether it is running inside Telegram as a **Mini App** (opened
 
 Only in the first case the `telegram-mini-app` body class is added and the following APIs are used:
 
-- `tg.ready()` and `tg.expand()` — the Mini App occupies the full available height.
-- `tg.requestFullscreen()` — requested when supported.
+- `tg.ready()` — signals the Mini App is ready. The first reveal of the home page and the first layout pass are gated on it (via the `window.kravviMarkTelegramReady` bridge, with a 1200 ms fallback), so layout does not jitter when Telegram fires `viewportChanged` or expands to fullscreen right after load.
+- `tg.expand()` and `tg.requestFullscreen()` — called **only in mobile mode** (Android/iOS or touch mobile-like platforms) so the Mini App occupies the full available height. On **desktop** platforms the opposite is done: `tg.exitFullscreen()` is called when supported.
 - `tg.contentSafeAreaInset.top` — exposed as `--tg-content-safe-area-inset-top` and mixed into `--tg-pad`, so the top UI (logo, language switcher, headers) is offset correctly below Telegram's own header:
   - default — `12px + top inset`;
   - phone (≤700px) — `32px + top inset`.
@@ -104,26 +104,28 @@ No tracking, analytics, or third-party cookies are used.
 ---
 
 ## Repository Structure
+
 ```
-├── index.html ← main file (inline HTML+CSS+JS)
-├── .nojekyll ← disables Jekyll on GitHub Pages
-├── README.md
-├── favicon/
-│ ├── android-chrome-192x192.png
-│ ├── android-chrome-512x512.png
-│ ├── apple-touch-icon.png
-│ ├── favicon-16x16.png
-│ ├── favicon-32x32.png
-│ ├── favicon-48x48.png
-│ └── favicon.ico ← legacy fallback, not referenced in HTML
-├── images/
-│ ├── VV SIte.png ← original (fallback for <img>)
-│ ├── VV 1600x1067.webp ← primary size
-│ ├── VV 1920x1280.webp
-│ └── VV 2356x1571.webp
-└── preview/
+├── index.html ← main file (inline HTML+CSS+JS)  
+├── .nojekyll ← disables Jekyll on GitHub Pages  
+├── README.md  
+├── favicon/  
+│ ├── android-chrome-192x192.png  
+│ ├── android-chrome-512x512.png  
+│ ├── apple-touch-icon.png  
+│ ├── favicon-16x16.png  
+│ ├── favicon-32x32.png  
+│ ├── favicon-48x48.png  
+│ └── favicon.ico ← legacy fallback, not referenced in HTML  
+├── images/  
+│ ├── VV SIte.png ← original (fallback for <img>)  
+│ ├── VV 1600x1067.webp ← primary size  
+│ ├── VV 1920x1280.webp  
+│ └── VV 2356x1571.webp  
+└── preview/  
 └── preview 1200x630.jpg ← image for OG preview
 ```
+
 
 ---
 
@@ -139,6 +141,4 @@ Repository settings: **Settings → Pages → Source: Deploy from a branch → m
 
 © Alexandr Kravvi, 2026.
 
-All images used on this website — including photographs, their processed versions, preview images, and favicons — are the intellectual property of the author. Any copying, reproduction, distribution, publication, or use of these images, in whole or in part, is prohibited without the prior written permission of the author.
-
-Public access to the source code does not grant any rights to the images contained in this repository.
+All texts, any images and photographs on this website — including their processed versions, preview images, and favicons — are the intellectual property of the author. Any copying, reproduction, distribution, publication, or use of these materials, in whole or in part, is prohibited without the prior written permission of the author.
