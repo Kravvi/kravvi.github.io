@@ -4,7 +4,7 @@ Online business card of Alexandr Kravvi — graphic and UI/UX designer, photogra
 
 **Website:** https://kravvi.github.io
 
-![Preview](preview/preview%201200x630.jpg)
+![Preview](preview/v.preview%201200x630.jpg)
 
 ---
 
@@ -123,7 +123,7 @@ No tracking, analytics, or third-party cookies are used.
 │ ├── VV 1920x1280.webp  
 │ └── VV 2356x1571.webp  
 └── preview/  
-└── preview 1200x630.jpg ← image for OG preview
+└── v.preview 1200x630.jpg ← image for OG preview
 ```
 
 
