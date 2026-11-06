@@ -332,6 +332,22 @@ body.overlay-active .copyright  { transform: translateY(8px); }
   color: #ffffff;
   white-space: nowrap;
   font-feature-settings: "locl" 0;
+  background-image: linear-gradient(
+    100deg,
+    #ffffff 0%,
+    #ffffff 35%,
+    #f4e8d7 43%,
+    #dfc39a 50%,
+    #f4e8d7 57%,
+    #ffffff 65%,
+    #ffffff 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 300% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   -webkit-text-stroke: var(--name-stroke) currentColor;
   text-stroke: var(--name-stroke) currentColor;
   paint-order: stroke fill;
@@ -347,6 +363,12 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     filter 400ms var(--ease-in-soft),
     transform 400ms var(--ease-in-soft);
 }
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero-name {
+    background-image: none;
+    -webkit-text-fill-color: #ffffff;
+  }
+}
 #view-home.is-active .hero-name {
   opacity: 1;
   filter: blur(0);
@@ -355,21 +377,15 @@ body.overlay-active .copyright  { transform: translateY(8px); }
     opacity var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     filter var(--dur-name) var(--ease-out-smooth) var(--delay-name),
     transform var(--dur-name) var(--ease-out-smooth) var(--delay-name);
-  animation: kravviMatteBreath 6s ease-in-out 1200ms infinite both;
-  will-change: text-shadow;
+  animation: kravviSheen 18s cubic-bezier(.42, 0, .58, 1) 1800ms infinite both;
+  will-change: background-position;
 }
-@keyframes kravviMatteBreath {
-  0%, 100% {
-    text-shadow:
-      0 0 18px rgba(255, 255, 255, 0),
-      0 0 42px rgba(255, 255, 255, 0),
-      0 0 90px rgba(255, 255, 255, 0);
+@keyframes kravviSheen {
+  0% {
+    background-position: 100% 0;
   }
-  50% {
-    text-shadow:
-      0 0 28px rgba(255, 255, 255, 0.22),
-      0 0 72px rgba(238, 238, 242, 0.16),
-      0 0 132px rgba(210, 210, 218, 0.10);
+  100% {
+    background-position: 0% 0;
   }
 }
 .hero-photo-wrap {
@@ -958,7 +974,9 @@ body.overlay-active #view-home.is-active .hero-actions {
 }
 @media (prefers-reduced-motion: reduce) {
   #view-home.is-active .hero-name {
-    animation: kravviMatteBreath 6s ease-in-out 1200ms infinite both !important;
+    animation: none !important;
+    background-position: 0% 0 !important;
+    will-change: auto !important;
   }
 }
 @media (max-width: 1024px),
