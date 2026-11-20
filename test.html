@@ -55,6 +55,10 @@
       --glass-radius: 24px;
       --tile-blur: 18px;
       --tile-overscan: 54px;
+      --tile-bg-url: none;
+      --tile-bg-w: 100vw;
+      --tile-bg-h: 100dvh;
+      --tile-bg-pad: 54px;
       --grid-max-w: min(1360px, 88vw);
       --grid-max-h: min(780px, 82vh);
       --gap: 16px;
@@ -729,37 +733,12 @@
       pointer-events: none;
       user-select: none;
       -webkit-user-select: none;
-    }
-    .tile-bg, .tile-bg * { pointer-events: none; }
-    .tile-bg img { -webkit-user-drag: none; }
-    .tile-bg-clip {
-      position: absolute;
-      inset: calc(-1 * var(--tile-overscan));
-      overflow: hidden;
-      filter: blur(var(--tile-blur)) saturate(1.2);
-      -webkit-filter: blur(var(--tile-blur)) saturate(1.2);
-      transform: translateZ(0);
-    }
-    .tile-bg-stage {
-      position: absolute;
-      left: calc(-1 * var(--tx));
-      top: calc(-1 * var(--ty));
-      width: calc(var(--vis-w) + var(--tile-overscan) * 2);
-      height: calc(var(--vis-h) + var(--tile-overscan) * 2);
-    }
-    .tile-bg .hero-photo-wrap { inset: var(--tile-overscan); }
-    .tile-bg .hero-name {
-      top: calc(var(--hero-top) + var(--tile-overscan));
-      opacity: 1;
-      filter: none;
-      transition: none;
-      transform: translateX(-50%) translate(var(--name-x), var(--name-y));
-    }
-    .tile-bg .hero-photo {
-      opacity: 1;
-      filter: none;
-      transition: none;
-      transform: none;
+      background-image: var(--tile-bg-url);
+      background-repeat: no-repeat;
+      background-size: var(--tile-bg-w) var(--tile-bg-h);
+      background-position:
+        calc(var(--tile-bg-pad) - var(--tx))
+        calc(var(--tile-bg-pad) - var(--ty));
     }
     .tile::before {
       content: "";
@@ -782,6 +761,19 @@
       transition:
         background-color 300ms var(--ease-out-smooth),
         border-color 300ms var(--ease-out-smooth);
+    }
+    html.no-tile-canvas .tile-bg { display: none; }
+    html.no-tile-canvas .tile::before {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(18px) saturate(1.2);
+      -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    }
+    html.no-tile-canvas .tile::after { background: transparent; border: 0; }
+    html.no-tile-canvas .view-grid.is-active .tile:hover::after { background: rgba(255, 255, 255, 0.05); }
+    html.no-tile-canvas .tile.is-disabled::before {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.04);
     }
     .view-grid.is-active .tile {
       opacity: 1;
@@ -1121,12 +1113,6 @@
       }
       [data-tile-id="photo-archive"] .tile-desc {
         white-space: pre-line;
-      }
-      .tile-bg .hero-photo-wrap { inset: 0; }
-      .tile-bg .hero-artboard { bottom: var(--tile-overscan); }
-      .tile-bg .hero-name {
-        top: calc(var(--kravvi-y-v) * 1%);
-        transform: translate(-50%, -50%) translate(var(--kravvi-shift-x), var(--kravvi-shift-y));
       }
     }
     @media (min-width: 701px) and (max-width: 1024px),
@@ -1746,34 +1732,15 @@
         'stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
         '<rect x="4" y="11" width="16" height="10" rx="2"/>' +
         '<path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
-      function buildTileBackground() {
-        var src = document.querySelector('.hero-artboard');
-        if (!src) return null;
-        var bg = document.createElement('span');
-        bg.className = 'tile-bg';
-        bg.setAttribute('aria-hidden', 'true');
-        var clip = document.createElement('span');
-        clip.className = 'tile-bg-clip';
-        var stage = document.createElement('span');
-        stage.className = 'tile-bg-stage';
-        var clone = src.cloneNode(true);
-        $('[id]', clone).forEach(function (n) { n.removeAttribute('id'); });
-        $('img', clone).forEach(function (im) {
-          im.setAttribute('decoding', 'async');
-          im.setAttribute('draggable', 'false');
-        });
-        stage.appendChild(clone);
-        clip.appendChild(stage);
-        bg.appendChild(clip);
-        return bg;
-      }
       function buildTile(t, i) {
         var a = document.createElement('a');
         a.className = 'tile';
         a.setAttribute('data-tile-id', t.id);
         a.style.setProperty('--i', String(i));
-        var bg = buildTileBackground();
-        if (bg) a.appendChild(bg);
+        var bg = document.createElement('span');
+        bg.className = 'tile-bg';
+        bg.setAttribute('aria-hidden', 'true');
+        a.appendChild(bg);
         if (t.disabled) {
           a.classList.add('is-disabled');
           a.href = '#';
@@ -1867,6 +1834,128 @@
           bgRAF = 0;
           updateTileBackgrounds();
         });
+      }
+      function boxesForGauss(sigma, n) {
+        var wIdeal = Math.sqrt((12 * sigma * sigma / n) + 1);
+        var wl = Math.floor(wIdeal);
+        if (wl % 2 === 0) wl--;
+        var wu = wl + 2;
+        var mIdeal = (12 * sigma * sigma - n * wl * wl - 4 * n * wl - 3 * n) / (-4 * wl - 4);
+        var m = Math.round(mIdeal);
+        var sizes = [];
+        for (var i = 0; i < n; i++) sizes.push(i < m ? wl : wu);
+        return sizes;
+      }
+      function boxBlurH(src, dst, w, h, r) {
+        var iarr = 1 / (r + r + 1);
+        for (var i = 0; i < h; i++) {
+          var ti = i * w, li = ti, ri = ti + r;
+          var fv = src[ti], lv = src[ti + w - 1], val = (r + 1) * fv;
+          for (var j = 0; j < r; j++) val += src[ti + j];
+          for (var j2 = 0; j2 <= r; j2++) { val += src[ri++] - fv; dst[ti++] = Math.round(val * iarr); }
+          for (var j3 = r + 1; j3 < w - r; j3++) { val += src[ri++] - src[li++]; dst[ti++] = Math.round(val * iarr); }
+          for (var j4 = w - r; j4 < w; j4++) { val += lv - src[li++]; dst[ti++] = Math.round(val * iarr); }
+        }
+      }
+      function boxBlurT(src, dst, w, h, r) {
+        var iarr = 1 / (r + r + 1);
+        for (var i = 0; i < w; i++) {
+          var ti = i, li = ti, ri = ti + r * w;
+          var fv = src[ti], lv = src[ti + w * (h - 1)], val = (r + 1) * fv;
+          for (var j = 0; j < r; j++) val += src[ti + j * w];
+          for (var j2 = 0; j2 <= r; j2++) { val += src[ri] - fv; dst[ti] = Math.round(val * iarr); ri += w; ti += w; }
+          for (var j3 = r + 1; j3 < h - r; j3++) { val += src[ri] - src[li]; dst[ti] = Math.round(val * iarr); li += w; ri += w; ti += w; }
+          for (var j4 = h - r; j4 < h; j4++) { val += lv - src[li]; dst[ti] = Math.round(val * iarr); li += w; ti += w; }
+        }
+      }
+      function gaussBlurRGBA(data, w, h, sigma) {
+        if (sigma < 0.5) return;
+        var boxes = boxesForGauss(sigma, 3);
+        var n = w * h;
+        var a = new Float32Array(n), b = new Float32Array(n);
+        var ch, off;
+        for (ch = 0; ch < 4; ch++) {
+          off = ch;
+          for (var i = 0; i < n; i++) a[i] = data[i * 4 + off];
+          boxBlurH(a, b, w, h, (boxes[0] - 1) / 2);
+          boxBlurT(b, a, w, h, (boxes[0] - 1) / 2);
+          boxBlurH(a, b, w, h, (boxes[1] - 1) / 2);
+          boxBlurT(b, a, w, h, (boxes[1] - 1) / 2);
+          boxBlurH(a, b, w, h, (boxes[2] - 1) / 2);
+          boxBlurT(b, a, w, h, (boxes[2] - 1) / 2);
+          for (var k = 0; k < n; k++) data[k * 4 + off] = a[k];
+        }
+      }
+      var blurTimer = 0;
+      var canvasFilterOK = null;
+      function detectCanvasFilter() {
+        if (canvasFilterOK !== null) return canvasFilterOK;
+        try {
+          var c = document.createElement('canvas').getContext('2d');
+          c.filter = 'blur(1px)';
+          canvasFilterOK = (c.filter === 'blur(1px)');
+        } catch (e) { canvasFilterOK = false; }
+        return canvasFilterOK;
+      }
+      function generateTileBlur() {
+        var root = document.documentElement;
+        try {
+          var img = document.getElementById('hero-photo');
+          var nameEl = document.querySelector('.hero-name');
+          if (!img || !img.complete || !img.naturalWidth) return;
+          var W = cssNum('--vis-w', window.innerWidth || 360);
+          var H = cssNum('--vis-h', window.innerHeight || 640);
+          var p = cssNum('--tile-overscan', 54);
+          var blur = cssNum('--tile-blur', 18);
+          var s = 0.5;
+          var cw = Math.max(4, Math.round((W + 2 * p) * s));
+          var ch = Math.max(4, Math.round((H + 2 * p) * s));
+          var src = document.createElement('canvas');
+          src.width = cw; src.height = ch;
+          var sc = src.getContext('2d');
+          if (!sc) throw new Error('no2d');
+          sc.scale(s, s);
+          sc.fillStyle = '#0A0A0A';
+          sc.fillRect(0, 0, W + 2 * p, H + 2 * p);
+          var r = img.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0) {
+            sc.drawImage(img, r.left + p, r.top + p, r.width, r.height);
+          }
+          if (nameEl) {
+            var nr = nameEl.getBoundingClientRect();
+            var cs = getComputedStyle(nameEl);
+            sc.fillStyle = cs.color || '#ffffff';
+            sc.font = cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily;
+            sc.textBaseline = 'middle';
+            try { sc.letterSpacing = cs.letterSpacing; } catch (e) {}
+            sc.fillText(nameEl.textContent || '', nr.left + p, nr.top + p + nr.height / 2);
+          }
+          var dst = document.createElement('canvas');
+          dst.width = cw; dst.height = ch;
+          var dc = dst.getContext('2d');
+          if (!dc) throw new Error('no2d');
+          if (detectCanvasFilter()) {
+            dc.filter = 'blur(' + (blur * s) + 'px) saturate(1.2)';
+            dc.drawImage(src, 0, 0);
+            dc.filter = 'none';
+          } else {
+            var id = sc.getImageData(0, 0, cw, ch);
+            gaussBlurRGBA(id.data, cw, ch, blur * s);
+            dc.putImageData(id, 0, 0);
+          }
+          var url = dst.toDataURL('image/png');
+          root.style.setProperty('--tile-bg-url', 'url("' + url + '")');
+          root.style.setProperty('--tile-bg-w', (W + 2 * p) + 'px');
+          root.style.setProperty('--tile-bg-h', (H + 2 * p) + 'px');
+          root.style.setProperty('--tile-bg-pad', p + 'px');
+          root.classList.remove('no-tile-canvas');
+        } catch (e) {
+          root.classList.add('no-tile-canvas');
+        }
+      }
+      function scheduleBlur() {
+        clearTimeout(blurTimer);
+        blurTimer = setTimeout(generateTileBlur, 140);
       }
       function parseHash() {
         var h = location.hash || '';
@@ -2069,6 +2158,7 @@
           layoutRAF = 0;
           layoutMobile();
           updateTileBackgrounds();
+          scheduleBlur();
         });
       }
       window.kravviRelayout = scheduleLayout;
