@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kravvi.github.io/archive/seo/sitemap.xml
+Sitemap: https://kravvi.github.io/sitemap.xml
