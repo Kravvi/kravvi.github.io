@@ -21,7 +21,7 @@ Navigation is built on top of the History API (`history.pushState` / `popstate`)
 ## Tech Stack
 
 - Plain HTML, CSS, JavaScript (ES5-compatible syntax).
-- Almost all code lives in a single file — `index.html` (styles in `<style>`, scripts in `<script>`). The only exception is SEO markup, extracted into a separate `seo/seo.js` file loaded with `defer` in `<head>` to keep the main HTML clean.
+- Almost all code lives in a single file — `index.html` (styles in `<style>`, scripts in `<script>`, plus a minified JSON-LD block in `<head>`). The only exception is basic SEO meta tags, extracted into a separate `seo/seo.js` file loaded with `defer` in `<head>` to keep the main HTML clean.
 - External resources — Google Fonts (Bodoni Moda for headings, Manrope for interface) and the official Telegram WebApp SDK (`telegram-web-app.js`). The SDK script is always loaded, but its logic runs only inside a real Telegram Mini App (see below).
 - Hosting — GitHub Pages.
 
@@ -38,7 +38,7 @@ Navigation is built on top of the History API (`history.pushState` / `popstate`)
 - Dynamic address bar — correct handling of the appearance and hiding of the mobile browser address bar via the `visualViewport` API.
 - Image optimization — the hero image is served in WebP (three sizes) via `<picture>` + `srcset`, with a PNG fallback.
 - OG preview — a 1200×630 image (`preview/v.preview 1200x630.jpg`) served via `raw.githubusercontent.com` for correct link rendering in messengers and social networks.
-- SEO — a unified `sitemap.xml` for the whole domain, `robots.txt`, and Schema.org JSON-LD structured data injected by `seo/seo.js` (see the SEO section).
+- SEO — a unified `sitemap.xml` for the whole domain, `robots.txt`, basic meta tags via `seo/seo.js`, and Schema.org JSON-LD structured data embedded directly in `index.html` (see the SEO section).
 - Firefox mobile handling — for Firefox on Android the button size is automatically adjusted.
 - History API navigation — section switching goes through `history.pushState`; the `popstate` handler restores the previous view or closes the Mini App. Back button and swipe behave like a native app instead of immediately collapsing the WebView.
 - Telegram Mini App — full integration with the Telegram WebApp SDK: strict environment detection, expanded viewport on mobile / `exitFullscreen()` on desktop, safe-area paddings, a native BackButton synchronized with the in-app history, and a ready-gate so the first paint and first layout pass happen only after `tg.ready()` (or a 1200 ms fallback).
@@ -48,12 +48,19 @@ Navigation is built on top of the History API (`history.pushState` / `popstate`)
 
 - `sitemap.xml` — a single sitemap for the entire domain, located in the repository root. It lists two URLs: `https://kravvi.github.io/` (business card) and `https://kravvi.github.io/archive/` (photo archive). The archive repository keeps no sitemap of its own — it was removed to avoid duplication.
 - `robots.txt` — allows all crawlers (`Allow: /`) and points to the unified sitemap: `Sitemap: https://kravvi.github.io/sitemap.xml`.
-- `seo/seo.js` — all SEO markup and metadata are kept out of the main HTML in this separate file, loaded with `defer` in `<head>`:
+- `seo/seo.js` — a lightweight script with basic meta tags and social tags only, loaded with `defer` in `<head>`:
   - basic meta tags: a short `description` (for search results / social networks), `keywords`, `author`;
-  - Open Graph: `og:title`, `og:description`, `og:url`, `og:type`;
-  - Schema.org JSON-LD: `ProfilePage` with a nested `Person` — name, alternate names (`Kravvi`, `Alexandr Kravvi`), job titles, `sameAs` links and awards; the full biography and achievements text is embedded into the structured data;
-  - the tab title is intentionally not modified by this script.
-- Verified with Google Rich Results Test: all structured data (`ProfilePage`, `Person`, awards, links) is recognized by Google.
+  - `robots` (`index, follow`);
+  - `link rel="canonical"` (protection against duplicate URLs);
+  - Open Graph: `og:title`, `og:description`, `og:url`, `og:type`, `og:locale`;
+  - Twitter Cards: `twitter:card`, `twitter:title`, `twitter:description`;
+  - the tab title is intentionally not modified by this script;
+  - the script no longer builds JSON-LD: the `fullText` variable, the `schema` object and the script-injection logic were removed.
+- JSON-LD inside the HTML (for AI crawlers):
+  - AI crawlers (GPTBot, ClaudeBot) do not execute JavaScript, so structured data injected by `seo.js` would be invisible to them.
+  - The Schema.org JSON-LD block — `ProfilePage` with a nested `Person` (full biography, awards, `sameAs` links, alternate names `Kravvi` / `Alexandr Kravvi`, job titles) — is embedded directly in `<head>` of `index.html`.
+  - It is placed right after the `seo/seo.js` include, before the closing `</head>`, and minified into a single line to keep the HTML clean.
+  - This guarantees that the author information is readable by both search engines and AI systems, even without JS execution.
 
 ## Telegram Mini App
 
@@ -101,12 +108,12 @@ No tracking, analytics, or third-party cookies are used.
 - `viewport-fit=cover` is intentionally not used, and `--safe-top` is hard-coded to `0px` (without `env()`). This avoids a spurious top offset inside the Threads in-app browser (`Barcelona`). Do not re-enable `env(safe-area-inset-top)` for the top safe area without re-testing Threads.
 - Messengers aggressively cache OG previews; in Telegram the cache can be flushed via `@WebpageBot`.
 - Telegram `BackButton` requires Bot API 6.1+.
-- SEO markup is injected via JavaScript (`seo/seo.js`): crawlers and messengers that do not execute JS only see the static `<head>` tags. Google executes the JS and reads the structured data (verified with Rich Results Test).
+- SEO data is split between two places: basic meta tags are set via `seo/seo.js`, while the full `ProfilePage` / `Person` JSON-LD markup lives directly in `index.html`. When editing the biography or awards, the text must be kept in sync in both files (the HTML block and the meta tags in `seo.js`). Meta tags from `seo.js` are applied only when JS runs; crawlers without JS still see the static `<head>` tags and the JSON-LD block.
 
 ## Repository Structure
 
 ```
-├── index.html                  ← main file (inline HTML+CSS+JS)
+├── index.html                  ← main file (inline HTML+CSS+JS + JSON-LD in <head>)
 ├── .nojekyll                   ← disables Jekyll on GitHub Pages
 ├── README.md
 ├── robots.txt                  ← Allow: / + link to the unified sitemap
@@ -128,8 +135,9 @@ No tracking, analytics, or third-party cookies are used.
 ├── preview/
 │   └── v.preview 1200x630.jpg  ← OG preview image (served via raw.githubusercontent.com)
 └── seo/
-    └── seo.js                  ← SEO meta tags, Open Graph, JSON-LD (loaded with defer)
+    └── seo.js                  ← meta tags, robots, canonical, Open Graph, Twitter Cards (defer)
 ```
+
 
 ## Deployment
 
