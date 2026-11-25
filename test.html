@@ -1430,6 +1430,7 @@
         'use strict';
         var STEP_MS       = 80;
         var TRANSITION_MS = 900;
+        var TAP_ANIM_MS   = 7;
         var telegramReadyResolved = false;
         var telegramReadyCallbacks = [];
         var telegramReadyFallbackTimer = 0;
@@ -1881,6 +1882,18 @@
           e.preventDefault();
           var route = nav.getAttribute('data-nav');
           var targetHash = '#' + route;
+          var isHomeBtn = nav.classList.contains('btn-pill');
+          if (isTouchDevice() && isHomeBtn) {
+            $('.hero-actions .btn-pill').forEach(function (b) {
+              if (b !== nav) b.classList.remove('is-tapped');
+            });
+            nav.classList.add('is-tapped');
+            setTimeout(function () {
+              history.pushState({ page: route }, '', targetHash);
+              navigate();
+            }, TAP_ANIM_MS);
+            return;
+          }
           history.pushState({ page: route }, '', targetHash);
           navigate();
         }
