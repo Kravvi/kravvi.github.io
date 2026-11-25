@@ -576,7 +576,7 @@
     }
     .hero-actions .btn-pill.is-tapped::before {
       opacity: 1;
-      transition: opacity 150ms ease;
+      transition: opacity 7ms ease;
     }
     .hero-actions .btn-pill.is-tapped {
       color: #ffffff;
@@ -587,10 +587,10 @@
         0 0 20px rgba(255, 255, 255, 0.25);
       transform: translateY(-2px) translateZ(0);
       transition:
-        color 150ms ease,
-        text-shadow 150ms ease,
-        transform 150ms ease,
-        border-color 150ms ease;
+        color 7ms ease,
+        text-shadow 7ms ease,
+        transform 7ms ease,
+        border-color 7ms ease;
     }
     .hero-actions .btn-pill:focus-visible::before { opacity: 1; }
     .hero-actions .btn-pill:focus-visible {
@@ -1431,7 +1431,7 @@
       'use strict';
       var STEP_MS       = 80;
       var TRANSITION_MS = 900;
-      var TAP_ANIM_MS   = 150;
+      var TAP_ANIM_MS   = 7;
       var telegramReadyResolved = false;
       var telegramReadyCallbacks = [];
       var telegramReadyFallbackTimer = 0;
@@ -3094,7 +3094,7 @@
       if (!isDesktopPlatform) {
         if (isMobilePlatform) {
           useMobileMode = true;
-        } else if ((platform === 'unknown' || !platform) && isMobileUA && isTouch) {
+        } else if (platform === 'unknown' && isMobileUA && isTouch) {
           useMobileMode = true;
         } else if (isIPadLike) {
           useMobileMode = true;
@@ -3102,11 +3102,8 @@
       }
       if (useMobileMode) {
         document.body.classList.add('tg-mobile');
-        if (tg.requestFullscreen) {
-          try { tg.requestFullscreen(); } catch (e) {}
-        } else if (tg.expand) {
-          tg.expand();
-        }
+        if (tg.expand) tg.expand();
+        if (tg.requestFullscreen) tg.requestFullscreen();
       } else {
         document.body.classList.remove('tg-mobile');
         if (tg.exitFullscreen) {
