@@ -576,7 +576,7 @@
     }
     .hero-actions .btn-pill.is-tapped::before {
       opacity: 1;
-      transition: opacity 7ms ease;
+      transition: opacity 150ms ease;
     }
     .hero-actions .btn-pill.is-tapped {
       color: #ffffff;
@@ -587,10 +587,10 @@
         0 0 20px rgba(255, 255, 255, 0.25);
       transform: translateY(-2px) translateZ(0);
       transition:
-        color 7ms ease,
-        text-shadow 7ms ease,
-        transform 7ms ease,
-        border-color 7ms ease;
+        color 150ms ease,
+        text-shadow 150ms ease,
+        transform 150ms ease,
+        border-color 150ms ease;
     }
     .hero-actions .btn-pill:focus-visible::before { opacity: 1; }
     .hero-actions .btn-pill:focus-visible {
@@ -859,7 +859,7 @@
     .tile-title {
       font-family: var(--font-ui);
       font-weight: 600;
-      font-size: clamp(0.95rem, 1.1vw, 1.28rem);
+      font-size: clamp(0.85rem, 1vw, 1.15rem);
       letter-spacing: 0.01em;
       color: #fff;
       line-height: 1.2;
@@ -1431,7 +1431,7 @@
       'use strict';
       var STEP_MS       = 80;
       var TRANSITION_MS = 900;
-      var TAP_ANIM_MS   = 7;
+      var TAP_ANIM_MS   = 150;
       var telegramReadyResolved = false;
       var telegramReadyCallbacks = [];
       var telegramReadyFallbackTimer = 0;
