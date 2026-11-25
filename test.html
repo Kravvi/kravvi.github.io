@@ -26,8 +26,8 @@
   <link rel="icon" type="image/png" sizes="192x192" href="favicon/android-chrome-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="favicon/android-chrome-512x512.png">
   <title>Digital card</title>
-  <meta name="yandex-verification" content="e16e3f465b2aac70" />
-  <meta name="google-site-verification" content="oSDx9wfEMLddo69yjcAFBWRVJ4J5Hm7J4SaBETG8aCo" />
+ <meta name="yandex-verification" content="e16e3f465b2aac70" />
+ <meta name="google-site-verification" content="oSDx9wfEMLddo69yjcAFBWRVJ4J5Hm7J4SaBETG8aCo" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..900&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
@@ -576,7 +576,7 @@
     }
     .hero-actions .btn-pill.is-tapped::before {
       opacity: 1;
-      transition: opacity 7ms ease;
+      transition: opacity 150ms ease;
     }
     .hero-actions .btn-pill.is-tapped {
       color: #ffffff;
@@ -587,10 +587,10 @@
         0 0 20px rgba(255, 255, 255, 0.25);
       transform: translateY(-2px) translateZ(0);
       transition:
-        color 7ms ease,
-        text-shadow 7ms ease,
-        transform 7ms ease,
-        border-color 7ms ease;
+        color 150ms ease,
+        text-shadow 150ms ease,
+        transform 150ms ease,
+        border-color 150ms ease;
     }
     .hero-actions .btn-pill:focus-visible::before { opacity: 1; }
     .hero-actions .btn-pill:focus-visible {
@@ -1323,9 +1323,6 @@
         -webkit-text-stroke: 0.35px currentColor;
         text-stroke: 0.35px currentColor;
       }
-      body.telegram-mini-app .tile-title {
-        font-weight: 400;
-      }
     }
     body.telegram-mini-app .brand-tag { top: var(--tg-pad); }
     body.telegram-mini-app .lang-btn { top: calc(var(--tg-pad) - 7px); }
@@ -1352,11 +1349,11 @@
       }
     }
   </style>
-  <script src="seo/seo.js" defer></script>
-  <script type="application/ld+json">
+ <script src="seo/seo.js" defer></script>
+ <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"ProfilePage","mainEntity":{"@type":"Person","name":"Александр Кравви","alternateName":["Kravvi","Alexandr Kravvi","Кравви"],"jobTitle":["Графический дизайнер","UI/UX дизайнер","Фотограф","Ретушер"],"description":"Александр Кравви, графический и UI/UX дизайнер, фотограф, ретушёр. Профессионально занимался фотографией в период с 2015 по 2022 год. Специализировался на художественном портрете, где классическая эстетика сочетается с глубокой авторской постобработкой, наряду с этим Александр активно работал в коммерческих и частных жанрах: от рекламных и репортажных съемок до семейных историй, love story и макрофотографии. Так же Александр активно сотрудничал с многочисленными модельными агентствами, преподавал фотопозирование и фотопластику. Фото работы нередко дополнялись авторскими стихами, которые сейчас можно прочесть в архиве мыслей https://archive.gallery.photo/gallery/thoughts. Профессиональные достижения Александра Кравви отмечены на международном уровне: по итогам престижной фотопремии 35AWARDS (2016, 2017) Александр дважды входил в официальные списки лучших фотографов Республики Беларусь и родного города Гомель. Личное архивное портфолио фоторабот за период с 2015 по 2022 год Александра Кравви находиться в Архиве по этой ссылке https://kravvi.github.io/archive а так же результаты творчества тех лет сохранились в авторском сообществе ВКонтакте https://vk.ru/kravviphotographer. В настоящее время Александр Кравви фокусируется в профессии ui/ux дизайн занимаясь комплексным проектированием и создании цифровых продуктов а так же развивается в сфере высоких технологий используя их в своей работе","url":"https://kravvi.github.io/","sameAs":["https://kravvi.github.io/archive/","https://vk.ru/kravviphotographer","https://archive.gallery.photo/gallery/thoughts"],"award":["35AWARDS 2016 - Один из лучших фотографов Республики Беларусь и города Гомель","35AWARDS 2017 - Один из лучших фотографов Республики Беларусь и города Гомель"]}}
 </script>
-  <script type="application/ld+json">
+ <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Александр Кравви","alternateName":["Alexandr Kravvi"],"url":"https://kravvi.github.io/"}
 </script>
 </head>
@@ -1434,7 +1431,7 @@
       'use strict';
       var STEP_MS       = 80;
       var TRANSITION_MS = 900;
-      var TAP_ANIM_MS   = 7;
+      var TAP_ANIM_MS   = 150;
       var telegramReadyResolved = false;
       var telegramReadyCallbacks = [];
       var telegramReadyFallbackTimer = 0;
@@ -1631,7 +1628,7 @@
         }
       };
       function $(sel, ctx) { return (ctx || document).querySelector(sel); }
-      function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+      function $(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
       function isTouchDevice() {
         return !(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
       }
@@ -1676,16 +1673,16 @@
         if (ogTitle) ogTitle.setAttribute('content', title);
         var ogDesc = document.querySelector('meta[property="og:description"]');
         if (ogDesc) ogDesc.setAttribute('content', dict['meta.description'] || '');
-        $$('[data-i18n]').forEach(function (el) {
+        $('[data-i18n]').forEach(function (el) {
           var k = el.getAttribute('data-i18n');
           if (dict[k] != null) el.textContent = dict[k];
         });
         var cur = document.getElementById('lang-current');
         if (cur) cur.textContent = lang.charAt(0).toUpperCase() + lang.charAt(1);
-        $$('.lang-item').forEach(function (el) {
+        $('.lang-item').forEach(function (el) {
           el.classList.toggle('is-active', el.getAttribute('data-lang') === lang);
         });
-        $$('.back-btn').forEach(function (el) {
+        $('.back-btn').forEach(function (el) {
           el.setAttribute('aria-label', dict['btn.back'] || 'Back');
         });
         var photo = document.getElementById('hero-photo');
@@ -1779,7 +1776,7 @@
         ['portfolio', 'contacts'].forEach(function (kind) {
           var table = PATTERNS[kind] && PATTERNS[kind][mode];
           if (!table) return;
-          $$('[data-grid="' + kind + '"] .tile').forEach(function (tile) {
+          $('[data-grid="' + kind + '"] .tile').forEach(function (tile) {
             var id = tile.getAttribute('data-tile-id');
             if (table[id]) tile.style.gridArea = table[id];
           });
@@ -1795,7 +1792,7 @@
       function clearHomeButtonEffects() {
         var active = document.activeElement;
         if (active && active.blur) active.blur();
-        $$('.hero-actions .btn-pill').forEach(function (btn) {
+        $('.hero-actions .btn-pill').forEach(function (btn) {
           if (btn.blur) btn.blur();
           btn.classList.remove('is-tapped');
         });
@@ -1888,7 +1885,7 @@
         var targetHash = '#' + route;
         var isHomeBtn = nav.classList.contains('btn-pill');
         if (isTouchDevice() && isHomeBtn) {
-          $$('.hero-actions .btn-pill').forEach(function (b) {
+          $('.hero-actions .btn-pill').forEach(function (b) {
             if (b !== nav) b.classList.remove('is-tapped');
           });
           nav.classList.add('is-tapped');
@@ -2099,14 +2096,14 @@
           if (!isTouchDevice()) return;
           var btn = e.target.closest && e.target.closest('.hero-actions .btn-pill');
           if (!btn) return;
-          $$('.hero-actions .btn-pill').forEach(function (b) {
+          $('.hero-actions .btn-pill').forEach(function (b) {
             if (b !== btn) b.classList.remove('is-tapped');
           });
           btn.classList.add('is-tapped');
         }, { passive: true });
         document.addEventListener('touchcancel', function () {
           if (!isTouchDevice()) return;
-          $$('.hero-actions .btn-pill').forEach(function (b) {
+          $('.hero-actions .btn-pill').forEach(function (b) {
             b.classList.remove('is-tapped');
           });
         }, { passive: true });
@@ -2751,4 +2748,394 @@
         + 'padding:3px 8px;border-radius:999px;margin-left:6px}'
         + '.tuner-close{width:26px;height:26px;display:flex;align-items:center;justify-content:center;'
         + 'background:transparent;border:0;color:rgba(255,255,255,.55);cursor:pointer;border-radius:8px;'
-        + 'font-size:18px;line-height:1;padding:0;font-family:inherit;transition:background .
+        + 'font-size:18px;line-height:1;padding:0;font-family:inherit;transition:background .15s,color .15s}'
+        + '.tuner-close:hover{background:rgba(255,255,255,.08);color:#fff}'
+        + '.tuner-body{flex:1;overflow-y:auto;padding:14px 16px 16px;display:flex;flex-direction:column;gap:14px;'
+        + 'scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.15) transparent}'
+        + '.tuner-body::-webkit-scrollbar{width:6px}'
+        + '.tuner-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}'
+        + '.tuner-group{display:flex;flex-direction:column;gap:7px}'
+        + '.tuner-group-title{font-size:10px;font-weight:600;opacity:.55;text-transform:uppercase;letter-spacing:.14em}'
+        + '.tuner-tabs{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
+        + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
+        + '.tuner-tabs button{flex:1;padding:7px 4px;background:transparent;border:0;border-radius:8px;'
+        + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:10.5px;font-family:inherit;font-weight:500;'
+        + 'transition:background .15s,color .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+        + '.tuner-tabs button:hover{color:#fff;background:rgba(255,255,255,.05)}'
+        + '.tuner-tabs button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
+        + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
+        + '.tuner-step{display:flex;gap:2px;padding:3px;background:rgba(255,255,255,.04);'
+        + 'border-radius:11px;border:1px solid rgba(255,255,255,.04)}'
+        + '.tuner-step button{flex:1;padding:6px 4px;background:transparent;border:0;border-radius:8px;'
+        + 'color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;font-family:inherit;font-weight:500;'
+        + 'transition:background .15s,color .15s}'
+        + '.tuner-step button.is-active{background:rgba(168,137,92,.22);color:#E8C89A;'
+        + 'box-shadow:0 0 0 1px rgba(168,137,92,.35) inset}'
+        + '.tuner-props{display:flex;flex-direction:column;gap:6px}'
+        + '.tuner-prop{display:grid;grid-template-columns:132px 1fr;gap:10px;align-items:center;padding:2px 0}'
+        + '.tuner-prop-label{font-size:11.5px;color:rgba(255,255,255,.55);letter-spacing:.02em;'
+        + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+        + '.tuner-prop-controls{display:grid;grid-template-columns:28px 1fr 30px 28px;gap:4px;align-items:center}'
+        + '.tuner-prop-controls button{background:rgba(255,255,255,.05);border:0;color:rgba(255,255,255,.75);'
+        + 'border-radius:7px;padding:0;height:28px;cursor:pointer;font-size:16px;font-family:inherit;font-weight:400;'
+        + 'display:flex;align-items:center;justify-content:center;'
+        + 'transition:background .12s,color .12s,transform .12s}'
+        + '.tuner-prop-controls button:hover{background:rgba(255,255,255,.11);color:#fff}'
+        + '.tuner-prop-controls button:active{background:rgba(255,255,255,.18);transform:scale(.92)}'
+        + '.tuner-prop-controls input{width:100%;background:rgba(255,255,255,.04);'
+        + 'border:1px solid rgba(255,255,255,.08);border-radius:7px;color:#fff;padding:5px 6px;'
+        + 'font-size:12.5px;font-family:inherit;text-align:center;font-weight:500;font-variant-numeric:tabular-nums;'
+        + 'transition:border-color .15s,background .15s}'
+        + '.tuner-prop-controls input:focus{outline:none;border-color:rgba(168,137,92,.6);background:rgba(255,255,255,.07)}'
+        + '.tuner-prop-controls input::-webkit-outer-spin-button,'
+        + '.tuner-prop-controls input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}'
+        + '.tuner-prop-controls input[type=number]{-moz-appearance:textfield}'
+        + '.tuner-unit{font-size:9.5px;color:rgba(255,255,255,.35);text-align:center;pointer-events:none;'
+        + 'font-variant-numeric:tabular-nums;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+        + '.tuner-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:12px;margin-top:2px;'
+        + 'border-top:1px solid rgba(255,255,255,.06)}'
+        + '.tuner-actions button{padding:8px 10px;background:rgba(255,255,255,.05);border:0;'
+        + 'color:rgba(255,255,255,.8);border-radius:9px;cursor:pointer;font-size:11.5px;font-family:inherit;'
+        + 'font-weight:500;transition:background .15s,color .15s}'
+        + '.tuner-actions button:hover{background:rgba(255,255,255,.1);color:#fff}'
+        + '.tuner-actions button.wide{grid-column:1/-1;background:rgba(168,137,92,.18);color:#E8C89A;'
+        + 'border:1px solid rgba(168,137,92,.3)}'
+        + '.tuner-actions button.wide:hover{background:rgba(168,137,92,.28);color:#fff}'
+        + '.tuner-actions button.danger{color:rgba(255,140,140,.85)}'
+        + '.tuner-actions button.danger:hover{background:rgba(255,80,80,.14);color:#ffb0b0}'
+        + '.tuner-json{width:100%;min-height:110px;background:rgba(0,0,0,.55);'
+        + 'border:1px solid rgba(255,255,255,.08);color:#e0e0e0;'
+        + 'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;'
+        + 'padding:8px 10px;border-radius:9px;resize:vertical;box-sizing:border-box;line-height:1.5}'
+        + '.tuner-json:focus{outline:none;border-color:rgba(168,137,92,.5)}'
+        + '@media (max-width:700px){'
+        + '.tuner-fab{right:14px;bottom:14px;width:52px;height:52px}'
+        + '.tuner-panel{right:8px;left:8px;bottom:76px;width:auto;max-width:none;'
+        + 'max-height:calc(100dvh - 100px);border-radius:16px}'
+        + '}';
+      document.head.appendChild(styles);
+      var fab = document.createElement('button');
+      fab.type = 'button';
+      fab.className = 'tuner-fab';
+      fab.title = 'Layout tuner';
+      fab.setAttribute('aria-label', 'Open layout tuner');
+      fab.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
+        + '<path d="M4 6h10"/><path d="M18 6h2"/><circle cx="16" cy="6" r="2"/>'
+        + '<path d="M4 12h4"/><path d="M12 12h8"/><circle cx="10" cy="12" r="2"/>'
+        + '<path d="M4 18h12"/><path d="M20 18h0"/><circle cx="18" cy="18" r="2"/>'
+        + '</svg>';
+      var panel = document.createElement('div');
+      panel.className = 'tuner-panel';
+      panel.innerHTML = ''
+        + '<div class="tuner-head">'
+        +   '<span class="tuner-title"><span class="tuner-dot"></span>Tuner<span class="tuner-ctx-badge" data-role="badge">—</span></span>'
+        +   '<button class="tuner-close" type="button" aria-label="Close">×</button>'
+        + '</div>'
+        + '<div class="tuner-body">'
+        +   '<div class="tuner-group">'
+        +     '<div class="tuner-group-title">Context</div>'
+        +     '<div class="tuner-tabs" data-role="contexts">'
+        +       '<button type="button" data-ctx="desktop">Desktop</button>'
+        +       '<button type="button" data-ctx="tablet">Tablet</button>'
+        +       '<button type="button" data-ctx="album">Album</button>'
+        +       '<button type="button" data-ctx="phone">Phone</button>'
+        +     '</div>'
+        +   '</div>'
+        +   '<div class="tuner-group">'
+        +     '<div class="tuner-group-title">Step</div>'
+        +     '<div class="tuner-step" data-role="step">'
+        +       '<button type="button" data-step="0.05">0.05</button>'
+        +       '<button type="button" data-step="0.1">0.1</button>'
+        +       '<button type="button" data-step="0.5" class="is-active">0.5</button>'
+        +       '<button type="button" data-step="1">1</button>'
+        +       '<button type="button" data-step="5">5</button>'
+        +     '</div>'
+        +   '</div>'
+        +   '<div data-role="groups"></div>'
+        +   '<div class="tuner-actions">'
+        +     '<button type="button" data-action="copy-all">Copy all</button>'
+        +     '<button type="button" data-action="copy-current">Copy current</button>'
+        +     '<button type="button" data-action="reset-ctx">Reset context</button>'
+        +     '<button type="button" class="danger" data-action="reset-all">Reset all</button>'
+        +   '</div>'
+        +   '<textarea class="tuner-json" data-role="json" readonly placeholder="Copy → значения появятся здесь"></textarea>'
+        + '</div>';
+      document.body.appendChild(fab);
+      document.body.appendChild(panel);
+      var currentStep = 0.5;
+      function ctxMode(ctx) { return ctx === 'desktop' ? 'd' : 'm'; }
+      function renderContexts() {
+        var detected = detectContext();
+        var text = currentContext;
+        if (detected !== currentContext) text += ' ≠ ' + detected;
+        panel.querySelector('[data-role="badge"]').textContent = text;
+        panel.querySelectorAll('[data-role="contexts"] button').forEach(function (b) {
+          b.classList.toggle('is-active', b.getAttribute('data-ctx') === currentContext);
+        });
+      }
+      function renderStep() {
+        panel.querySelectorAll('[data-role="step"] button').forEach(function (b) {
+          b.classList.toggle('is-active', Math.abs(parseFloat(b.getAttribute('data-step')) - currentStep) < 0.0001);
+        });
+      }
+      function renderGroups() {
+        var box = panel.querySelector('[data-role="groups"]');
+        box.innerHTML = '';
+        var vals = getValues(currentContext);
+        var mode = ctxMode(currentContext);
+        GROUPS.forEach(function (g) {
+          var props = g.props.filter(function (p) { return !p.only || p.only === mode; });
+          if (!props.length) return;
+          var groupEl = document.createElement('div');
+          groupEl.className = 'tuner-group';
+          var title = document.createElement('div');
+          title.className = 'tuner-group-title';
+          title.textContent = g.title;
+          groupEl.appendChild(title);
+          var propsEl = document.createElement('div');
+          propsEl.className = 'tuner-props';
+          props.forEach(function (p) {
+            var row = document.createElement('div');
+            row.className = 'tuner-prop';
+            var label = document.createElement('div');
+            label.className = 'tuner-prop-label';
+            label.textContent = p.label;
+            var ctrls = document.createElement('div');
+            ctrls.className = 'tuner-prop-controls';
+            var minus = document.createElement('button');
+            minus.type = 'button';
+            minus.textContent = '−';
+            minus.setAttribute('data-dir', '-1');
+            minus.setAttribute('data-key', p.key);
+            var input = document.createElement('input');
+            input.type = 'number';
+            input.step = 'any';
+            input.value = vals[p.key];
+            input.setAttribute('data-key', p.key);
+            var unitEl = document.createElement('span');
+            unitEl.className = 'tuner-unit';
+            unitEl.textContent = p.unit || '—';
+            var plus = document.createElement('button');
+            plus.type = 'button';
+            plus.textContent = '+';
+            plus.setAttribute('data-dir', '1');
+            plus.setAttribute('data-key', p.key);
+            ctrls.appendChild(minus);
+            ctrls.appendChild(input);
+            ctrls.appendChild(unitEl);
+            ctrls.appendChild(plus);
+            row.appendChild(label);
+            row.appendChild(ctrls);
+            propsEl.appendChild(row);
+          });
+          groupEl.appendChild(propsEl);
+          box.appendChild(groupEl);
+        });
+      }
+      function renderAll() {
+        renderContexts();
+        renderStep();
+        renderGroups();
+      }
+      fab.addEventListener('click', function () { panel.classList.toggle('is-open'); });
+      panel.querySelector('.tuner-close').addEventListener('click', function () {
+        panel.classList.remove('is-open');
+      });
+      panel.querySelector('[data-role="contexts"]').addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-ctx]');
+        if (!b) return;
+        currentContext = b.getAttribute('data-ctx');
+        applyContextValues();
+        captureMeta(currentContext);
+        renderAll();
+      });
+      panel.querySelector('[data-role="step"]').addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-step]');
+        if (!b) return;
+        currentStep = parseFloat(b.getAttribute('data-step'));
+        renderStep();
+      });
+      panel.querySelector('[data-role="groups"]').addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-dir]');
+        if (!b) return;
+        var key = b.getAttribute('data-key');
+        var dir = parseFloat(b.getAttribute('data-dir'));
+        var cur = parseFloat(getValues(currentContext)[key]);
+        if (!isFinite(cur)) cur = 0;
+        setValue(currentContext, key, fmt(cur + dir * currentStep));
+        applyContextValues();
+        renderGroups();
+      });
+      panel.querySelector('[data-role="groups"]').addEventListener('input', function (e) {
+        var input = e.target.closest('input[data-key]');
+        if (!input) return;
+        var key = input.getAttribute('data-key');
+        var v = parseFloat(input.value);
+        if (!isFinite(v)) return;
+        setValue(currentContext, key, fmt(v));
+        applyContextValues();
+      });
+      panel.querySelector('.tuner-actions').addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-action]');
+        if (!b) return;
+        var action = b.getAttribute('data-action');
+        if (action === 'copy-all' || action === 'copy-current') {
+          var json = action === 'copy-all' ? exportJSON() : exportCurrentJSON();
+          var ta = panel.querySelector('[data-role="json"]');
+          ta.value = json;
+          try { ta.select(); document.execCommand('copy'); } catch (err) {}
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(json).catch(function () {});
+          }
+          var old = b.textContent;
+          b.textContent = 'Copied!';
+          setTimeout(function () { b.textContent = old; }, 1200);
+        }
+        if (action === 'reset-ctx') {
+          if (!confirm('Сбросить контекст «' + currentContext + '»?')) return;
+          delete state.values[currentContext];
+          delete state.meta[currentContext];
+          saveState();
+          applyContextValues();
+          renderAll();
+        }
+        if (action === 'reset-all') {
+          if (!confirm('Сбросить ВСЕ значения?')) return;
+          state = { values: {}, meta: {} };
+          saveState();
+          applyContextValues();
+          renderAll();
+        }
+      });
+      var rT;
+      function onResize() {
+        var next = detectContext();
+        if (next !== currentContext) {
+          currentContext = next;
+          applyContextValues();
+        }
+        captureMeta(currentContext);
+        renderAll();
+      }
+      function addMQListener(mq) {
+        if (mq.addEventListener) {
+          mq.addEventListener('change', onResize);
+        } else if (mq.addListener) {
+          mq.addListener(onResize);
+        }
+      }
+      addMQListener(PHONE_MQ);
+      addMQListener(ALBUM_MQ);
+      addMQListener(TABLET_MQ);
+      addMQListener(FINE_POINTER_MQ);
+      window.addEventListener('resize', function () {
+        clearTimeout(rT);
+        rT = setTimeout(onResize, 80);
+      });
+      window.addEventListener('orientationchange', function () {
+        clearTimeout(rT);
+        rT = setTimeout(onResize, 150);
+      });
+      applyContextValues();
+      captureMeta(currentContext);
+      renderAll();
+    })();
+  </script>
+  <script>
+    (function initTelegram() {
+      var tg = window.Telegram && window.Telegram.WebApp;
+      var readyTimer = 0;
+      function markTelegramReady() {
+        clearTimeout(readyTimer);
+        readyTimer = 0;
+        if (window.kravviMarkTelegramReady) window.kravviMarkTelegramReady();
+      }
+      function scheduleTelegramReady(delay) {
+        clearTimeout(readyTimer);
+        readyTimer = setTimeout(markTelegramReady, delay || 0);
+      }
+      if (!tg) {
+        markTelegramReady();
+        return;
+      }
+      var isMiniApp = false;
+      if (tg.initData && tg.initData.length > 0) {
+        isMiniApp = true;
+      } else if (location.hash.indexOf('tgWebAppVersion') !== -1) {
+        isMiniApp = true;
+      }
+      if (!isMiniApp) {
+        tg.ready();
+        markTelegramReady();
+        return;
+      }
+      document.body.classList.add('telegram-mini-app');
+      tg.ready();
+      var platform = String(tg.platform || '').toLowerCase();
+      var ua = navigator.userAgent || '';
+      var isMobilePlatform = (platform === 'android' || platform === 'ios');
+      var isTouch = window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+      var hasFinePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      var maxTouchPoints = navigator.maxTouchPoints || 0;
+      var isTouchLike = isTouch || (maxTouchPoints > 0 && !hasFinePointer);
+      var isMobileUA = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+      var isIPadLike = /Macintosh/.test(ua) && isTouchLike && (platform === 'mac' || platform === 'macos' || platform === 'unknown');
+      var isDesktopPlatform = !isIPadLike && (
+        platform === 'windows' ||
+        platform === 'mac' ||
+        platform === 'macos' ||
+        platform === 'linux' ||
+        platform === 'web' ||
+        platform === 'weba' ||
+        platform === 'tdesktop' ||
+        platform === 'bot'
+      );
+      var useMobileMode = false;
+      if (!isDesktopPlatform) {
+        if (isMobilePlatform) {
+          useMobileMode = true;
+        } else if ((platform === 'unknown' || !platform) && isMobileUA && isTouch) {
+          useMobileMode = true;
+        } else if (isIPadLike) {
+          useMobileMode = true;
+        }
+      }
+      if (useMobileMode) {
+        document.body.classList.add('tg-mobile');
+        if (tg.requestFullscreen) {
+          try { tg.requestFullscreen(); } catch (e) {}
+        } else if (tg.expand) {
+          tg.expand();
+        }
+      } else {
+        document.body.classList.remove('tg-mobile');
+        if (tg.exitFullscreen) {
+          try { tg.exitFullscreen(); } catch (e) {}
+        }
+      }
+      function updateSafeArea() {
+        var top = (tg.contentSafeAreaInset && tg.contentSafeAreaInset.top) ||
+                  (tg.safeAreaInset && tg.safeAreaInset.top) ||
+                  0;
+        document.documentElement.style.setProperty('--tg-content-safe-area-inset-top', top + 'px');
+      }
+      updateSafeArea();
+      if (tg.onEvent) {
+        tg.onEvent('viewportChanged', function () {
+          updateSafeArea();
+          scheduleTelegramReady(350);
+        });
+      }
+      scheduleTelegramReady(useMobileMode ? 350 : 0);
+      if (tg.BackButton) {
+        tg.BackButton.onClick(function () {
+          window.history.back();
+        });
+        if (window.updateBackButton && window.getCurrentView) {
+          window.updateBackButton(window.getCurrentView());
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
